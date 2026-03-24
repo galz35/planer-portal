@@ -276,29 +276,21 @@ export class AuthService {
         }
       }
 
-      // Buscamos al usuario en la base de datos de Planer por su carnet
+      // Upsert: Si el usuario existe, se actualizan sus datos (nombre, correo). Si no, se crea.
+      // Así mantenemos a Planer sincronizado con los cambios hechos en el Portal Central (nombre cambiado, desactivado, etc)
       let user = await authRepo.obtenerUsuarioPorIdentificador(payload.carnet);
-
-      if (!user) {
-        // JIT Provisioning: Crear usuario automáticamente desde los datos del token
-        console.log(`[SSO] User ${payload.carnet} not found in Planer. Creating via JIT...`);
-        try {
-          const newUser = {
-            nombre: payload.name || payload.username || 'Usuario Portal',
-            correo: payload.correo || `${payload.carnet}@claro.com.ni`,
-            carnet: payload.carnet,
-            idRolGlobal: 3, // Empleado por defecto
-            pais: 'NI',
-            activo: true
-          };
-          
-          const createdUserId = await authRepo.crearUsuario(newUser);
-          user = await authRepo.obtenerUsuarioPorId(createdUserId);
-          console.log(`[SSO] JIT User created successfully: ${payload.carnet} (ID: ${createdUserId})`);
-        } catch (createErr) {
-          console.error('[SSO] Error creating JIT user:', createErr.message);
-          throw new UnauthorizedException('Error al registrar usuario del Portal en Planer');
-        }
+      
+      const upsertData = {
+        nombre: payload.name || payload.username || (user?.nombre || 'Usuario Portal'),
+        correo: payload.correo || (user?.correo || `${payload.carnet}@claro.com.ni`),
+        carnet: payload.carnet,
+        activo: true // Por definición, si tiene token válido SSO, está activo
+      };
+      try {
+        const userId = await authRepo.upsertUsuarioLocal(upsertData);
+        user = await authRepo.obtenerUsuarioPorId(userId);
+      } catch (err) {
+        console.error('[SSO] Error upserting user:', err.message);
       }
 
       console.log(`[SSO] 🔐 Identity confirmed for: ${user?.correo} (${user?.carnet})`);
@@ -325,34 +317,62 @@ export class AuthService {
       if (response.data && response.data.authenticated) {
         const portalUser = response.data.user;
         
-        // 1. Verificar si el usuario existe en Planer
-        let user = await authRepo.obtenerUsuarioPorIdentificador(portalUser.carnet);
+        // Usamos nuestro super Upsert para mantener sincronizados los nombres/correos y crear si no existe
+        const upsertData = {
+           nombre: portalUser.nombre || portalUser.usuario,
+           correo: portalUser.correo || `${portalUser.carnet}@claro.com.ni`,
+           carnet: portalUser.carnet,
+           activo: true, // Si validó la cookie y está authenticated en origin, está activo
+           esInterno: portalUser.esInterno
+        };
         
-        if (!user) {
-          // 2. JIT Provisioning: Crear usuario automáticamente
-          try {
-            const newUser = {
-              nombre: portalUser.nombre || portalUser.usuario,
-              correo: portalUser.correo || `${portalUser.carnet}@claro.com.ni`,
-              carnet: portalUser.carnet,
-              idRolGlobal: 3, // Empleado por defecto
-              pais: portalUser.esInterno ? 'NI' : 'OT',
-              activo: true
-            };
-            
-            const createdUserId = await authRepo.crearUsuario(newUser);
-            user = await authRepo.obtenerUsuarioPorId(createdUserId);
-          } catch (createErr) {
-            console.error('Error creating user JIT in Planer:', createErr.message);
-            return null;
-          }
+        try {
+          const userId = await authRepo.upsertUsuarioLocal(upsertData);
+          const user = await authRepo.obtenerUsuarioPorId(userId);
+          return user;
+        } catch (err) {
+          console.error('Error on upsert portal session in Planer:', err.message);
         }
         
-        return user;
       }
     } catch (err) {
       console.error('Error validating portal session in Planer:', err.message);
     }
     return null;
+  }
+
+  /**
+   * Recibe un 'push' del Portal Central (Excel/Admin) para forzar actualizar la data de un usuario
+   * sin que este inicie sesión (Sincronización Server-to-Server)
+   */
+  async syncUserFromPortal(data: any): Promise<boolean> {
+    try {
+      console.log(`[SSO-SYNC] Forzando actualización para usuario: ${data.carnet}`);
+      await authRepo.upsertUsuarioLocal({
+        nombre: data.nombre,
+        correo: data.correo,
+        carnet: data.carnet,
+        activo: data.activo, // Importante: esto pasara a 0 si lo desactivaron en el excel del Portal Central
+        esInterno: data.esInterno,
+        cargo: data.cargo,
+        departamento: data.departamento,
+        gerencia: data.gerencia,
+        subgerencia: data.subgerencia,
+        area: data.area,
+        jefeCarnet: data.jefeCarnet,
+        jefeNombre: data.jefeNombre,
+        jefeCorreo: data.jefeCorreo,
+        telefono: data.telefono,
+        genero: data.genero,
+        fechaIngreso: data.fechaIngreso,
+        idOrg: data.idOrg,
+        orgDepartamento: data.orgDepartamento,
+        orgGerencia: data.orgGerencia
+      });
+      return true;
+    } catch (e) {
+      console.error(`[SSO-SYNC] Error sincronizando:`, e.message);
+      return false;
+    }
   }
 }

@@ -191,7 +191,13 @@ export const TaskDetailsPanel: React.FC<TaskDetailsPanelProps> = ({
                         <label className="text-[10px] text-slate-400 font-bold uppercase mb-1.5 block ml-1">Estado</label>
                         <select
                             value={task.estado}
-                            onChange={(e) => setTask({ ...task, estado: e.target.value as any })}
+                            onChange={(e) => {
+                                const st = e.target.value as any;
+                                let prog = task.progreso || 0;
+                                if (st === 'Hecha') prog = 100;
+                                else if (task.estado === 'Hecha' && prog === 100) prog = 90; 
+                                setTask({ ...task, estado: st, progreso: prog });
+                            }}
                             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:bg-white focus:border-indigo-400 transition-all capitalize"
                         >
                             <option value="Pendiente">⏳ Pendiente</option>
@@ -246,7 +252,15 @@ export const TaskDetailsPanel: React.FC<TaskDetailsPanelProps> = ({
                             max="100"
                             className={`w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer ${task.estado === 'Bloqueada' ? 'accent-red-500' : 'accent-slate-700'}`}
                             value={task.progreso || 0}
-                            onChange={(e) => setTask({ ...task, progreso: parseInt(e.target.value) })}
+                            onChange={(e) => {
+                                const newProg = parseInt(e.target.value);
+                                let newState = task.estado;
+                                if (newProg === 100) newState = 'Hecha';
+                                else if (task.estado === 'Hecha' && newProg < 100) newState = 'EnCurso';
+                                else if (task.estado === 'Pendiente' && newProg > 0) newState = 'EnCurso';
+                                
+                                setTask({ ...task, progreso: newProg, estado: newState });
+                            }}
                         />
                     </div>
                 )}

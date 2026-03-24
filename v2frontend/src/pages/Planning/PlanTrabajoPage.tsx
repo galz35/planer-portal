@@ -755,7 +755,10 @@ export const PlanTrabajoPage: React.FC = () => {
                                                                                 value={newSubtaskTitle}
                                                                                 onChange={e => setNewSubtaskTitle(e.target.value)}
                                                                                 onKeyDown={e => {
-                                                                                    if (e.key === 'Enter') handleQuickSubtask(rootTask.idTarea, newSubtaskTitle);
+                                                                                    if (e.key === 'Enter') {
+                                                                                        handleQuickSubtask(rootTask.idTarea, newSubtaskTitle);
+                                                                                        setNewSubtaskTitle(''); // Limpiar el input
+                                                                                    }
                                                                                     if (e.key === 'Escape') setCreationParentId(null);
                                                                                 }}
                                                                             />

@@ -454,3 +454,109 @@ export async function crearUsuario(data: {
 
   return idUsuario;
 }
+
+/**
+ * Actualiza o inserta un usuario usando la data que viene del Portal Core (SSO / Sincronización)
+ */
+export async function upsertUsuarioLocal(data: {
+  nombre: string;
+  correo: string;
+  carnet: string;
+  activo: boolean;
+  esInterno?: boolean;
+  // Extras de Organización y Datos Personales
+  cargo?: string;
+  departamento?: string;
+  gerencia?: string;
+  subgerencia?: string;
+  area?: string;
+  jefeCarnet?: string;
+  jefeNombre?: string;
+  jefeCorreo?: string;
+  telefono?: string;
+  genero?: string;
+  fechaIngreso?: Date;
+  idOrg?: string;
+  orgDepartamento?: string;
+  orgGerencia?: string;
+}): Promise<number> {
+  const request = await crearRequest();
+  request.input('nombre', NVarChar, data.nombre);
+  request.input('correo', NVarChar, data.correo);
+  request.input('carnet', NVarChar, data.carnet);
+  request.input('activo', Bit, data.activo);
+  request.input('pais', NVarChar, data.esInterno === false ? 'OT' : 'NI');
+  
+  // Opcionales
+  request.input('cargo', NVarChar, data.cargo || null);
+  request.input('departamento', NVarChar, data.departamento || null);
+  request.input('gerencia', NVarChar, data.gerencia || null);
+  request.input('subgerencia', NVarChar, data.subgerencia || null);
+  request.input('area', NVarChar, data.area || null);
+  request.input('jefeCarnet', NVarChar, data.jefeCarnet || null);
+  request.input('jefeNombre', NVarChar, data.jefeNombre || null);
+  request.input('jefeCorreo', NVarChar, data.jefeCorreo || null);
+  request.input('telefono', NVarChar, data.telefono || null);
+  request.input('genero', NVarChar, data.genero || null);
+  request.input('idOrg', NVarChar, data.idOrg || null);
+  request.input('orgDepartamento', NVarChar, data.orgDepartamento || null);
+  request.input('orgGerencia', NVarChar, data.orgGerencia || null);
+
+  // Parsear fecha solo si viene
+  if (data.fechaIngreso) {
+    request.input('fechaIngreso', require('mssql').DateTime, data.fechaIngreso);
+  } else {
+    request.input('fechaIngreso', require('mssql').DateTime, null);
+  }
+
+  // Si existe (por carnet), actualizamos. Si no existe, insertamos.
+  const query = `
+    DECLARE @idUsuario INT;
+    
+    SELECT @idUsuario = idUsuario FROM p_Usuarios WHERE carnet = @carnet;
+    
+    IF @idUsuario IS NOT NULL
+    BEGIN
+      UPDATE p_Usuarios
+      SET nombre = @nombre, correo = @correo, activo = @activo, pais = @pais,
+          cargo = ISNULL(@cargo, cargo),
+          departamento = ISNULL(@departamento, departamento),
+          gerencia = ISNULL(@gerencia, gerencia),
+          subgerencia = ISNULL(@subgerencia, subgerencia),
+          area = ISNULL(@area, area),
+          jefeCarnet = ISNULL(@jefeCarnet, jefeCarnet),
+          jefeNombre = ISNULL(@jefeNombre, jefeNombre),
+          jefeCorreo = ISNULL(@jefeCorreo, jefeCorreo),
+          telefono = ISNULL(@telefono, telefono),
+          genero = ISNULL(@genero, genero),
+          idOrg = ISNULL(@idOrg, idOrg),
+          orgDepartamento = ISNULL(@orgDepartamento, orgDepartamento),
+          orgGerencia = ISNULL(@orgGerencia, orgGerencia),
+          fechaIngreso = ISNULL(@fechaIngreso, fechaIngreso)
+      WHERE idUsuario = @idUsuario;
+    END
+    ELSE
+    BEGIN
+      INSERT INTO p_Usuarios (
+        nombre, correo, carnet, idRol, activo, pais, fechaCreacion,
+        cargo, departamento, gerencia, subgerencia, area, jefeCarnet, jefeNombre, jefeCorreo,
+        telefono, genero, idOrg, orgDepartamento, orgGerencia, fechaIngreso
+      )
+      VALUES (
+        @nombre, @correo, @carnet, 3, @activo, @pais, GETDATE(),
+        @cargo, @departamento, @gerencia, @subgerencia, @area, @jefeCarnet, @jefeNombre, @jefeCorreo,
+        @telefono, @genero, @idOrg, @orgDepartamento, @orgGerencia, @fechaIngreso
+      );
+      
+      SET @idUsuario = SCOPE_IDENTITY();
+      
+      INSERT INTO p_UsuariosCredenciales (idUsuario, passwordHash, fechaCreacion)
+      VALUES (@idUsuario, '', GETDATE());
+    END
+    
+    SELECT @idUsuario as id;
+  `;
+
+  const result = await request.query<{ id: number }>(query);
+  return result.recordset[0]?.id;
+}

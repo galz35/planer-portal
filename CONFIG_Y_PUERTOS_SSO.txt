@@ -1,0 +1,109 @@
+=========================================================
+CLARO PORTAL: ARQUITECTURA DE ECOSISTEMA & SSO (SYNC MÓDULOS)
+=========================================================
+Fecha de actualización: 24 de Marzo de 2026
+
+1. PUERTOS Y MÓDULOS (ARQUITECTURA ACTUAL)
+---------------------------------------------------------
+El ecosistema completo corre bajo una interfaz única manejada por Portal Core, y los submódulos (micro-frontends) cargan mediante iframes o son redirigidos vía SSO.
+
+- PORTAL CORE (Maestro)
+  * Frontend (React/Vite): http://localhost:5173
+  * Backend (NestJS):      http://localhost:3000
+    [!] Aquí se sube la plantilla de Excel (Plantilla_Carga_Usuarios.csv) que propaga la data al resto de los sistemas a través del método "sync-users-bulk".
+
+- PORTAL PLANER
+  * Frontend (React/Vite): http://localhost:5175
+  * Backend (NestJS):      http://localhost:5175 (Mismo puerto que su frontend en el Proxy/Docker, revisar su .env interno) [Suele arrancar su NestJS en 3001 o similar, pero los webhooks van apuntados a su puerto API principal].
+    * Webhook URL interna de escucha: http://localhost:5175/api/auth/sso-sync-user
+
+- PORTAL CLÍNICA
+  * Frontend (React/Vite): http://localhost:5176
+  * Backend (NestJS):      http://localhost:3002 (El webhook lo estamos configurando globalmente al puerto del API de clínica que responde a las peticiones frontend).
+    * Webhook URL interna de escucha: http://localhost:5176/api/auth/sso-sync-user (O el que defina tu proxy reverso / api).
+
+- PORTAL VACANTES
+  * Frontend (React/Vite): http://localhost:5177
+  * No tiene tabla local de usuarios y confía ciegamente en las sesiones de Portal Core al vuelo.
+
+- PORTAL CLIMA
+  * Frontend (React/Vite): http://localhost:5178
+  * Webhook URL interna de escucha: http://localhost:5178/api/auth/sso-sync-user
+
+- PORTAL INVENTARIO
+  * Funciona leyendo de Vistas (vw_EmpleadosActivos) desde el controlador general, no usa Upsert como los otros.
+
+
+2. FLUJO DE CARGA Y SINCRONIZACIÓN
+---------------------------------------------------------
+A.  Un Administrador entra a http://localhost:5173/portal/admin (Portal Core).
+B.  Usa el botón "Sincronizar Panel Central y Satélites" y sube "Plantilla_Carga_Usuarios.csv".
+C.  El Portal Core (Fastify) parsea el Excel usando PapaParse y lo envía al endpoint POST /api/admin/sync-users-bulk.
+D.  Portal Core actualiza su base local (CuentaPortal y Persona).
+E.  Portal Core emite un Axios/Fetch (Webhook) enviando un payload extendido con los 19 metadatos a las APIs locales de Planer, Clima y Clínica.
+F.  Cada Api local ejecuta su procedimiento Upsert actualizando o creando al usuario en su base de datos independiente (p_Usuarios), impidiendo que pierdan sincronía los registros organizacionales (Cargos, Jefes, Departamentos, Activo).
+
+
+3. MUESTRA REAL DEL .ENV BASE REQUERIDO
+---------------------------------------------------------
+(Solo colocar estos datos en el .env adecuado localmente)
+
+### [A] PORTAL CORE (.env) ###
+# Api NestJS Local
+PORT=3000
+DB_HOST=localhost
+DB_PORT=1433
+DB_USER=sa
+DB_PASS=Secreto123*
+DB_NAME=ClaroPortal
+JWT_SECRET=tu-secreto-super-seguro-portal-core
+
+# URLS Webhook
+PLANER_WEBHOOK_URL=http://localhost:5175/api/auth/sso-sync-user
+CLINICA_WEBHOOK_URL=http://localhost:5176/api/auth/sso-sync-user
+CLIMA_WEBHOOK_URL=http://localhost:5178/api/auth/sso-sync-user
+
+### [B] PORTAL CORE WEB (portal-web/.env) ###
+VITE_API_URL=http://localhost:3000/api
+VITE_PLANER_URL=http://localhost:5175
+VITE_CLINICA_URL=http://localhost:5176
+VITE_VACANTES_URL=http://localhost:5177
+VITE_CLIMA_URL=http://localhost:5178
+
+### [C] PORTAL PLANER (.env Backend) ###
+PORT=3001
+DB_HOST=localhost
+DB_USER=sa
+DB_PASS=Secreto123*
+DB_NAME=ClaroPlanerDB
+JWT_SECRET=tu-secreto-super-seguro-planer
+
+### [D] PORTAL PLANER WEB (v2frontend/.env) ###
+VITE_API_URL=http://localhost:5175/api
+VITE_PORTAL_CORE_URL=http://localhost:5173
+
+### [E] PORTAL CLIMA (.env Backend) ###
+PORT=3002
+DB_HOST=localhost
+DB_USER=sa
+DB_PASS=Secreto123*
+DB_NAME=ClaroClimaDB
+JWT_SECRET=tu-secreto-super-seguro-clima
+
+### [F] PORTAL CLIMA WEB (.env frontend) ###
+VITE_API_URL=http://localhost:5178/api
+VITE_PORTAL_CORE_URL=http://localhost:5173
+
+### [G] PORTAL CLINICA (.env Backend) ###
+PORT=3003
+DB_HOST=localhost
+DB_USER=sa
+DB_PASS=Secreto123*
+DB_NAME=ClaroClinicaDB
+JWT_SECRET=tu-secreto-super-seguro-clinica
+
+### [H] PORTAL CLINICA WEB (.env Frontend) ###
+VITE_API_URL=http://localhost:5176/api
+VITE_PORTAL_CORE_URL=http://localhost:5173
+
+--- FIN DE LA CONFIGURACIÓN BÁSICA ---

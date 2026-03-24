@@ -101,4 +101,15 @@ export class AuthController {
     const user = await this.authService.validateSSOToken(token, req);
     return this.authService.login(user);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('sso-sync-user')
+  @ApiOperation({ summary: 'Sincronizar webhook desde Portal Central' })
+  async ssoSyncUser(@Body() data: any) {
+    if (!data.carnet) {
+      throw new UnauthorizedException('Carnet requerido para sincronizar');
+    }
+    const result = await this.authService.syncUserFromPortal(data);
+    return { success: result };
+  }
 }

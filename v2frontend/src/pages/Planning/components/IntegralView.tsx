@@ -419,6 +419,7 @@ export const IntegralView: React.FC<IntegralViewProps> = ({
                                                     if (e.key === 'Enter' && newSubtaskTitle.trim()) {
                                                         // After Enter, we save but keep creationParentId to allow adding more
                                                         onQuickSubtask(Math.abs(task.idTarea), newSubtaskTitle);
+                                                        setNewSubtaskTitle(''); // CLEAR INPUT
                                                     }
                                                     if (e.key === 'Escape') {
                                                         onToggleSubtaskCreation(Math.abs(task.idTarea));

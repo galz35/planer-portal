@@ -5,14 +5,23 @@ import { useAuth } from '../context/AuthContext';
 export const SSOHandlerPage = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, isAuthenticated } = useAuth();
+
+    // Monitor para navegar apenas la autenticación sea efectiva
+    useEffect(() => {
+        if (isAuthenticated) {
+            console.log('🚀 Authenticated! Navigating to dashboard...');
+            navigate('/app/hoy', { replace: true });
+        }
+    }, [isAuthenticated, navigate]);
 
     useEffect(() => {
         const token = searchParams.get('token');
 
         if (!token) {
             console.error('No SSO token provided');
-            navigate('/login');
+            // Si no hay token, volvemos al origen (Portal Central)
+            window.location.href = 'http://localhost:5173';
             return;
         }
 
@@ -20,7 +29,6 @@ export const SSOHandlerPage = () => {
             try {
                 console.log('--- SSO HANDSHAKE START ---');
                 
-                // 1. Llamamos al backend de Planer para validar el token del Portal
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/sso-login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -28,36 +36,28 @@ export const SSOHandlerPage = () => {
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    console.error('SSO Backend Error:', errorData);
-                    throw new Error('SSO Authentication failed');
+                    throw new Error('SSO Authentication failed at backend');
                 }
 
                 const { data: responseBody } = await response.json();
-                
                 if (!responseBody) throw new Error('Response body is empty');
 
                 console.log(`👤 New Identity established: ${responseBody.user?.correo}`);
                 
-                // 3. Establecemos la sesión fresca
+                // Establecemos la sesión. El useEffect de arriba detectará el cambio y navegará.
                 login(responseBody.access_token, responseBody.refresh_token, responseBody.user);
                 
-                console.log('Session established, waiting for state commit...');
-                
-                // Agregamos un pequeño delay técnico para asegurar que Context API 
-                // propague el estado del usuario antes de que ProtectedRoute lo evalúe
-                setTimeout(() => {
-                    console.log('🚀 Navigating to dashboard...');
-                    navigate('/app/hoy', { replace: true });
-                }, 500);
             } catch (error) {
                 console.error('SSO Global Error:', error);
-                navigate('/login?error=sso_failed');
+                // En caso de error, devolvemos al usuario al Portal Central
+                window.location.href = 'http://localhost:5173?error=sso_failed';
             }
         };
 
-        performSSO();
-    }, [searchParams, login, navigate]);
+        if (!isAuthenticated) {
+            performSSO();
+        }
+    }, [searchParams, login, isAuthenticated]);
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-clarity-bg">

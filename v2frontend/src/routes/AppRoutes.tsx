@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
@@ -89,8 +89,24 @@ import { CommandPalette } from '../components/ui/CommandPalette';
 
 const ProtectedRoute = () => {
     const { isAuthenticated, loading } = useAuth();
-    if (loading) return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
-    return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+    
+    useEffect(() => {
+        if (!loading && !isAuthenticated) {
+            console.log('🛑 Not authenticated. Redirecting to Portal Central...');
+            window.location.href = 'http://localhost:5173';
+        }
+    }, [loading, isAuthenticated]);
+
+    if (loading || !isAuthenticated) {
+        return <div className="min-h-screen flex items-center justify-center">
+            <div className="flex flex-col items-center space-y-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                <p className="text-gray-500">Verificando sesión con Portal Central...</p>
+            </div>
+        </div>;
+    }
+
+    return <Outlet />;
 };
 
 const ExperimentalGuard = () => {
