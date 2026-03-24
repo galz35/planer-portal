@@ -1,0 +1,75 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    style.
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      body { margin: 0; padding: 0; font-family: 'Inter', -apple-system, system-ui, sans-serif; background-color: #f9fafb; color: #111827; }
+      .email-wrapper { width: 100%; background-color: #f9fafb; padding: 40px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; border: 1px solid #e5e7eb; overflow: hidden; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); }
+      .top-strip { height: 6px; background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%); }
+      .padding { padding: 40px; }
+      .header-logo { font-size: 14px; font-weight: 700; color: #111827; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 32px; display: flex; align-items: center; }
+      .dot { height: 8px; width: 8px; background-color: #3b82f6; border-radius: 50%; margin-right: 8px; display: inline-block; }
+      
+      .hero-section h1 { font-size: 24px; font-weight: 700; line-height: 1.2; margin: 0 0 12px 0; letter-spacing: -0.02em; }
+      .hero-section p { font-size: 15px; line-height: 1.5; color: #4b5563; margin: 0; }
+      
+      .task-container { margin-top: 32px; border: 1px solid #f3f4f6; border-radius: 8px; }
+      .task-item { padding: 24px; border-bottom: 1px solid #f3f4f6; }
+      .task-item:last-child { border-bottom: none; }
+      
+      .project-tag { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+      .task-title { font-size: 17px; font-weight: 600; color: #111827; margin-bottom: 12px; line-height: 1.4; }
+      
+      .meta-grid { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; }
+      .meta-box { min-width: 120px; }
+      .meta-label { font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+      .meta-value { font-size: 13px; color: #4b5563; font-weight: 500; }
+      
+      .badge-overdue { background-color: #fef2f2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: inline-block; margin-top: 12px; }
+      
+      .action-footer { margin-top: 40px; text-align: center; border-top: 1px solid #f3f4f6; padding-top: 32px; }
+      .btn { background-color: #111827; color: #ffffff !important; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-block; }
+      
+      .footer-note { margin-top: 32px; font-size: 12px; color: #9ca3af; text-align: center; }
+  body
+    .email-wrapper
+      .container
+        .top-strip
+        .padding
+          .header-logo
+            span.dot
+            | Planner-EF
+          
+          .hero-section
+            h1 Tareas con retraso detectadas
+            p Hola #{nombre}. Tu equipo y el sistema han identificado pendientes que requieren actualización inmediata.
+          
+          .task-container
+            each t in tareas
+              .task-item
+                .project-tag #{t.proyecto}
+                .task-title #{t.titulo}
+                
+                .meta-grid
+                  .meta-box
+                    .meta-label Creado por
+                    .meta-value #{t.creador}
+                  .meta-box
+                    .meta-label Asignado a
+                    .meta-value(style="color: #3b82f6;") #{t.asignado}
+                  .meta-box
+                    .meta-label Límite
+                    .meta-value #{t.fechaLimite}
+                
+                .badge-overdue #{t.diasAtraso} días de retraso
+          
+          .action-footer
+            a.btn(href=enlace) Administrar Dashboard
+          
+          .footer-note
+            | Recibes esto porque tienes tareas asignadas en Planner-EF. 
+            br
+            | © 2026 Clarity Platform.

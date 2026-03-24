@@ -1,0 +1,32 @@
+[
+  {
+    "COLUMN_NAME": "id"
+  },
+  {
+    "COLUMN_NAME": "idProyecto"
+  },
+  {
+    "COLUMN_NAME": "idUsuario"
+  },
+  {
+    "COLUMN_NAME": "rolColaboracion"
+  },
+  {
+    "COLUMN_NAME": "permisosCustom"
+  },
+  {
+    "COLUMN_NAME": "invitadoPor"
+  },
+  {
+    "COLUMN_NAME": "fechaInvitacion"
+  },
+  {
+    "COLUMN_NAME": "fechaExpiracion"
+  },
+  {
+    "COLUMN_NAME": "activo"
+  },
+  {
+    "COLUMN_NAME": "notas"
+  }
+]

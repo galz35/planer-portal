@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "827495190245",
+    "project_id": "planner-ef-4772a",
+    "storage_bucket": "planner-ef-4772a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827495190245:android:93b27e0572d6f76eafce0c",
+        "android_client_info": {
+          "package_name": "planer.ef"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr5hH1d3KknqDQIWomNcCQFHhxYHljTR4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

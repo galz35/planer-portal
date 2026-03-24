@@ -1,0 +1,57 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    style.
+      body { margin: 0; padding: 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; background-color: #f1f5f9; }
+      .wrapper { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
+  body(style="margin:0; padding:20px 0; background-color:#f1f5f9;")
+    table(width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;")
+      tr
+        td(align="center")
+          .wrapper
+            //- HEADER
+            div(style="background:linear-gradient(135deg,#4f46e5,#3730a3); padding:24px 32px; text-align:center;")
+              h1(style="color:#fff; font-size:22px; font-weight:700; margin:0; letter-spacing:-0.5px;") 📊 Planner-EF
+              p(style="color:rgba(255,255,255,0.85); font-size:13px; margin:6px 0 0;") Resumen Semanal del Equipo
+
+            //- BODY
+            div(style="padding:32px;")
+              p(style="font-size:16px; color:#0f172a; margin-bottom:16px;")
+                | Hola <strong style="color:#4f46e5;">#{nombre}</strong>,
+
+              p(style="color:#475569; font-size:14px; line-height:1.6; margin-bottom:24px;")
+                | Aquí tienes el resumen de productividad de tu equipo de esta semana.
+
+              //- KPIs
+              div(style="display:flex; margin-bottom:24px; gap: 16px;")
+                div(style="background-color:#f0fdf4; padding:16px; border-radius:8px; border:1px solid #bbf7d0; text-align:center; width: 100%;")
+                  div(style="font-size:24px; font-weight:700; color:#166534;") #{totalCompletadas}
+                  div(style="font-size:12px; color:#15803d;") Completadas
+                div(style="background-color:#fffbeb; padding:16px; border-radius:8px; border:1px solid #fde68a; text-align:center; width: 100%;")
+                  div(style="font-size:24px; font-weight:700; color:#b45309;") #{totalPendientes}
+                  div(style="font-size:12px; color:#d97706;") Pendientes
+
+              //- RANKING TABLE
+              if ranking && ranking.length > 0
+                h3(style="color:#0f172a; font-size:16px; margin-bottom:12px;") Ranking de Equipo
+                table(width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse; margin-bottom:24px;")
+                  thead
+                    tr(style="background-color:#f8fafc; text-align:left; border-bottom:2px solid #e2e8f0; font-size:13px; color:#64748b;")
+                      th Colaborador
+                      th(style="text-align:right;") Completadas
+                  tbody
+                    each user in ranking
+                      tr(style="border-bottom:1px solid #f1f5f9;")
+                        td(style="font-size:14px; color:#334155; font-weight:500;") #{user.nombre}
+                        td(style="text-align:right; font-size:14px; font-weight:700; color:#166534;") #{user.completadas}
+              else
+                p(style="color:#64748b; font-size:14px; font-style:italic; text-align:center;") No hay actividad registrada esta semana.
+
+              //- CTA
+              div(style="text-align:center; margin:28px 0 12px;")
+                a(href="#{enlace}" style="display:inline-block; background:linear-gradient(135deg,#4f46e5,#3730a3); color:#fff; padding:14px 40px; text-decoration:none; border-radius:8px; font-weight:700; font-size:14px;") Ver Dashboard Completo
+
+            //- FOOTER
+            div(style="padding:20px 32px; background-color:#f8fafc; text-align:center; border-top:1px solid #e2e8f0;")
+              p(style="font-size:11px; color:#94a3b8; margin:0; line-height:1.6;") Este es un reporte automático de Planner-EF.

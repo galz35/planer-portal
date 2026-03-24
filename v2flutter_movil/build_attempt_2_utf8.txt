@@ -1,0 +1,46 @@
+﻿Running Gradle task 'assembleRelease'...                        
+flutter : 
+En línea: 1 Carácter: 1
++ flutter build apk --release --dart-def
+ine=API_BASE_URL=https://rhclar ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecif 
+   ied: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCom 
+   mandError
+ 
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task 
+':app:checkReleaseAarMetadata'.
+> A failure occurred while executing com
+.android.build.gradle.internal.tasks.Che
+ckAarMetadataWorkAction
+   > An issue was found when checking 
+AAR metadata:
+
+       1.  Dependency 
+':flutter_local_notifications' requires 
+desugar_jdk_libs version to be
+           2.1.4 or above for :app, 
+which is currently 2.0.3
+
+           See https://d.android.com/stu
+dio/build/library-desugaring for more
+           details.
+
+* Try:
+> Run with --stacktrace option to get 
+the stack trace.
+> Run with --info or --debug option to 
+get more log output.
+> Run with --scan to get full insights.
+> Get more help at 
+https://help.gradle.org.
+
+BUILD FAILED in 1m 47s
+Running Gradle task 'assembleRelease'...                          108,2s
+Gradle task assembleRelease failed with 
+exit code 1

@@ -1,0 +1,612 @@
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, DataSource, In } from 'typeorm';
+
+import { Empleado } from './entities/empleado.entity';
+import { OrganizacionNodoRh } from './entities/organizacion-nodo-rh.entity';
+import { Usuario } from '../auth/entities/usuario.entity';
+import { UsuarioCredenciales } from '../auth/entities/usuario-credenciales.entity';
+import * as bcrypt from 'bcrypt';
+import {
+    EmpleadoImportDto,
+    ImportarEmpleadosDto,
+    OrganizacionNodoImportDto,
+    ImportarOrganizacionDto
+} from './dto/importar-empleados.dto';
+
+/**
+ * Resultado de una operación de importación
+ */
+export interface ResultadoImportacion {
+    total: number;
+    insertados: number;
+    actualizados: number;
+    errores: number;
+    detallesErrores: { carnet: string; error: string }[];
+    duracionMs: number;
+}
+
+/**
+ * ImportService - Servicio para importar empleados y organización
+ * 
+ * Soporta:
+ * - Importación desde JSON (API)
+ * - Importación desde Excel (parseo previo)
+ * - Modos: MERGE (upsert), REPLACE (drop + insert), INSERT_ONLY
+ */
+@Injectable()
+export class ImportService {
+    constructor(
+        @InjectRepository(Empleado)
+        private readonly repoEmpleado: Repository<Empleado>,
+
+        @InjectRepository(OrganizacionNodoRh)
+        private readonly repoOrg: Repository<OrganizacionNodoRh>,
+
+        @InjectRepository(Usuario)
+        private readonly repoUsuario: Repository<Usuario>,
+
+        @InjectRepository(UsuarioCredenciales)
+        private readonly repoCreds: Repository<UsuarioCredenciales>,
+
+        private readonly dataSource: DataSource,
+    ) { }
+
+    // =========================================
+    // IMPORTAR EMPLEADOS
+    // =========================================
+
+    /**
+     * Importar lista de empleados
+     * @param dto - Datos de importación
+     * @returns Resultado con estadísticas
+     */
+    async importarEmpleados(dto: ImportarEmpleadosDto): Promise<ResultadoImportacion> {
+        const inicio = Date.now();
+        const resultado: ResultadoImportacion = {
+            total: dto.empleados.length,
+            insertados: 0,
+            actualizados: 0,
+            errores: 0,
+            detallesErrores: [],
+            duracionMs: 0,
+        };
+
+        if (!dto.empleados || dto.empleados.length === 0) {
+            throw new BadRequestException('La lista de empleados está vacía');
+        }
+
+        const modo = dto.modo || 'MERGE';
+        const fuente = dto.fuente || 'API';
+        const importadoPor = dto.importadoPor || 'SISTEMA';
+
+        const defaultPassword = await bcrypt.hash('Claro123!', 10);
+
+        // Si es REPLACE, eliminar todos primero
+        if (modo === 'REPLACE') {
+            await this.repoEmpleado.clear();
+        }
+
+        // Obtener carnets existentes para determinar insert vs update
+        const carnetsEntrantes = dto.empleados.map(e => e.carnet.trim());
+        const existentes = await this.repoEmpleado.find({
+            where: { carnet: In(carnetsEntrantes) },
+            select: ['carnet'],
+        });
+        const carnetsExistentes = new Set(existentes.map(e => e.carnet));
+
+        // Obtener correos para ver qué usuarios existen
+        const correosEntrantes = dto.empleados
+            .filter(e => e.correo)
+            .map(e => e.correo!.trim().toLowerCase());
+
+        const usuariosExistentesArr = await this.repoUsuario.find({
+            where: { correo: In(correosEntrantes) },
+            select: ['idUsuario', 'correo', 'carnet']
+        });
+        const mapUsuarios = new Map(usuariosExistentesArr.map(u => [u.correo.toLowerCase(), u]));
+
+        // Procesar en lotes para mejor performance
+        const BATCH_SIZE = 100;
+        for (let i = 0; i < dto.empleados.length; i += BATCH_SIZE) {
+            const lote = dto.empleados.slice(i, i + BATCH_SIZE);
+
+            await this.dataSource.transaction(async (manager) => {
+                for (const empDto of lote) {
+                    try {
+                        const carnet = empDto.carnet.trim();
+                        const existe = carnetsExistentes.has(carnet);
+
+                        // Si es INSERT_ONLY, saltar los existentes
+                        if (modo === 'INSERT_ONLY' && existe) {
+                            continue;
+                        }
+
+                        const empleado = this.mapDtoToEntity(empDto, fuente, importadoPor);
+
+                        // --- SINCRONIZACIÓN DE USUARIO (CUENTA) ---
+                        if (empleado.correo) {
+                            const correo = empleado.correo.toLowerCase();
+                            let user = mapUsuarios.get(correo);
+
+                            if (user) {
+                                // Actualizar usuario existente
+                                await manager.update(Usuario, { idUsuario: user.idUsuario }, {
+                                    nombre: empleado.nombreCompleto || undefined,
+                                    carnet: carnet,
+                                    activo: empleado.activo,
+                                    telefono: empleado.telefono || undefined
+                                });
+                            } else {
+                                // Crear nuevo usuario
+                                const nuevoUser = manager.create(Usuario, {
+                                    nombre: empleado.nombreCompleto || 'Importado',
+                                    correo: correo,
+                                    carnet: carnet,
+                                    rolGlobal: 'Empleado',
+                                    activo: empleado.activo,
+                                    telefono: empleado.telefono || undefined
+                                });
+                                const savedUser = await manager.save(Usuario, nuevoUser);
+
+                                // Crear credenciales por defecto
+                                await manager.insert(UsuarioCredenciales, {
+                                    idUsuario: savedUser.idUsuario,
+                                    passwordHash: defaultPassword
+                                });
+
+                                mapUsuarios.set(correo, savedUser);
+                            }
+                        }
+
+                        // --- GUARDAR EMPLEADO ---
+                        if (existe) {
+                            // Update
+                            await manager.update(Empleado, { carnet }, empleado);
+                            resultado.actualizados++;
+                        } else {
+                            // Insert
+                            await manager.insert(Empleado, empleado);
+                            resultado.insertados++;
+                            carnetsExistentes.add(carnet); // Marcar como existente para el siguiente lote
+                        }
+                    } catch (error) {
+                        resultado.errores++;
+                        resultado.detallesErrores.push({
+                            carnet: empDto.carnet,
+                            error: error instanceof Error ? error.message : String(error),
+                        });
+                    }
+                }
+            });
+        }
+
+        resultado.duracionMs = Date.now() - inicio;
+        return resultado;
+    }
+
+    /**
+     * Mapear DTO a entidad Empleado
+     */
+    private mapDtoToEntity(dto: EmpleadoImportDto, fuente: string, importadoPor: string): Partial<Empleado> {
+        const empleado: Partial<Empleado> = {
+            carnet: dto.carnet.trim(),
+            fuente,
+            importadoPor,
+        };
+
+        // Mapear todos los campos opcionales
+        if (dto.cedula !== undefined) empleado.cedula = dto.cedula?.trim() || null;
+        if (dto.nombreCompleto !== undefined) empleado.nombreCompleto = dto.nombreCompleto?.trim() || null;
+        if (dto.correo !== undefined) empleado.correo = dto.correo?.trim().toLowerCase() || null;
+        if (dto.telefono !== undefined) empleado.telefono = dto.telefono?.trim() || null;
+
+        if (dto.idOrg !== undefined) empleado.idOrg = dto.idOrg ? String(dto.idOrg) : null;
+        if (dto.cargo !== undefined) empleado.cargo = dto.cargo?.trim() || null;
+        if (dto.departamento !== undefined) empleado.departamento = dto.departamento?.trim() || null;
+        if (dto.area !== undefined) empleado.area = dto.area?.trim() || null;
+        if (dto.gerencia !== undefined) empleado.gerencia = dto.gerencia?.trim() || null;
+        if (dto.direccion !== undefined) empleado.direccion = dto.direccion?.trim() || null;
+        if (dto.empresa !== undefined) empleado.empresa = dto.empresa?.trim() || null;
+        if (dto.ubicacion !== undefined) empleado.ubicacion = dto.ubicacion?.trim() || null;
+        if (dto.pais !== undefined) empleado.pais = dto.pais?.trim() || 'NI';
+
+        if (dto.primerNivel !== undefined) empleado.primerNivel = dto.primerNivel?.trim() || null;
+        if (dto.segundoNivel !== undefined) empleado.segundoNivel = dto.segundoNivel?.trim() || null;
+        if (dto.tercerNivel !== undefined) empleado.tercerNivel = dto.tercerNivel?.trim() || null;
+        if (dto.cuartoNivel !== undefined) empleado.cuartoNivel = dto.cuartoNivel?.trim() || null;
+        if (dto.quintoNivel !== undefined) empleado.quintoNivel = dto.quintoNivel?.trim() || null;
+        if (dto.sextoNivel !== undefined) empleado.sextoNivel = dto.sextoNivel?.trim() || null;
+
+        if (dto.carnetJefe1 !== undefined) empleado.carnetJefe1 = dto.carnetJefe1?.trim() || null;
+        if (dto.carnetJefe2 !== undefined) empleado.carnetJefe2 = dto.carnetJefe2?.trim() || null;
+        if (dto.carnetJefe3 !== undefined) empleado.carnetJefe3 = dto.carnetJefe3?.trim() || null;
+        if (dto.carnetJefe4 !== undefined) empleado.carnetJefe4 = dto.carnetJefe4?.trim() || null;
+        if (dto.jefe1Nombre !== undefined) empleado.jefe1Nombre = dto.jefe1Nombre?.trim() || null;
+        if (dto.jefe1Correo !== undefined) empleado.jefe1Correo = dto.jefe1Correo?.trim().toLowerCase() || null;
+
+        if (dto.userLevel !== undefined) empleado.userLevel = dto.userLevel ?? null;
+        if (dto.managerLevel !== undefined) empleado.managerLevel = dto.managerLevel?.trim() || null;
+        if (dto.tipoEmpleado !== undefined) empleado.tipoEmpleado = dto.tipoEmpleado?.trim() || null;
+        if (dto.tipoContrato !== undefined) empleado.tipoContrato = dto.tipoContrato?.trim() || null;
+
+        if (dto.fechaIngreso !== undefined) empleado.fechaIngreso = dto.fechaIngreso ? new Date(dto.fechaIngreso) : null;
+        if (dto.fechaBaja !== undefined) empleado.fechaBaja = dto.fechaBaja ? new Date(dto.fechaBaja) : null;
+
+        // Determinar activo basado en fechaBaja
+        if (dto.activo !== undefined) {
+            empleado.activo = dto.activo;
+        } else if (dto.fechaBaja) {
+            const fechaBaja = new Date(dto.fechaBaja);
+            // Considerar inactivo si la fecha de baja es válida y no es la fecha mínima
+            const fechaMinima = new Date('0001-01-01');
+            empleado.activo = fechaBaja <= fechaMinima;
+        }
+
+        return empleado;
+    }
+
+    // =========================================
+    // IMPORTAR ORGANIZACIÓN
+    // =========================================
+
+    /**
+     * Importar lista de nodos organizacionales
+     * @param dto - Datos de importación
+     */
+    async importarOrganizacion(dto: ImportarOrganizacionDto): Promise<ResultadoImportacion> {
+        const inicio = Date.now();
+        const resultado: ResultadoImportacion = {
+            total: dto.nodos.length,
+            insertados: 0,
+            actualizados: 0,
+            errores: 0,
+            detallesErrores: [],
+            duracionMs: 0,
+        };
+
+        if (!dto.nodos || dto.nodos.length === 0) {
+            throw new BadRequestException('La lista de nodos está vacía');
+        }
+
+        const modo = dto.modo || 'MERGE';
+
+        // Si es REPLACE, eliminar todo primero
+        if (modo === 'REPLACE') {
+            // Primero quitar las FK de empleados para poder eliminar
+            await this.dataSource.query('UPDATE p_empleados SET idorg = NULL');
+            await this.repoOrg.clear();
+        }
+
+        // Obtener idorgs existentes
+        const idorgsEntrantes = dto.nodos.map(n => String(n.idOrg));
+        const existentes = await this.repoOrg.find({
+            where: { idOrg: In(idorgsEntrantes) },
+            select: ['idOrg'],
+        });
+        const idorgsExistentes = new Set(existentes.map(n => n.idOrg));
+
+        // Ordenar nodos: primero los que no tienen padre, luego los demás
+        // Esto evita problemas de FK
+        const nodosOrdenados = [...dto.nodos].sort((a, b) => {
+            if (!a.padre && b.padre) return -1;
+            if (a.padre && !b.padre) return 1;
+            return 0;
+        });
+
+        // Primera pasada: insertar sin padre para evitar FK violations
+        for (const nodoDto of nodosOrdenados) {
+            try {
+                const idOrg = String(nodoDto.idOrg);
+                const existe = idorgsExistentes.has(idOrg);
+
+                const nodo: Partial<OrganizacionNodoRh> = {
+                    idOrg,
+                    padre: null, // Se actualiza en segunda pasada
+                    descripcion: nodoDto.descripcion?.trim() || null,
+                    tipo: nodoDto.tipo?.trim() || null,
+                    estado: nodoDto.estado?.trim() || null,
+                    nivel: nodoDto.nivel?.trim() || null,
+                };
+
+                if (existe) {
+                    await this.repoOrg.update({ idOrg }, nodo);
+                    resultado.actualizados++;
+                } else {
+                    await this.repoOrg.insert(nodo);
+                    resultado.insertados++;
+                    idorgsExistentes.add(idOrg);
+                }
+            } catch (error) {
+                resultado.errores++;
+                resultado.detallesErrores.push({
+                    carnet: nodoDto.idOrg,
+                    error: error instanceof Error ? error.message : String(error),
+                });
+            }
+        }
+
+        // Segunda pasada: actualizar padres
+        for (const nodoDto of dto.nodos) {
+            if (nodoDto.padre) {
+                try {
+                    await this.repoOrg.update(
+                        { idOrg: String(nodoDto.idOrg) },
+                        { padre: String(nodoDto.padre) }
+                    );
+                } catch (error) {
+                    // Ignorar errores de FK aquí (padre no existe)
+                    console.warn(`No se pudo asignar padre ${nodoDto.padre} a nodo ${nodoDto.idOrg}`);
+                }
+            }
+        }
+
+        resultado.duracionMs = Date.now() - inicio;
+        return resultado;
+    }
+
+    // =========================================
+    // PARSEO DE EXCEL
+    // =========================================
+
+    /**
+     * Parsear datos de Excel a DTOs de empleados
+     * El Excel debe tener headers en la primera fila
+     * 
+     * @param filas - Array de objetos donde cada objeto es una fila del Excel
+     * @returns Array de EmpleadoImportDto
+     */
+    parseExcelEmpleados(filas: Record<string, any>[]): EmpleadoImportDto[] {
+        const empleados: EmpleadoImportDto[] = [];
+
+        // Mapeo de posibles nombres de columna a campos del DTO
+        const mapeoColumnas: Record<string, keyof EmpleadoImportDto> = {
+            // Variantes de carnet
+            'carnet': 'carnet',
+            'CARNET': 'carnet',
+            'Carnet': 'carnet',
+            'codigo': 'carnet',
+            'CODIGO': 'carnet',
+            'id': 'carnet',
+            'ID': 'carnet',
+
+            // Variantes de nombre
+            'nombre_completo': 'nombreCompleto',
+            'NOMBRE_COMPLETO': 'nombreCompleto',
+            'nombre completo': 'nombreCompleto',
+            'NOMBRE COMPLETO': 'nombreCompleto',
+            'nombre': 'nombreCompleto',
+            'NOMBRE': 'nombreCompleto',
+            'Nombre': 'nombreCompleto',
+
+            // Variantes de correo
+            'correo': 'correo',
+            'CORREO': 'correo',
+            'email': 'correo',
+            'EMAIL': 'correo',
+            'Email': 'correo',
+            'e-mail': 'correo',
+
+            // Variantes de teléfono
+            'telefono': 'telefono',
+            'TELEFONO': 'telefono',
+            'Telefono': 'telefono',
+            'teléfono': 'telefono',
+            'Teléfono': 'telefono',
+            'celular': 'telefono',
+            'CELULAR': 'telefono',
+
+            // Variantes de cargo
+            'cargo': 'cargo',
+            'CARGO': 'cargo',
+            'Cargo': 'cargo',
+            'puesto': 'cargo',
+            'PUESTO': 'cargo',
+
+            // Variantes de departamento
+            'departamento': 'departamento',
+            'DEPARTAMENTO': 'departamento',
+            'Departamento': 'departamento',
+            'oDEPARTAMENTO': 'departamento',
+            'depto': 'departamento',
+            'DEPTO': 'departamento',
+
+            // Variantes de área
+            'area': 'area',
+            'AREA': 'area',
+            'Area': 'area',
+            'área': 'area',
+            'Área': 'area',
+
+            // Variantes de gerencia
+            'gerencia': 'gerencia',
+            'GERENCIA': 'gerencia',
+            'Gerencia': 'gerencia',
+
+            // Variantes de dirección
+            'direccion': 'direccion',
+            'DIRECCION': 'direccion',
+            'Direccion': 'direccion',
+
+            // Variantes de empresa
+            'empresa': 'empresa',
+            'EMPRESA': 'empresa',
+            'Empresa': 'empresa',
+            'compania': 'empresa',
+            'COMPANIA': 'empresa',
+
+            // Variantes de país
+            'pais': 'pais',
+            'PAIS': 'pais',
+            'Pais': 'pais',
+            'país': 'pais',
+            'País': 'pais',
+
+            // Variantes de jefe
+            'carnet_jefe1': 'carnetJefe1',
+            'CARNET_JEFE1': 'carnetJefe1',
+            'jefe': 'carnetJefe1',
+            'JEFE': 'carnetJefe1',
+            'jefe1': 'carnetJefe1',
+            'JEFE1': 'carnetJefe1',
+
+            // Variantes de idorg
+            'idorg': 'idOrg',
+            'IDORG': 'idOrg',
+            'IdOrg': 'idOrg',
+            'id_org': 'idOrg',
+            'ID_ORG': 'idOrg',
+
+            // Variantes de cédula
+            'cedula': 'cedula',
+            'CEDULA': 'cedula',
+            'Cedula': 'cedula',
+            'cédula': 'cedula',
+            'Cédula': 'cedula',
+
+            // Variantes de activo
+            'activo': 'activo',
+            'ACTIVO': 'activo',
+            'Activo': 'activo',
+            'status': 'activo',
+            'STATUS': 'activo',
+
+            // Fecha ingreso
+            'fecha_ingreso': 'fechaIngreso',
+            'FECHA_INGRESO': 'fechaIngreso',
+            'fechaingreso': 'fechaIngreso',
+            'FECHAINGRESO': 'fechaIngreso',
+
+            // Fecha baja
+            'fecha_baja': 'fechaBaja',
+            'FECHA_BAJA': 'fechaBaja',
+            'fechabaja': 'fechaBaja',
+            'FECHABAJA': 'fechaBaja',
+        };
+
+        for (const fila of filas) {
+            const empleado: Partial<EmpleadoImportDto> = {};
+
+            for (const [columnaExcel, valor] of Object.entries(fila)) {
+                const campo = mapeoColumnas[columnaExcel];
+                if (campo && valor !== null && valor !== undefined && valor !== '') {
+                    // Convertir tipos según el campo
+                    if (campo === 'activo') {
+                        empleado[campo] = this.parseBoolean(valor);
+                    } else if (campo === 'userLevel') {
+                        empleado[campo] = parseInt(String(valor), 10) || undefined;
+                    } else if (campo === 'fechaIngreso' || campo === 'fechaBaja') {
+                        const fecha = this.parseDate(valor);
+                        if (fecha) empleado[campo] = fecha;
+                    } else {
+                        (empleado as any)[campo] = String(valor).trim();
+                    }
+                }
+            }
+
+            // Solo agregar si tiene carnet
+            if (empleado.carnet) {
+                empleados.push(empleado as EmpleadoImportDto);
+            }
+        }
+
+        return empleados;
+    }
+
+    /**
+     * Convertir valor a booleano
+     */
+    private parseBoolean(valor: any): boolean {
+        if (typeof valor === 'boolean') return valor;
+        if (typeof valor === 'number') return valor === 1;
+        const str = String(valor).toLowerCase().trim();
+        return ['1', 'true', 'si', 'sí', 'yes', 'activo', 'active'].includes(str);
+    }
+
+    /**
+     * Convertir valor a fecha ISO string
+     */
+    private parseDate(valor: any): string | undefined {
+        if (!valor) return undefined;
+
+        // Si ya es una fecha
+        if (valor instanceof Date) {
+            return valor.toISOString();
+        }
+
+        // Si es un número (Excel date serial)
+        if (typeof valor === 'number') {
+            const date = new Date((valor - 25569) * 86400 * 1000);
+            return date.toISOString();
+        }
+
+        // Si es string, intentar parsear
+        const str = String(valor).trim();
+        const date = new Date(str);
+        if (!isNaN(date.getTime())) {
+            return date.toISOString();
+        }
+
+        return undefined;
+    }
+
+    // =========================================
+    // UTILIDADES
+    // =========================================
+
+    /**
+     * Obtener estadísticas de la tabla de empleados
+     * OPTIMIZADO: Una sola query en lugar de 4
+     */
+    async obtenerEstadisticas(): Promise<{
+        totalEmpleados: number;
+        activos: number;
+        inactivos: number;
+        porFuente: { fuente: string; cantidad: number }[];
+        ultimaImportacion: Date | null;
+    }> {
+        // Una sola query SQL para todas las estadísticas
+        const result = await this.dataSource.query(`
+      SELECT 
+        COUNT(*) as total,
+        COUNT(*) FILTER (WHERE activo = true) as activos,
+        MAX(updated_at) as ultima_actualizacion,
+        (
+          SELECT json_agg(json_build_object('fuente', fuente, 'cantidad', cnt))
+          FROM (
+            SELECT COALESCE(fuente, 'UNKNOWN') as fuente, COUNT(*) as cnt 
+            FROM p_empleados 
+            GROUP BY fuente
+          ) sub
+        ) as por_fuente
+      FROM p_empleados
+    `);
+
+        const stats = result[0] || { total: 0, activos: 0, ultima_actualizacion: null, por_fuente: null };
+
+        return {
+            totalEmpleados: parseInt(stats.total) || 0,
+            activos: parseInt(stats.activos) || 0,
+            inactivos: (parseInt(stats.total) || 0) - (parseInt(stats.activos) || 0),
+            porFuente: stats.por_fuente || [],
+            ultimaImportacion: stats.ultima_actualizacion ? new Date(stats.ultima_actualizacion) : null,
+        };
+    }
+
+    /**
+     * Exportar empleados a formato plano (para Excel)
+     */
+    async exportarEmpleados(filtros?: { activo?: boolean; departamento?: string }): Promise<Partial<Empleado>[]> {
+        const query = this.repoEmpleado.createQueryBuilder('e');
+
+        if (filtros?.activo !== undefined) {
+            query.andWhere('e.activo = :activo', { activo: filtros.activo });
+        }
+
+        if (filtros?.departamento) {
+            query.andWhere('e.departamento ILIKE :depto', { depto: `%${filtros.departamento}%` });
+        }
+
+        return query.orderBy('e.nombreCompleto', 'ASC').getMany();
+    }
+}

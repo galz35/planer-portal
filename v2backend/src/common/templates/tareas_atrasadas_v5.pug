@@ -1,0 +1,67 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    style.
+      @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+      body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #1c1e21; }
+      .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.15); border: 1px solid #dddfe2; }
+      .header { background-color: #f5f6f7; padding: 20px 40px; border-bottom: 1px solid #dddfe2; }
+      .brand { color: #d70000; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; }
+      .hero { padding: 40px; background: #ffffff; }
+      .hero-title { font-size: 28px; font-weight: 700; color: #1c1e21; margin: 0 0 16px 0; border-left: 6px solid #d70000; padding-left: 20px; }
+      .status-banner { background-color: #fff4f4; border: 1px solid #f9d6d6; padding: 16px 20px; border-radius: 6px; margin-bottom: 30px; }
+      .status-text { color: #d70000; font-weight: 600; font-size: 15px; }
+      
+      .task-card { margin-bottom: 20px; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; }
+      .task-header { background-color: #f5f6f7; padding: 12px 20px; border-bottom: 1px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center; }
+      .project-label { font-size: 11px; font-weight: 700; color: #606770; text-transform: uppercase; letter-spacing: 0.5px; }
+      .task-body { padding: 20px; position: relative; }
+      .task-name { font-size: 18px; font-weight: 700; color: #1c1e21; margin-bottom: 15px; line-height: 1.3; }
+      
+      .meta-table { width: 100%; border-collapse: collapse; }
+      .meta-label { font-size: 12px; color: #606770; padding-bottom: 4px; width: 50%; }
+      .meta-value { font-size: 14px; font-weight: 600; color: #1c1e21; padding-bottom: 12px; }
+      .delay-badge { display: inline-block; background-color: #d70000; color: #ffffff; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; position: absolute; top: 20px; right: 20px; }
+      
+      .footer { background-color: #f5f6f7; padding: 24px 40px; text-align: center; border-top: 1px solid #dddfe2; }
+      .btn { display: inline-block; background-color: #1c1e21; color: #ffffff !important; padding: 14px 30px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 15px; margin-top: 20px; }
+      .disclaimer { font-size: 12px; color: #90949c; margin-top: 20px; }
+  body
+    .container
+      .header
+        .brand PLANNER-EF
+      
+      .hero
+        h1.hero-title Control Informativo de Gestión
+        .status-banner
+          span.status-text ⚠️ Atención: Hola #{nombre}, tienes #{totalAtrasadas} tareas vencidas hoy.
+        
+        div
+          each t in tareas
+            .task-card
+              .task-header
+                span.project-label 📁 #{t.proyecto}
+              .task-body
+                .delay-badge #{t.diasAtraso}D ATRASO
+                .task-name #{t.titulo}
+                table.meta-table
+                  tr
+                    td.meta-label CREADO POR
+                    td.meta-label ASIGNADO A
+                  tr
+                    td.meta-value #{t.creador}
+                    td.meta-value(style="color: #0056b3;") #{t.asignado}
+                  tr
+                    td.meta-label FECHA LÍMITE
+                    td
+                  tr
+                    td.meta-value(style="color: #d70000;") #{t.fechaLimite}
+                    td
+
+        div(style="text-align: center;")
+          a.btn(href=enlace) ACCEDER A MI AGENDA
+      
+      .footer
+        p(style="margin:0; font-weight: 700; font-size: 13px; color: #4b4f56;") Sistema Central de Planificación y Seguimiento
+        p.disclaimer Este es un reporte de cumplimiento generado automáticamente. Por favor no responder a este remitente.

@@ -1,0 +1,65 @@
+=== PROYECTOS DONDE PARTICIPA YESENIA MANZANAREZ ===
+
+ID Proyecto: 61
+Nombre Proyecto: Sigho Fase II - Reclutamiento CENAM
+Estado: Activo
+Creador Original: CANDIDA JAZMINA SANCHEZ LOPEZ
+Colaboradores del Proyecto:
+  -> Sin colaboradores en tabla p_ProyectoColaboradores
+----------------------------------------------------------
+ID Proyecto: 68
+Nombre Proyecto: Contratación 16 plazas Gerencia Corporativa
+Estado: Activo
+Creador Original: YESENIA DE JESUS MANZANAREZ ALVARADO
+Colaboradores del Proyecto:
+  -> Sin colaboradores en tabla p_ProyectoColaboradores
+----------------------------------------------------------
+ID Proyecto: 76
+Nombre Proyecto: Mantener un mínimo de 100 vacantes activas
+Estado: Activo
+Creador Original: YESENIA DE JESUS MANZANAREZ ALVARADO
+Colaboradores del Proyecto:
+  -> Sin colaboradores en tabla p_ProyectoColaboradores
+----------------------------------------------------------
+ID Proyecto: 77
+Nombre Proyecto: Reducir el tiempo de contratación de 55 a 45 días
+Estado: Activo
+Creador Original: YESENIA DE JESUS MANZANAREZ ALVARADO
+Colaboradores del Proyecto:
+  -> Sin colaboradores en tabla p_ProyectoColaboradores
+----------------------------------------------------------
+ID Proyecto: 79
+Nombre Proyecto: Definir evaluación de competencia por puesto
+Estado: Activo
+Creador Original: YESENIA DE JESUS MANZANAREZ ALVARADO
+Colaboradores del Proyecto:
+  -> Sin colaboradores en tabla p_ProyectoColaboradores
+----------------------------------------------------------
+ID Proyecto: 95
+Nombre Proyecto: Mantener % mino de ocupación del 95% de la plantilla 
+Estado: Activo
+Creador Original: YESENIA DE JESUS MANZANAREZ ALVARADO
+Colaboradores del Proyecto:
+  -> Sin colaboradores en tabla p_ProyectoColaboradores
+----------------------------------------------------------
+ID Proyecto: 132
+Nombre Proyecto: Programa Onboarding
+Estado: Activo
+Creador Original: YESENIA DE JESUS MANZANAREZ ALVARADO
+Colaboradores del Proyecto:
+  -> Sin colaboradores en tabla p_ProyectoColaboradores
+----------------------------------------------------------
+ID Proyecto: 136
+Nombre Proyecto: Igualdad de Género en Contratación
+Estado: Activo
+Creador Original: YESENIA DE JESUS MANZANAREZ ALVARADO
+Colaboradores del Proyecto:
+  -> Sin colaboradores en tabla p_ProyectoColaboradores
+----------------------------------------------------------
+ID Proyecto: 137
+Nombre Proyecto: Definir meta por gerencia
+Estado: Cancelado
+Creador Original: YESENIA DE JESUS MANZANAREZ ALVARADO
+Colaboradores del Proyecto:
+  -> Sin colaboradores en tabla p_ProyectoColaboradores
+----------------------------------------------------------

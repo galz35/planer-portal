@@ -1,0 +1,53 @@
+
+-- =============================================
+-- FIX: Excluir tareas padre de la agenda de usuario + Info Responsable
+-- =============================================
+
+CREATE OR ALTER PROCEDURE [dbo].[sp_Tareas_ObtenerPorUsuario]
+    @carnet NVARCHAR(50), 
+    @estado NVARCHAR(50) = NULL,
+    @idProyecto INT = NULL,
+    @query NVARCHAR(100) = NULL,
+    @startDate DATETIME = NULL,
+    @endDate DATETIME = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT DISTINCT
+        t.*, 
+        p.nombre as proyectoNombre,
+        (SELECT TOP 1 u.nombre 
+         FROM p_TareaAsignados tas 
+         INNER JOIN p_Usuarios u ON tas.carnet = u.carnet 
+         WHERE tas.idTarea = t.idTarea AND tas.tipo = 'Responsable') as responsableNombre,
+        (SELECT TOP 1 tas.carnet 
+         FROM p_TareaAsignados tas 
+         WHERE tas.idTarea = t.idTarea AND tas.tipo = 'Responsable') as responsableCarnet
+    FROM p_Tareas t
+    LEFT JOIN p_Proyectos p ON t.idProyecto = p.idProyecto
+    LEFT JOIN p_TareaAsignados ta ON t.idTarea = ta.idTarea
+    WHERE (
+        ta.carnet = @carnet 
+        OR (
+            t.creadorCarnet = @carnet 
+            AND NOT EXISTS (
+                SELECT 1 FROM p_TareaAsignados tasub 
+                WHERE tasub.idTarea = t.idTarea 
+                  AND tasub.tipo = 'Responsable'
+            )
+        )
+    )
+      AND (@estado IS NULL OR t.estado = @estado)
+      AND (@idProyecto IS NULL OR t.idProyecto = @idProyecto)
+      AND (@query IS NULL OR (t.nombre LIKE '%' + @query + '%' OR t.descripcion LIKE '%' + @query + '%'))
+      AND (
+          (@startDate IS NULL OR @endDate IS NULL) 
+          OR (t.fechaObjetivo >= @startDate AND t.fechaObjetivo <= @endDate)
+      )
+      AND t.activo = 1
+      -- [FIX] No mostrar tareas padre (que tienen subtareas activas)
+      AND NOT EXISTS (SELECT 1 FROM p_Tareas s WHERE s.idTareaPadre = t.idTarea AND s.activo = 1)
+    ORDER BY t.fechaObjetivo ASC;
+END
+GO

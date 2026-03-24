@@ -1,0 +1,72 @@
+Text                                                                                                                                                                                                                                                           
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                                                                                                                                                                                                                                                             
+-- =============================================
+                                                                                                                                                                                                             
+-- FIX: Excluir tareas padre de la agenda de usuario
+                                                                                                                                                                                                         
+-- Las tareas padre ya no son tareas simples y no deben aparecer en la agenda/inbox
+                                                                                                                                                                          
+-- =============================================
+                                                                                                                                                                                                             
+
+                                                                                                                                                                                                                                                             
+CREATE   PROCEDURE [dbo].[sp_Tareas_ObtenerPorUsuario]
+                                                                                                                                                                                                       
+    @carnet NVARCHAR(50), 
+                                                                                                                                                                                                                                   
+    @estado NVARCHAR(50) = NULL,
+                                                                                                                                                                                                                             
+    @idProyecto INT = NULL,
+                                                                                                                                                                                                                                  
+    @query NVARCHAR(100) = NULL,
+                                                                                                                                                                                                                             
+    @startDate DATETIME = NULL,
+                                                                                                                                                                                                                              
+    @endDate DATETIME = NULL
+                                                                                                                                                                                                                                 
+AS
+                                                                                                                                                                                                                                                           
+BEGIN
+                                                                                                                                                                                                                                                        
+    SET NOCOUNT ON;
+                                                                                                                                                                                                                                          
+    
+                                                                                                                                                                                                                                                         
+    SELECT DISTINCT
+                                                                                                                                                                                                                                          
+        t.*, p.nombre as proyectoNombre 
+                                                                                                                                                                                                                     
+    FROM p_Tareas t
+                                                                                                                                                                                                                                          
+    LEFT JOIN p_Proyectos p ON t.idProyecto = p.idProyecto
+                                                                                                                                                                                                   
+    LEFT JOIN p_TareaAsignados ta ON t.idTarea = ta.idTarea
+                                                                                                                                                                                                  
+    WHERE (t.creadorCarnet = @carnet OR ta.carnet = @carnet)
+                                                                                                                                                                                                 
+      AND (@estado IS NULL OR t.estado = @estado)
+                                                                                                                                                                                                            
+      AND (@idProyecto IS NULL OR t.idProyecto = @idProyecto)
+                                                                                                                                                                                                
+      AND (@query IS NULL OR (t.nombre LIKE '%' + @query + '%' OR t.descripcion LIKE '%' + @query + '%'))
+                                                                                                                                                    
+      AND (
+                                                                                                                                                                                                                                                  
+          (@startDate IS NULL OR @endDate IS NULL) 
+                                                                                                                                                                                                          
+          OR (t.fechaObjetivo >= @startDate AND t.fechaObjetivo <= @endDate)
+                                                                                                                                                                                 
+      )
+                                                                                                                                                                                                                                                      
+      AND t.activo = 1
+                                                                                                                                                                                                                                       
+      -- [FIX] No mostrar tareas padre (que tienen subtareas activas)
+                                                                                                                                                                                        
+      AND NOT EXISTS (SELECT 1 FROM p_Tareas s WHERE s.idTareaPadre = t.idTarea AND s.activo = 1)
+                                                                                                                                                            
+    ORDER BY t.fechaObjetivo ASC;
+                                                                                                                                                                                                                            
+END
+                                                                                                                                                                                                                                                          

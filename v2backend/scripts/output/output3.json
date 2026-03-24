@@ -1,0 +1,79 @@
+[
+  {
+    "idTarea": 159,
+    "nombre": "Seguimiento al requerimiento N",
+    "estado": "Pendiente",
+    "porcentaje": 0,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 937,
+    "nombre": "Definicion de perfil puesto",
+    "estado": "Hecha",
+    "porcentaje": 100,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 1299,
+    "nombre": "Validar caso oddo - TKT 72 ||I",
+    "estado": "Pendiente",
+    "porcentaje": 0,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 1300,
+    "nombre": "Validar caso oddo - Tkt #146  ",
+    "estado": "Pendiente",
+    "porcentaje": 0,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 1301,
+    "nombre": "Validar caso oddo - Tkt #146  ",
+    "estado": "EnCurso",
+    "porcentaje": 100,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 1304,
+    "nombre": "Validar caso odo #147 - Revisi",
+    "estado": "Pendiente",
+    "porcentaje": 0,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 1305,
+    "nombre": "Validar caso odo #147 - Revisi",
+    "estado": "Pendiente",
+    "porcentaje": 0,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 1307,
+    "nombre": "Validar caso oddo - Método de ",
+    "estado": "Pendiente",
+    "porcentaje": 0,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 1308,
+    "nombre": "Seguimiento Integracion SAP",
+    "estado": "EnCurso",
+    "porcentaje": 36,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 1302,
+    "nombre": "Validar en test",
+    "estado": "Hecha",
+    "porcentaje": 99,
+    "idTareaPadre": 1301
+  },
+  {
+    "idTarea": 1303,
+    "nombre": "Validar en produccion",
+    "estado": "Pendiente",
+    "porcentaje": 0,
+    "idTareaPadre": 1301
+  }
+]

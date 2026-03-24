@@ -1,0 +1,64 @@
+{
+  "tareas": [
+    {
+      "idTarea": 44,
+      "nombre": "prueba",
+      "estado": "Eliminada",
+      "carnet": "402336",
+      "asignadoNombre": "FRANCIS MARIA VILLARREAL TORRES"
+    }
+  ],
+  "miEquipo": [
+    {
+      "idUsuario": 31,
+      "carnet": "401633",
+      "nombreCompleto": "ARLEN CRISTINA RIVERA ESCOTO",
+      "correo": "arlen.rivera@claro.com.ni",
+      "cargo": "ESPECIALISTA DE RECLUTAMIENTO Y SELECCION B",
+      "gerencia": "NI GERENCIA DE RECURSOS HUMANOS",
+      "orgGerencia": "NI GERENCIA DE RECURSOS HUMANOS",
+      "subgerencia": "NI SUBGERENCIA DE COMPENSACIONES",
+      "Area": "NI SUBGERENCIA DE COMPENSACIONES",
+      "orgDepartamento": "NI COORD. DE RECLUTAMIENTO Y SELECCION",
+      "departamento": "MANAGUA",
+      "idOrg": null,
+      "jefeCarnet": "400103",
+      "nivel": 1,
+      "fuente": "JERARQUIA"
+    },
+    {
+      "idUsuario": 32,
+      "carnet": "402336",
+      "nombreCompleto": "FRANCIS MARIA VILLARREAL TORRES",
+      "correo": "francis.villarreal@claro.com.ni",
+      "cargo": "ESPECIALISTA DE RECLUTAMIENTO Y SELECCION B",
+      "gerencia": "NI GERENCIA DE RECURSOS HUMANOS",
+      "orgGerencia": "NI GERENCIA DE RECURSOS HUMANOS",
+      "subgerencia": "NI SUBGERENCIA DE COMPENSACIONES",
+      "Area": "NI SUBGERENCIA DE COMPENSACIONES",
+      "orgDepartamento": "NI COORD. DE RECLUTAMIENTO Y SELECCION",
+      "departamento": "MANAGUA",
+      "idOrg": null,
+      "jefeCarnet": "400103",
+      "nivel": 1,
+      "fuente": "JERARQUIA"
+    },
+    {
+      "idUsuario": 33,
+      "carnet": "500358",
+      "nombreCompleto": "KEVIN EDUARDO BARAHONA LOPEZ",
+      "correo": "kevine.barahona@claro.com.ni",
+      "cargo": "ESPECIALISTA DE RECLUTAMIENTO Y SELECCION A",
+      "gerencia": "NI GERENCIA DE RECURSOS HUMANOS",
+      "orgGerencia": "NI GERENCIA DE RECURSOS HUMANOS",
+      "subgerencia": "NI SUBGERENCIA DE COMPENSACIONES",
+      "Area": "NI SUBGERENCIA DE COMPENSACIONES",
+      "orgDepartamento": "NI COORD. DE RECLUTAMIENTO Y SELECCION",
+      "departamento": "MANAGUA",
+      "idOrg": null,
+      "jefeCarnet": "400103",
+      "nivel": 1,
+      "fuente": "JERARQUIA"
+    }
+  ]
+}

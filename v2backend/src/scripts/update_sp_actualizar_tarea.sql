@@ -1,0 +1,35 @@
+ALTER PROCEDURE [dbo].[sp_ActualizarTarea] 
+    @idTarea INT, 
+    @titulo NVARCHAR(500) = NULL, 
+    @descripcion NVARCHAR(MAX) = NULL, 
+    @estado NVARCHAR(50) = NULL, 
+    @prioridad NVARCHAR(50) = NULL, 
+    @progreso INT = NULL, 
+    @fechaObjetivo DATETIME = NULL, 
+    @fechaInicioPlanificada DATETIME = NULL, 
+    @linkEvidencia NVARCHAR(MAX) = NULL,
+    @idTareaPadre INT = NULL
+AS 
+BEGIN 
+    SET NOCOUNT ON; 
+    DECLARE @fechaActual DATETIME = GETDATE(); 
+    
+    UPDATE p_Tareas SET 
+        nombre = COALESCE(@titulo, nombre), 
+        descripcion = COALESCE(@descripcion, descripcion), 
+        estado = CASE WHEN @estado IS NOT NULL THEN @estado WHEN @progreso = 100 THEN 'Hecha' ELSE estado END, 
+        prioridad = COALESCE(@prioridad, prioridad), 
+        porcentaje = CASE WHEN @progreso IS NOT NULL THEN @progreso WHEN @estado = 'Hecha' THEN 100 ELSE porcentaje END, 
+        fechaObjetivo = COALESCE(@fechaObjetivo, fechaObjetivo), 
+        fechaInicioPlanificada = COALESCE(@fechaInicioPlanificada, fechaInicioPlanificada), 
+        linkEvidencia = COALESCE(@linkEvidencia, linkEvidencia), 
+        idTareaPadre = COALESCE(@idTareaPadre, idTareaPadre),
+        idPadre = COALESCE(@idTareaPadre, idPadre),
+        fechaActualizacion = @fechaActual, 
+        fechaCompletado = CASE 
+            WHEN (@estado = 'Hecha' OR @progreso = 100) AND fechaCompletado IS NULL THEN @fechaActual 
+            WHEN (@estado IS NOT NULL AND @estado != 'Hecha' AND @progreso != 100) THEN NULL 
+            ELSE fechaCompletado 
+        END 
+    WHERE idTarea = @idTarea; 
+END

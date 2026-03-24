@@ -1,0 +1,61 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    style.
+      body { margin: 0; padding: 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; background-color: #f1f5f9; }
+      .wrapper { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
+      .header { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 24px 32px; text-align: center; }
+      .header h1 { color: #ffffff; font-size: 20px; font-weight: 700; margin: 0; }
+      .header p { color: #94a3b8; font-size: 12px; margin: 6px 0 0 0; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+      .body { padding: 32px; }
+      .greeting { font-size: 15px; color: #0f172a; margin-bottom: 20px; }
+      .intro { color: #475569; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+      .subordinate-section { margin-bottom: 30px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+      .subordinate-header { background-color: #f8fafc; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }
+      .subordinate-name { font-size: 14px; font-weight: 700; color: #1e293b; }
+      .task-list { width: 100%; border-collapse: collapse; }
+      .task-item { border-bottom: 1px solid #f1f5f9; }
+      .task-item:last-child { border-bottom: none; }
+      .task-content { padding: 12px 16px; }
+      .task-title { font-size: 13px; font-weight: 600; color: #334155; }
+      .task-meta { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+      .delay-tag { color: #e11d48; font-weight: 700; }
+      .cta-container { text-align: center; margin: 30px 0 10px 0; }
+      .cta-btn { display: inline-block; background: #0f172a; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 13px; }
+      .footer { padding: 20px 32px; background-color: #f8fafc; text-align: center; border-top: 1px solid #e2e8f0; }
+      .footer p { font-size: 11px; color: #94a3b8; margin: 0; }
+  body(style="margin:0; padding:20px 0; background-color:#f1f5f9;")
+    table(width="100%" cellpadding="0" cellspacing="0")
+      tr
+        td(align="center")
+          .wrapper
+            .header
+              h1 📊 REPORTE DE ESCALACIÓN
+              p Visibilidad de Cumplimiento Crítico
+            
+            .body
+              p.greeting Estimado(a) <strong>#{jefeNombre}</strong>,
+              
+              p.intro
+                | El sistema ha identificado tareas atrasadas en proyectos críticos (Estratégicos, AMX, CENAM) bajo la responsabilidad de su equipo directo. Se requiere su apoyo para regularizarlas:
+              
+              each sub in subordinados
+                .subordinate-section
+                  .subordinate-header
+                    .subordinate-name #{sub.nombre} 
+                      span(style="font-weight:normal; color:#64748b; font-size:12px;") (#{sub.tareas.length} pendientes)
+                  table.task-list
+                    each tarea in sub.tareas
+                      tr.task-item
+                        td.task-content
+                          .task-title #{tarea.titulo}
+                          .task-meta 
+                            | Proyecto: #{tarea.proyecto} | 
+                            span.delay-tag #{tarea.diasAtraso} días de atraso
+                
+              .cta-container
+                a.cta-btn(href="#{enlace}") Revisar Tablero de Gestión
+            
+            .footer
+              p Reporte automático generado por Planner-EF - #{fechaHoy}

@@ -1,0 +1,13 @@
+﻿Analyzing v2flutter_movil...                                    
+
+   info - Use 'const' with the constructor to improve performance - lib\core\widgets\premium_widgets.dart:297:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\core\widgets\premium_widgets.dart:308:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\core\widgets\premium_widgets.dart:481:27 - prefer_const_constructors
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\campo\presentation\registrar_cliente_screen.dart:70:21 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\tasks\presentation\task_detail_sheet.dart:1483:15 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\tasks\presentation\task_detail_sheet.dart:1484:26 - prefer_const_constructors
+   info - Can't use a relative path to import a library in 'lib' - test\fixtures\agenda_mock_data.dart:1:8 - avoid_relative_lib_imports
+   info - Use 'const' for final variables initialized to a constant value - test\progress_calculation_test.dart:111:7 - prefer_const_declarations
+   info - Use 'const' for final variables initialized to a constant value - test\progress_calculation_test.dart:129:7 - prefer_const_declarations
+   info - Use 'const' for final variables initialized to a constant value - test\progress_calculation_test.dart:141:7 - prefer_const_declarations
+

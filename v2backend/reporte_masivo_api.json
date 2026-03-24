@@ -1,0 +1,765 @@
+{
+  "fecha": "2026-03-02T04:27:50.581Z",
+  "resumen": {
+    "total": 45,
+    "exitosos": 40,
+    "fallidos": 5
+  },
+  "detalles": [
+    {
+      "id": 44,
+      "usuario": "Admin Test",
+      "carnet": "CADMIN01",
+      "resultadoLogin": "FAIL (401)",
+      "endpoints": {}
+    },
+    {
+      "id": 20,
+      "usuario": "ALI ADOLFO RODRIGUEZ URIARTE",
+      "carnet": "402178",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 26,
+      "usuario": "ALLAN MAURICIO HERNANDEZ",
+      "carnet": "402105",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 40,
+      "usuario": "ANDRES ERNESTO DUQUE SALAZAR",
+      "carnet": "1006062",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 31,
+      "usuario": "ARLEN CRISTINA RIVERA ESCOTO",
+      "carnet": "401633",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 47,
+      "usuario": "Auditor Test",
+      "carnet": "CAUD01",
+      "resultadoLogin": "FAIL (401)",
+      "endpoints": {}
+    },
+    {
+      "id": 16,
+      "usuario": "AURORA DEL SOCORRO ESPINOZA DIAZ",
+      "carnet": "1008937",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 12,
+      "usuario": "BELKIS NINOSKA CASTELLON",
+      "carnet": "400543",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 11,
+      "usuario": "BRYAM RICARDO MARTINEZ PRADO",
+      "carnet": "500322",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 24,
+      "usuario": "CANDIDA JAZMINA SANCHEZ LOPEZ",
+      "carnet": "772",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 21,
+      "usuario": "EDGARDO JOSE SABALLOS VELAZQUEZ",
+      "carnet": "1009828",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 39,
+      "usuario": "ERICK ALBERTO NICOLAS MONTENEGRO",
+      "carnet": "500428",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 32,
+      "usuario": "FRANCIS MARIA VILLARREAL TORRES",
+      "carnet": "402336",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 23,
+      "usuario": "GUSTAVO ADOLFO LIRA SALAZAR",
+      "carnet": "500708",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 10,
+      "usuario": "HARRY ALEXANDER GUEVARA ALEMAN",
+      "carnet": "402262",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 7,
+      "usuario": "ISLENY PATRICIA HERNANDEZ GONZALEZ",
+      "carnet": "1008269",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 35,
+      "usuario": "JAVIER ANTONIO TORUÑO MENDOZA",
+      "carnet": "229354",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 25,
+      "usuario": "JILMA CAROLINA ZELAYA GARCIA",
+      "carnet": "402035",
+      "resultadoLogin": "FAIL (401)",
+      "endpoints": {}
+    },
+    {
+      "id": 3,
+      "usuario": "JOSUE GABRIEL GARCIA BUSTO",
+      "carnet": "500269",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 1,
+      "usuario": "JUAN CARLOS ORTUÑO PADILLA",
+      "carnet": "300042",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 37,
+      "usuario": "JUANA PASTORA URBINA VASQUEZ",
+      "carnet": "228710",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 33,
+      "usuario": "KEVIN EDUARDO BARAHONA LOPEZ",
+      "carnet": "500358",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 17,
+      "usuario": "KEVIN JOSSETH TORREZ RIVERA",
+      "carnet": "1011898",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 13,
+      "usuario": "KEYLA BELEN DAVILA",
+      "carnet": "102346",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 14,
+      "usuario": "LINDA RASHEL URBINA ZEPEDA",
+      "carnet": "402408",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 38,
+      "usuario": "MARIA ARACELLY GONZALEZ REYES",
+      "carnet": "245540",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 8,
+      "usuario": "MARIA VICTORIA SEQUEIRA CERRATO",
+      "carnet": "1010426",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 36,
+      "usuario": "MARIO ALBERTO RIOS GUILLEN",
+      "carnet": "500313",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 4,
+      "usuario": "MARLENE DE LA CONCEPCION ROSALES SERRANO",
+      "carnet": "256412",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 15,
+      "usuario": "MARTHA MARIA MORALES CABRERA",
+      "carnet": "706",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 28,
+      "usuario": "MILCY CAROLINA VELASQUEZ QUINTANILLA",
+      "carnet": "401992",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 6,
+      "usuario": "NELSON ENRIQUE PEREZ FONSECA",
+      "carnet": "300034",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 5,
+      "usuario": "NESTOR JOSE URBINA FLORES",
+      "carnet": "401601",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 18,
+      "usuario": "PABLO JOSE CRUZ BERMUDEZ",
+      "carnet": "222627",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 22,
+      "usuario": "PEDRO JAVIER CASTILLO MENDEZ",
+      "carnet": "249859",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 19,
+      "usuario": "RAMON IVAN DIAZ URBINA",
+      "carnet": "233269",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 27,
+      "usuario": "ROLANDO EUGENIO MARENCO GUTIERREZ",
+      "carnet": "1010683",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 30,
+      "usuario": "SCARLETH VANESSA VIVAS PEREZ",
+      "carnet": "666",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 29,
+      "usuario": "SERGIO ALEXANDER MARTINEZ ESPINOZA",
+      "carnet": "400850",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 9,
+      "usuario": "STEVEN ISAAC SEQUEIRA ROMERO",
+      "carnet": "401391",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 46,
+      "usuario": "Supervisor Test",
+      "carnet": "CSUP01",
+      "resultadoLogin": "FAIL (401)",
+      "endpoints": {}
+    },
+    {
+      "id": 41,
+      "usuario": "TANIA",
+      "carnet": "777777",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 2,
+      "usuario": "TANIA AUXILIADORA AGUIRRE AGUILAR",
+      "carnet": "1005898",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    },
+    {
+      "id": 45,
+      "usuario": "Tecnico Test",
+      "carnet": "CTEC01",
+      "resultadoLogin": "FAIL (401)",
+      "endpoints": {}
+    },
+    {
+      "id": 34,
+      "usuario": "YESENIA DE JESUS MANZANAREZ ALVARADO",
+      "carnet": "400103",
+      "resultadoLogin": "OK",
+      "endpoints": {
+        "Config": "OK",
+        "Proyectos": "OK",
+        "Mis_Proy": "OK",
+        "Mi_Asign": "OK",
+        "Foco": "OK",
+        "Team": "OK",
+        "Alertas": "OK",
+        "KPIs_Dash": "OK",
+        "Notific_St": "OK",
+        "Diag_Ping": "OK"
+      }
+    }
+  ]
+}

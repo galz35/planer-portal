@@ -1,0 +1,49 @@
+
+-- 1. sp_Proyectos_Listar (Including Responsable Name)
+CREATE   PROCEDURE [dbo].[sp_Proyectos_Listar]
+    @nombre NVARCHAR(100) = NULL,
+    @estado NVARCHAR(50) = NULL,
+    @gerencia NVARCHAR(100) = NULL,
+    @subgerencia NVARCHAR(100) = NULL,
+    @area NVARCHAR(100) = NULL,
+    @tipo NVARCHAR(50) = NULL,
+    @pageNumber INT = 1,
+    @pageSize INT = 50
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @offset INT = (@pageNumber - 1) * @pageSize;
+
+    SELECT 
+        p.idProyecto,
+        p.nombre,
+        p.descripcion,
+        p.estado,
+        p.prioridad,
+        p.fechaInicio,
+        p.fechaFin,
+        p.fechaCreacion,
+        p.area,
+        p.gerencia,
+        p.subgerencia,
+        p.responsableCarnet,
+        responsableNombre = ur.nombre, -- JOIN for Responsable Name
+        p.creadorCarnet,
+        creadorNombre = COALESCE(u1.nombre, u2.nombre),
+        p.tipo,
+        porcentaje = (SELECT AVG(porcentaje) FROM p_Tareas t WHERE t.idProyecto = p.idProyecto AND t.activo = 1)
+    FROM p_Proyectos p
+    LEFT JOIN p_Usuarios u1 ON p.idCreador = u1.idUsuario
+    LEFT JOIN p_Usuarios u2 ON p.creadorCarnet = u2.carnet AND p.idCreador IS NULL
+    LEFT JOIN p_Usuarios ur ON p.responsableCarnet = ur.carnet -- New Join
+    WHERE 
+        (@nombre IS NULL OR p.nombre LIKE '%' + @nombre + '%')
+        AND (@estado IS NULL OR p.estado = @estado)
+        AND (@gerencia IS NULL OR p.gerencia = @gerencia)
+        AND (@subgerencia IS NULL OR p.subgerencia = @subgerencia)
+        AND (@area IS NULL OR p.area = @area)
+        AND (@tipo IS NULL OR p.tipo = @tipo)
+    ORDER BY p.fechaCreacion DESC
+    OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
+    OPTION (RECOMPILE);
+END

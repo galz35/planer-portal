@@ -1,0 +1,20 @@
+[
+  {
+    "idTarea": 1301,
+    "estado": "EnCurso",
+    "porcentaje": 50,
+    "idTareaPadre": null
+  },
+  {
+    "idTarea": 1302,
+    "estado": "Hecha",
+    "porcentaje": 99,
+    "idTareaPadre": 1301
+  },
+  {
+    "idTarea": 1303,
+    "estado": "Pendiente",
+    "porcentaje": 0,
+    "idTareaPadre": 1301
+  }
+]

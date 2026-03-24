@@ -1,0 +1,50 @@
+# Configuración de Codemagic para Momentus Mobile (Flutter)
+# Este archivo permite automatizar la creación de APK (Android) e IPA (iOS)
+
+workflows:
+  ios-workflow:
+    name: iOS Release Build
+    instance_type: mac_mini_m2 # Uso de máquinas Mac para compilar iOS
+    max_build_duration: 60
+    environment:
+      groups:
+        - apple_auth # Aquí deberás configurar tu App Store Connect API Key en la web de Codemagic
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Set up code signing settings on Codemagic
+        script: |
+          keychain initialize
+          # Si tienes certificados manuales, aquí se importarían. 
+          # Codemagic recomienda usar "Automatic Code Signing" desde su panel web.
+      - name: Get Flutter dependencies
+        script: |
+          flutter packages pub get
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios && pod install
+      - name: Flutter build iOS
+        script: |
+          # Compila la versión de iOS. 
+          # Nota: Para un .ipa real instalable, necesitas configurar los certificados en Codemagic.
+          flutter build ios --release --no-codesign
+    artifacts:
+      - build/ios/iphoneos/*.app
+      - /tmp/xcodebuild_logs/*.log
+
+  android-workflow:
+    name: Android Release Build
+    instance_type: linux_m2
+    max_build_duration: 30
+    environment:
+      flutter: stable
+    scripts:
+      - name: Get Flutter dependencies
+        script: |
+          flutter packages pub get
+      - name: Flutter build APK
+        script: |
+          flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk

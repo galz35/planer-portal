@@ -1,0 +1,358 @@
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Query,
+  Req,
+  BadRequestException,
+} from '@nestjs/common';
+import type { FastifyRequest } from 'fastify';
+
+
+import { ImportService, ResultadoImportacion } from './import.service';
+import { ImportarEmpleadosDto, ImportarOrganizacionDto } from './dto/importar-empleados.dto';
+
+/**
+ * ImportController - Endpoints para importar empleados y organización
+ * 
+ * Endpoints:
+ * - POST /acceso/importar/empleados - Importar desde JSON
+ * - POST /acceso/importar/empleados/excel - Importar desde Excel (multipart)
+ * - POST /acceso/importar/organizacion - Importar nodos desde JSON
+ * - GET /acceso/importar/estadisticas - Estadísticas de importación
+ * - GET /acceso/importar/empleados/exportar - Exportar empleados
+ * - GET /acceso/importar/plantilla - Descargar plantilla Excel
+ */
+@Controller('acceso/importar')
+export class ImportController {
+  constructor(private readonly importService: ImportService) { }
+
+  // =========================================
+  // IMPORTAR EMPLEADOS
+  // =========================================
+
+  /**
+   * Importar empleados desde JSON
+   * POST /acceso/importar/empleados
+   */
+  @Post('empleados')
+  async importarEmpleadosJson(@Body() dto: ImportarEmpleadosDto): Promise<{
+    mensaje: string;
+    resultado: ResultadoImportacion;
+  }> {
+    if (!dto.empleados || !Array.isArray(dto.empleados)) {
+      throw new BadRequestException('Se requiere un array de empleados');
+    }
+
+    const resultado = await this.importService.importarEmpleados(dto);
+
+    return {
+      mensaje: `Importación completada: ${resultado.insertados} insertados, ${resultado.actualizados} actualizados, ${resultado.errores} errores`,
+      resultado,
+    };
+  }
+
+  /**
+   * Importar empleados desde archivo Excel
+   * POST /acceso/importar/empleados/excel
+   * 
+   * Requiere @fastify/multipart configurado en main.ts
+   */
+  @Post('empleados/excel')
+  async importarEmpleadosExcel(
+    @Req() request: FastifyRequest,
+    @Query('modo') modo?: 'MERGE' | 'REPLACE' | 'INSERT_ONLY',
+    @Query('importadoPor') importadoPor?: string,
+    @Query('hoja') hoja?: string,
+  ): Promise<{
+    mensaje: string;
+    resultado: ResultadoImportacion;
+    preview?: any[];
+  }> {
+    try {
+      // Obtener archivo del multipart
+      const data = await (request as any).file();
+
+      if (!data) {
+        throw new BadRequestException('No se recibió ningún archivo');
+      }
+
+      // Validar tipo de archivo
+      const mimeType = data.mimetype;
+      const validTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel',
+        'application/octet-stream',
+      ];
+
+      if (!validTypes.includes(mimeType)) {
+        throw new BadRequestException('Tipo de archivo no válido. Se esperaba Excel (.xlsx o .xls)');
+      }
+
+      // Leer el buffer del archivo
+      const chunks: Buffer[] = [];
+      for await (const chunk of data.file) {
+        chunks.push(chunk);
+      }
+      const buffer = Buffer.concat(chunks);
+
+      // Validar tamaño (10MB máximo)
+      if (buffer.length > 10 * 1024 * 1024) {
+        throw new BadRequestException('El archivo excede el tamaño máximo de 10MB');
+      }
+
+      // Importar xlsx dinámicamente
+      let XLSX: any;
+      try {
+        XLSX = await import('xlsx');
+      } catch {
+        throw new BadRequestException('La librería xlsx no está instalada. Ejecute: npm install xlsx');
+      }
+
+      // Parsear Excel
+      const workbook = XLSX.read(buffer, { type: 'buffer', cellDates: true });
+
+      // Usar la hoja especificada o la primera
+      const nombreHoja = hoja || workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[nombreHoja];
+
+      if (!worksheet) {
+        throw new BadRequestException('Hoja no encontrada. Hojas disponibles: ' + workbook.SheetNames.join(', '));
+      }
+
+      // Convertir a JSON
+      const filas: Record<string, any>[] = XLSX.utils.sheet_to_json(worksheet, {
+        defval: null,
+        raw: false,
+      });
+
+      if (filas.length === 0) {
+        throw new BadRequestException('El archivo Excel está vacío o no tiene datos');
+      }
+
+      // Parsear filas a DTOs
+      const empleados = this.importService.parseExcelEmpleados(filas);
+
+      if (empleados.length === 0) {
+        throw new BadRequestException('No se encontraron empleados válidos. Verifique que la columna "carnet" exista.');
+      }
+
+      // Importar
+      const dtoImport: ImportarEmpleadosDto = {
+        empleados,
+        modo: modo || 'MERGE',
+        importadoPor: importadoPor || 'EXCEL_UPLOAD',
+        fuente: 'EXCEL',
+      };
+
+      const resultado = await this.importService.importarEmpleados(dtoImport);
+
+      return {
+        mensaje: `Excel procesado: ${filas.length} filas, ${empleados.length} válidos, ${resultado.insertados} insertados, ${resultado.actualizados} actualizados`,
+        resultado,
+        preview: empleados.slice(0, 5),
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new BadRequestException('Error procesando Excel: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  }
+
+  /**
+   * Preview de archivo Excel sin importar
+   * POST /acceso/importar/empleados/excel/preview
+   */
+  @Post('empleados/excel/preview')
+  async previewExcel(
+    @Req() request: FastifyRequest,
+    @Query('hoja') hoja?: string,
+  ): Promise<{
+    hojas: string[];
+    columnas: string[];
+    totalFilas: number;
+    preview: any[];
+    empleadosDetectados: number;
+  }> {
+    try {
+      const data = await (request as any).file();
+
+      if (!data) {
+        throw new BadRequestException('No se recibió ningún archivo');
+      }
+
+      const chunks: Buffer[] = [];
+      for await (const chunk of data.file) {
+        chunks.push(chunk);
+      }
+      const buffer = Buffer.concat(chunks);
+
+      let XLSX: any;
+      try {
+        XLSX = await import('xlsx');
+      } catch {
+        throw new BadRequestException('La librería xlsx no está instalada');
+      }
+
+      const workbook = XLSX.read(buffer, { type: 'buffer', cellDates: true });
+      const nombreHoja = hoja || workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[nombreHoja];
+
+      const filas: Record<string, any>[] = XLSX.utils.sheet_to_json(worksheet, {
+        defval: null,
+        raw: false,
+      });
+
+      const columnas = filas.length > 0 ? Object.keys(filas[0]) : [];
+      const empleados = this.importService.parseExcelEmpleados(filas);
+
+      return {
+        hojas: workbook.SheetNames,
+        columnas,
+        totalFilas: filas.length,
+        preview: filas.slice(0, 10),
+        empleadosDetectados: empleados.length,
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new BadRequestException('Error leyendo Excel: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  }
+
+  // =========================================
+  // IMPORTAR ORGANIZACIÓN
+  // =========================================
+
+  /**
+   * Importar nodos organizacionales desde JSON
+   * POST /acceso/importar/organizacion
+   */
+  @Post('organizacion')
+  async importarOrganizacion(@Body() dto: ImportarOrganizacionDto): Promise<{
+    mensaje: string;
+    resultado: ResultadoImportacion;
+  }> {
+    if (!dto.nodos || !Array.isArray(dto.nodos)) {
+      throw new BadRequestException('Se requiere un array de nodos');
+    }
+
+    const resultado = await this.importService.importarOrganizacion(dto);
+
+    return {
+      mensaje: `Organización importada: ${resultado.insertados} insertados, ${resultado.actualizados} actualizados`,
+      resultado,
+    };
+  }
+
+  // =========================================
+  // ESTADÍSTICAS Y EXPORTACIÓN
+  // =========================================
+
+  /**
+   * Obtener estadísticas de empleados importados
+   * GET /acceso/importar/estadisticas
+   */
+  @Get('estadisticas')
+  async obtenerEstadisticas() {
+    const stats = await this.importService.obtenerEstadisticas();
+    return stats;
+  }
+
+  /**
+   * Exportar empleados
+   * GET /acceso/importar/empleados/exportar
+   */
+  @Get('empleados/exportar')
+  async exportarEmpleados(
+    @Query('activo') activo?: string,
+    @Query('departamento') departamento?: string,
+    @Query('formato') formato?: 'json' | 'csv',
+  ) {
+    const filtros = {
+      activo: activo === 'true' ? true : activo === 'false' ? false : undefined,
+      departamento,
+    };
+
+    const empleados = await this.importService.exportarEmpleados(filtros);
+
+    if (formato === 'csv') {
+      if (empleados.length === 0) {
+        return { formato: 'csv', data: '', total: 0 };
+      }
+
+      const headers = Object.keys(empleados[0] || {});
+      const csvRows = empleados.map(e =>
+        headers.map(h => '"' + ((e as any)[h] || '') + '"').join(',')
+      );
+      const csv = [headers.join(','), ...csvRows].join('\n');
+
+      return {
+        formato: 'csv',
+        data: csv,
+        total: empleados.length,
+      };
+    }
+
+    return {
+      formato: 'json',
+      total: empleados.length,
+      empleados,
+    };
+  }
+
+  /**
+   * Obtener plantilla de Excel para importación
+   * GET /acceso/importar/plantilla
+   */
+  @Get('plantilla')
+  async obtenerPlantilla(): Promise<{
+    mensaje: string;
+    columnas: { nombre: string; descripcion: string; requerido: boolean }[];
+    ejemploFila: Record<string, any>;
+  }> {
+    const columnas = [
+      { nombre: 'carnet', descripcion: 'Identificador único del empleado', requerido: true },
+      { nombre: 'nombre_completo', descripcion: 'Nombre completo', requerido: false },
+      { nombre: 'correo', descripcion: 'Email corporativo', requerido: false },
+      { nombre: 'telefono', descripcion: 'Teléfono o celular', requerido: false },
+      { nombre: 'cargo', descripcion: 'Cargo actual', requerido: false },
+      { nombre: 'departamento', descripcion: 'Departamento', requerido: false },
+      { nombre: 'area', descripcion: 'Área organizacional', requerido: false },
+      { nombre: 'gerencia', descripcion: 'Gerencia', requerido: false },
+      { nombre: 'direccion', descripcion: 'Dirección organizacional', requerido: false },
+      { nombre: 'empresa', descripcion: 'Empresa o compañía', requerido: false },
+      { nombre: 'pais', descripcion: 'Código de país (NI, HN, SV, etc)', requerido: false },
+      { nombre: 'idorg', descripcion: 'ID del nodo organizacional', requerido: false },
+      { nombre: 'carnet_jefe1', descripcion: 'Carnet del jefe inmediato', requerido: false },
+      { nombre: 'cedula', descripcion: 'Número de cédula', requerido: false },
+      { nombre: 'activo', descripcion: 'Estado (1=activo, 0=inactivo)', requerido: false },
+      { nombre: 'fecha_ingreso', descripcion: 'Fecha de ingreso (YYYY-MM-DD)', requerido: false },
+      { nombre: 'fecha_baja', descripcion: 'Fecha de baja (YYYY-MM-DD)', requerido: false },
+    ];
+
+    const ejemploFila = {
+      carnet: 'EMP001',
+      nombre_completo: 'Juan Pérez García',
+      correo: 'jperez@empresa.com',
+      telefono: '8888-1234',
+      cargo: 'Analista Senior',
+      departamento: 'Tecnología',
+      area: 'Desarrollo',
+      gerencia: 'TI',
+      direccion: 'Operaciones',
+      empresa: 'Empresa S.A.',
+      pais: 'NI',
+      idorg: '1001',
+      carnet_jefe1: 'JEFE001',
+      cedula: '001-010190-0001A',
+      activo: 1,
+      fecha_ingreso: '2020-01-15',
+    };
+
+    return {
+      mensaje: 'Use estas columnas para crear su archivo Excel. Solo "carnet" es obligatorio.',
+      columnas,
+      ejemploFila,
+    };
+  }
+}

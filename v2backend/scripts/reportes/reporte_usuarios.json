@@ -1,0 +1,21 @@
+{
+  "csvTotal": 39,
+  "dbTotalActivos": 41,
+  "aDesactivar": [
+    {
+      "idUsuario": 25,
+      "carnet": "402035",
+      "nombre": "JILMA CAROLINA ZELAYA GARCIA",
+      "correo": "jilma.zelaya@claro.com.ni",
+      "activo": true
+    },
+    {
+      "idUsuario": 41,
+      "carnet": "777777",
+      "nombre": "TANIA",
+      "correo": "serviciomedico@claro.com.ni",
+      "activo": true
+    }
+  ],
+  "aRegistrar": []
+}

@@ -1,0 +1,62 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    style.
+      body { margin: 0; padding: 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; background-color: #f1f5f9; }
+      .wrapper { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
+  body(style="margin:0; padding:20px 0; background-color:#f1f5f9;")
+    table(width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;")
+      tr
+        td(align="center")
+          .wrapper
+            //- HEADER
+            div(style="background:linear-gradient(135deg,#059669,#047857); padding:24px 32px; text-align:center;")
+              h1(style="color:#fff; font-size:22px; font-weight:700; margin:0; letter-spacing:-0.5px;") 📊 Planner-EF
+              p(style="color:rgba(255,255,255,0.85); font-size:13px; margin:6px 0 0;") Avances de tu equipo hoy - #{fechaHoy}
+
+            //- BODY
+            div(style="padding:32px;")
+              p(style="font-size:16px; color:#0f172a; margin-bottom:16px;")
+                | ¡Hola <strong style="color:#059669;">#{jefeNombre}</strong>!,
+              
+              p(style="color:#475569; font-size:14px; line-height:1.6; margin-bottom:24px;")
+                | Aquí tienes un resumen al grano de lo que tu equipo avanzó y entregó en proyectos el día de hoy:
+
+              //- PROJECTS
+              if proyectos && proyectos.length > 0
+                each p in proyectos
+                  div(style="background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:20px; padding:16px;")
+                    h3(style="color:#0f172a; font-size:15px; margin:0 0 12px 0; display:flex; align-items:center;")
+                      | 📁 #{p.nombre}
+                    
+                    div(style="display:flex; flex-direction:column; gap:12px;")
+                      each t in p.tareas
+                        div(style="background-color:#fff; padding:12px; border-radius:6px; border:1px solid #e2e8f0;")
+                          div(style="margin-bottom:8px;")
+                            if t.tipoAccion === 'COMPLETADA'
+                              span(style="background-color:#dcfce7; color:#166534; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:700; margin-right:8px;") ✅ Completada
+                            else
+                              span(style="background-color:#dbeafe; color:#1e40af; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:700; margin-right:8px;") 🚀 Avance
+                            
+                            strong(style="color:#334155; font-size:14px;") #{t.usuarioNombre}
+                            span(style="color:#64748b; font-size:13px;")  - #{t.tareaTitulo}
+                            if t.progresoActual > 0 && t.tipoAccion !== 'COMPLETADA'
+                              span(style="color:#059669; font-size:12px; font-weight:bold; margin-left:6px;") (#{t.progresoActual}%)
+                              
+                          if t.tipoAccion === 'COMPLETADA' && t.horasReales >= 0
+                            div(style="margin-top:8px; font-size:12px; color:#475569; border-top:1px dashed #e2e8f0; padding-top:8px;")
+                              | ⏱️ KPI Eficiencia: <strong>Tomó #{t.horasReales} hrs aprox.</strong> 
+                              if t.esfuerzo
+                                | (Planificado: #{t.esfuerzo})
+              else
+                div(style="text-align:center; padding:30px; background-color:#f8fafc; border-radius:8px; border:1px dashed #cbd5e1;")
+                  p(style="color:#64748b; font-size:14px; margin:0;") Tu equipo no registró avances específicos en tareas de proyectos el día de hoy.
+
+              //- CTA
+              div(style="text-align:center; margin:28px 0 12px;")
+                a(href="#{enlace}" style="display:inline-block; background:linear-gradient(135deg,#059669,#047857); color:#fff; padding:14px 40px; text-decoration:none; border-radius:8px; font-weight:700; font-size:14px;") Ver Equipo en el Sistema
+
+            //- FOOTER
+            div(style="padding:20px 32px; background-color:#f8fafc; text-align:center; border-top:1px solid #e2e8f0;")
+              p(style="font-size:11px; color:#94a3b8; margin:0; line-height:1.6;") Este es un reporte automático de Planner-EF.

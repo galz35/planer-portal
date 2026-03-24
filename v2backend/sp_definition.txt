@@ -1,0 +1,85 @@
+
+CREATE PROCEDURE sp_Proyectos_Gestion
+    @Accion NVARCHAR(50),
+    @idProyecto INT = NULL,
+    @nombre NVARCHAR(255) = NULL,
+    @descripcion NVARCHAR(MAX) = NULL,
+    @idNodoDuenio INT = NULL,
+    @area NVARCHAR(255) = NULL,
+    @subgerencia NVARCHAR(255) = NULL,
+    @gerencia NVARCHAR(255) = NULL,
+    @fechaInicio DATETIME = NULL,
+    @fechaFin DATETIME = NULL,
+    @idCreador INT = NULL,
+    @creadorCarnet NVARCHAR(50) = NULL,
+    @responsableCarnet NVARCHAR(50) = NULL,
+    @tipo NVARCHAR(100) = NULL,
+    @estado NVARCHAR(50) = NULL,
+    @UpdatesJSON NVARCHAR(MAX) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        IF @Accion = 'CREAR'
+        BEGIN
+            INSERT INTO p_Proyectos (nombre, descripcion, idNodoDuenio, area, subgerencia, gerencia, fechaInicio, fechaFin, fechaCreacion, idCreador, creadorCarnet, responsableCarnet, estado, tipo)
+            OUTPUT INSERTED.idProyecto
+            VALUES (@nombre, @descripcion, @idNodoDuenio, @area, @subgerencia, @gerencia, @fechaInicio, @fechaFin, GETDATE(), @idCreador, @creadorCarnet, @responsableCarnet, ISNULL(@estado, 'Activo'), ISNULL(@tipo, 'administrativo'));
+            
+            RETURN;
+        END
+
+        IF @Accion = 'ACTUALIZAR'
+        BEGIN
+            -- Actualizaciones dinÃ¡micas vÃ­a JSON para no perder la capacidad de setear un campo a NULL
+            -- Si un campo existe en el JSON, se actualiza (incluso a null). Si no existe, no se toca.
+            IF @UpdatesJSON IS NOT NULL
+            BEGIN
+                UPDATE p_Proyectos
+                SET 
+                    nombre = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.nombre') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.nombre') IS NOT NULL THEN JSON_VALUE(@UpdatesJSON, '$.nombre') ELSE nombre END,
+                    descripcion = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.descripcion') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.descripcion') IS NOT NULL THEN JSON_VALUE(@UpdatesJSON, '$.descripcion') ELSE descripcion END,
+                    idNodoDuenio = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.idNodoDuenio') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.idNodoDuenio') IS NOT NULL THEN CAST(JSON_VALUE(@UpdatesJSON, '$.idNodoDuenio') AS INT) ELSE idNodoDuenio END,
+                    area = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.area') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.area') IS NOT NULL THEN JSON_VALUE(@UpdatesJSON, '$.area') ELSE area END,
+                    subgerencia = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.subgerencia') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.subgerencia') IS NOT NULL THEN JSON_VALUE(@UpdatesJSON, '$.subgerencia') ELSE subgerencia END,
+                    gerencia = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.gerencia') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.gerencia') IS NOT NULL THEN JSON_VALUE(@UpdatesJSON, '$.gerencia') ELSE gerencia END,
+                    fechaInicio = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.fechaInicio') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.fechaInicio') IS NOT NULL THEN CAST(JSON_VALUE(@UpdatesJSON, '$.fechaInicio') AS DATETIME) ELSE fechaInicio END,
+                    fechaFin = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.fechaFin') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.fechaFin') IS NOT NULL THEN CAST(JSON_VALUE(@UpdatesJSON, '$.fechaFin') AS DATETIME) ELSE fechaFin END,
+                    tipo = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.tipo') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.tipo') IS NOT NULL THEN JSON_VALUE(@UpdatesJSON, '$.tipo') ELSE tipo END,
+                    estado = CASE WHEN JSON_QUERY(@UpdatesJSON, '$.estado') IS NOT NULL OR JSON_VALUE(@UpdatesJSON, '$.estado') IS NOT NULL THEN JSON_VALUE(@UpdatesJSON, '$.estado') ELSE estado END
+                WHERE idProyecto = @idProyecto;
+            END
+
+            RETURN;
+        END
+
+        IF @Accion = 'ELIMINAR'
+        BEGIN
+            -- Eliminar es Soft Delete (estado = Cancelado)
+            UPDATE p_Proyectos 
+            SET estado = 'Cancelado'
+            WHERE idProyecto = @idProyecto;
+
+            RETURN;
+        END
+
+        IF @Accion = 'RESTAURAR'
+        BEGIN
+            UPDATE p_Proyectos 
+            SET estado = 'Activo'
+            WHERE idProyecto = @idProyecto;
+
+            RETURN;
+        END
+        
+        ;THROW 51000, 'Accion no reconocida en sp_Proyectos_Gestion', 1;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END

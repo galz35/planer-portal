@@ -1,0 +1,50 @@
+
+
+-- ============================================================
+
+-- SP 6: sp_vc_tracking_batch
+
+-- Inserta múltiples puntos GPS en lote (sync offline)
+
+-- ============================================================
+
+CREATE   PROCEDURE dbo.sp_vc_tracking_batch
+
+    @carnet VARCHAR(20),
+
+    @puntos NVARCHAR(MAX)  -- JSON array
+
+AS
+
+BEGIN
+
+    SET NOCOUNT ON;
+
+
+
+    INSERT INTO vc_tracking_gps (carnet, lat, long, accuracy, velocidad, timestamp, fuente)
+
+    SELECT
+
+        @carnet,
+
+        CAST(JSON_VALUE(p.value, '$.lat') AS DECIMAL(10,7)),
+
+        CAST(JSON_VALUE(p.value, '$.lon') AS DECIMAL(10,7)),
+
+        CAST(JSON_VALUE(p.value, '$.accuracy') AS DECIMAL(10,2)),
+
+        CAST(JSON_VALUE(p.value, '$.velocidad') AS DECIMAL(10,2)),
+
+        CAST(JSON_VALUE(p.value, '$.timestamp') AS DATETIME2),
+
+        ISNULL(JSON_VALUE(p.value, '$.fuente'), 'FOREGROUND')
+
+    FROM OPENJSON(@puntos) AS p;
+
+
+
+    SELECT @@ROWCOUNT AS insertados;
+
+END;
+

@@ -1,0 +1,142 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    style.
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
+      body { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: #f0f2f5; color: #1a1c21; }
+      .email-container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+      .glass-header { 
+        background: radial-gradient(circle at top left, #2563eb, #1e40af); 
+        padding: 48px 40px; 
+        color: white; 
+        position: relative; 
+        overflow: hidden;
+      }
+      .header-pattern {
+        position: absolute;
+        top: 0; right: 0;
+        width: 150px; height: 150px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        margin-top: -75px; margin-right: -75px;
+      }
+      .logo-pill {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 6px 16px;
+        border-radius: 100px;
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+      }
+      .main-title { font-size: 32px; font-weight: 800; margin: 0; line-height: 1.1; letter-spacing: -1px; }
+      .content-body { padding: 40px; }
+      .intro-text { font-size: 16px; color: #64748b; margin-bottom: 32px; line-height: 1.6; }
+      .insight-grid { 
+        display: table;
+        width: 100%;
+        margin-bottom: 32px;
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 20px;
+      }
+      .insight-item { display: table-cell; text-align: center; border-right: 1px solid #e2e8f0; width: 50%; }
+      .insight-item:last-child { border-right: none; }
+      .insight-val { font-size: 24px; font-weight: 800; color: #1e40af; display: block; }
+      .insight-label { font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; letter-spacing: 0.5px; }
+      
+      .task-card-v3 {
+        padding: 24px;
+        border-radius: 20px;
+        background: #ffffff;
+        border: 1px solid #f1f5f9;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      }
+      .project-chip {
+        font-size: 10px;
+        background: #eff6ff;
+        color: #3b82f6;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        display: inline-block;
+      }
+      .task-name-v3 { font-size: 17px; font-weight: 700; color: #0f172a; margin: 0 0 16px 0; }
+      .task-details-v3 { background: #f9fafb; border-radius: 12px; padding: 12px; }
+      .detail-row { display: table; width: 100%; margin-bottom: 4px; }
+      .detail-label { display: table-cell; width: 80px; font-size: 11px; color: #94a3b8; font-weight: 600; }
+      .detail-val { display: table-cell; font-size: 12px; color: #334155; font-weight: 600; }
+      
+      .urgency-indicator {
+        display: flex;
+        align-items: center;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px dashed #e2e8f0;
+        font-size: 12px;
+        color: #ef4444;
+        font-weight: 700;
+      }
+      .cta-button {
+        display: block;
+        background: #1e293b;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 18px;
+        border-radius: 16px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 16px;
+        margin-top: 40px;
+        box-shadow: 0 10px 15px -3px rgba(30, 41, 59, 0.2);
+      }
+  body
+    .email-container
+      .glass-header
+        .header-pattern
+        .logo-pill PLANNER-EF CLARITY
+        h1.main-title Acción Crítica <br/> Requerida
+        p(style="margin-top: 12px; font-size: 15px; opacity: 0.8; font-weight: 300;") Resumen de cumplimiento de agenda - #{fechaHoy || 'Hoy'}
+      
+      .content-body
+        p.intro-text Hola <strong>#{nombre}</strong>, las siguientes actividades asignadas presentan un estatus de retraso que impacta los KPIs de tu área.
+        
+        .insight-grid
+          .insight-item
+            span.insight-val #{totalAtrasadas}
+            span.insight-label Tareas Vencidas
+          .insight-item
+            span.insight-val CRÍTICO
+            span.insight-label Prioridad
+
+        div
+          each t in tareas
+            .task-card-v3
+              .project-chip #{t.proyecto}
+              h3.task-name-v3 #{t.titulo}
+              .task-details-v3
+                .detail-row
+                  .detail-label CREADO POR
+                  .detail-val #{t.creador}
+                .detail-row
+                  .detail-label ASIGNADO A
+                  .detail-val(style="color:#2563eb;") #{t.asignado}
+                .detail-row
+                  .detail-label FECHA LÍMITE
+                  .detail-val #{t.fechaLimite}
+              
+              .urgency-indicator
+                | ⚡ Retraso actual: #{t.diasAtraso} días
+        
+        a.cta-button(href=enlace) Ingresar al Dashboard de Gestión
+
+      div(style="padding: 30px; background: #f8fafc; border-top: 1px solid #f1f5f9; text-align: center;")
+        p(style="margin: 0; font-size: 12px; color: #94a3b8;") Planner-EF | Inteligencia en Gestión de Proyectos
+        p(style="margin: 8px 0 0; font-size: 11px; color: #cbd5e1;") No responda a este correo. Notificación generada automáticamente.

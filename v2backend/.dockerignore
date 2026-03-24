@@ -1,0 +1,12 @@
+node_modules
+dist
+.env
+.env.production
+*.log
+*.txt
+*.md
+.git
+.gitignore
+test
+_OBSOLETO_IGNORAR
+scripts

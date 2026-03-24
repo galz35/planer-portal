@@ -1,0 +1,27 @@
+﻿Analyzing v2flutter_movil...                                    
+
+   info - Use 'const' with the constructor to improve performance - lib\core\widgets\premium_widgets.dart:297:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\core\widgets\premium_widgets.dart:308:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\core\widgets\premium_widgets.dart:481:27 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\tasks\presentation\task_detail_sheet.dart:1483:15 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\tasks\presentation\task_detail_sheet.dart:1484:26 - prefer_const_constructors
+   info - Use 'const' for final variables initialized to a constant value - test\progress_calculation_test.dart:111:7 - prefer_const_declarations
+   info - Use 'const' for final variables initialized to a constant value - test\progress_calculation_test.dart:129:7 - prefer_const_declarations
+   info - Use 'const' for final variables initialized to a constant value - test\progress_calculation_test.dart:141:7 - prefer_const_declarations
+
+flutter : 8 issues found. 
+(ran in 4.9s)
+En línea: 1 Carácter: 1
++ flutter analyze --no-pub 
+2>&1 | Out-File -FilePath 
+analyze_output.txt ...
++ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (8 issue  
+  s found. (ran in 4.9s):S   
+ tring) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
