@@ -5,7 +5,7 @@
 export const APP_BASE = import.meta.env.VITE_BASE_PATH || "/";
 
 // URL base de la API de Planer
-export const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+export const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/Planer_api";
 
 // URL del portal central (para redirecciones de salida)
 export const PORTAL_URL = import.meta.env.VITE_PORTAL_URL || "http://localhost:5173";

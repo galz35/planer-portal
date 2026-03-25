@@ -75,7 +75,7 @@ async function bootstrap() {
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   });
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('Planer_api');
 
   // ══════════════════════════════════════════════════════════════
   // 4. PIPES, FILTROS E INTERCEPTORES GLOBALES

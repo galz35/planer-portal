@@ -38,7 +38,7 @@ export const AppProviders: React.FC<Props> = ({ children }) => {
         trpc.createClient({
             links: [
                 httpBatchLink({
-                    url: import.meta.env.VITE_TRPC_URL ?? '/trpc',
+                    url: import.meta.env.VITE_TRPC_URL ?? '/Planer_api/trpc',
                     headers() {
                         const token = localStorage.getItem('clarity_token');
                         return {
