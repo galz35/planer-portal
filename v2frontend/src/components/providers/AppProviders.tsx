@@ -14,6 +14,8 @@ interface Props {
     children: React.ReactNode;
 }
 
+import { APP_BASE } from '../../constants/runtime';
+
 export const AppProviders: React.FC<Props> = ({ children }) => {
     const [queryClient] = useState(() => new QueryClient({
         defaultOptions: {
@@ -56,7 +58,7 @@ export const AppProviders: React.FC<Props> = ({ children }) => {
                         <CountryProvider>
                             <ToastProvider>
                                 <UIProvider>
-                                    <BrowserRouter>
+                                    <BrowserRouter basename={APP_BASE}>
                                         {children}
                                     </BrowserRouter>
                                 </UIProvider>

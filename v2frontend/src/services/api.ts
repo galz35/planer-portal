@@ -6,8 +6,9 @@
  */
 
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import { API_BASE, appPath } from '../constants/runtime';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = API_BASE;
 
 // Configuración de reintentos automáticos
 const MAX_RETRIES = 2;
@@ -170,7 +171,7 @@ api.interceptors.response.use(
                         localStorage.removeItem('clarity_user');
 
                         if (!window.location.pathname.includes('/login')) {
-                            window.location.href = '/login';
+                            window.location.href = appPath('/login');
                         }
                         return Promise.reject(refreshError);
                     }
@@ -180,7 +181,7 @@ api.interceptors.response.use(
                     localStorage.removeItem('clarity_token');
                     localStorage.removeItem('clarity_user');
                     if (!window.location.pathname.includes('/login')) {
-                        window.location.href = '/login';
+                        window.location.href = appPath('/login');
                     }
                 }
             }

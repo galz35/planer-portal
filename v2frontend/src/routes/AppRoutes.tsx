@@ -2,6 +2,7 @@ import React, { Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
+import { PORTAL_URL } from '../constants/runtime';
 
 import { RoleRoute } from '../components/auth/RoleRoute';
 
@@ -93,7 +94,7 @@ const ProtectedRoute = () => {
     useEffect(() => {
         if (!loading && !isAuthenticated) {
             console.log('🛑 Not authenticated. Redirecting to Portal Central...');
-            window.location.href = 'http://localhost:5173';
+            window.location.href = PORTAL_URL;
         }
     }, [loading, isAuthenticated]);
 
