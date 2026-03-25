@@ -308,24 +308,31 @@ export class AuthService {
   async validatePortalSession(sessionId: string): Promise<any> {
     if (!sessionId) return null;
 
-    const portalUrl = process.env.PORTAL_API_URL || 'http://localhost:3110';
+    const portalUrl =
+      process.env.PORTAL_API_URL?.trim() || 'http://127.0.0.1:3110';
     try {
-      const response = await axios.get(`${portalUrl}/api/auth/introspect`, {
-        headers: { Cookie: `portal_sid=${sessionId}` }
-      });
+      const response = await axios.post(
+        `${portalUrl.replace(/\/+$/, '')}/api/auth/introspect`,
+        {},
+        {
+          headers: { Cookie: `portal_sid=${sessionId}` },
+        },
+      );
 
       if (response.data && response.data.authenticated) {
-        const portalUser = response.data.user;
-        
-        // Usamos nuestro super Upsert para mantener sincronizados los nombres/correos y crear si no existe
+        const portalUser = response.data.identity || response.data.user;
+        if (!portalUser) {
+          return null;
+        }
+
         const upsertData = {
            nombre: portalUser.nombre || portalUser.usuario,
            correo: portalUser.correo || `${portalUser.carnet}@claro.com.ni`,
            carnet: portalUser.carnet,
-           activo: true, // Si validó la cookie y está authenticated en origin, está activo
+           activo: true,
            esInterno: portalUser.esInterno
         };
-        
+
         try {
           const userId = await authRepo.upsertUsuarioLocal(upsertData);
           const user = await authRepo.obtenerUsuarioPorId(userId);
@@ -333,7 +340,6 @@ export class AuthService {
         } catch (err) {
           console.error('Error on upsert portal session in Planer:', err.message);
         }
-        
       }
     } catch (err) {
       console.error('Error validating portal session in Planer:', err.message);

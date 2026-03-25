@@ -112,4 +112,21 @@ export class AuthController {
     const result = await this.authService.syncUserFromPortal(data);
     return { success: result };
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('portal-session')
+  @ApiOperation({ summary: 'Hidratar sesión desde cookie del Portal Central' })
+  async portalSession(@Req() req: any) {
+    const portalSid = req?.cookies?.portal_sid;
+    if (!portalSid) {
+      throw new UnauthorizedException('Sesión del Portal Central no encontrada');
+    }
+
+    const user = await this.authService.validatePortalSession(portalSid);
+    if (!user) {
+      throw new UnauthorizedException('Sesión del Portal Central inválida');
+    }
+
+    return this.authService.login(user);
+  }
 }

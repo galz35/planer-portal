@@ -4,26 +4,33 @@ import './index.css'
 import App from './App.tsx'
 import { registerPWA } from './pwa/sw-register.ts'
 
-const CURRENT_V = 'CV_23_FEB_V5_STABLE';
+const CURRENT_V = 'CV_25_MAR_2026_SSO_SAFE';
 console.log(`--- SYSTEM_VERSION: ${CURRENT_V} ---`);
 
-// Extreme cache kill
-if (localStorage.getItem('SW_VERSION') !== CURRENT_V) {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(registrations => {
-      for (const registration of registrations) {
-        registration.unregister();
-        console.log('SW Unregistered for update');
-      }
-    });
-  }
-  localStorage.clear(); // Clear all data to be sure
-  localStorage.setItem('SW_VERSION', CURRENT_V);
+const currentUrl = new URL(window.location.href);
+const isSsoCallback =
+    currentUrl.pathname.includes('/auth/sso') &&
+    currentUrl.searchParams.has('token');
 
-  // Only reload if we actually did something
-  if (window.location.search !== '?v=' + CURRENT_V) {
-    window.location.search = '?v=' + CURRENT_V;
-  }
+// Extreme cache kill but SSO safe
+if (localStorage.getItem('SW_VERSION') !== CURRENT_V) {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            for (const registration of registrations) {
+                registration.unregister();
+                console.log('SW Unregistered for update');
+            }
+        });
+    }
+
+    localStorage.setItem('SW_VERSION', CURRENT_V);
+
+    if (!isSsoCallback && currentUrl.searchParams.get('v') !== CURRENT_V) {
+        currentUrl.searchParams.set('v', CURRENT_V);
+        window.location.replace(
+            `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`,
+        );
+    }
 }
 
 registerPWA()

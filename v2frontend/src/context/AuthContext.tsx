@@ -8,12 +8,15 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { Usuario } from '../types/modelos';
+import { API_BASE } from '../constants/runtime';
 
 type User = Usuario;
+type AuthBootstrapResponse = {
+    access_token: string;
+    refresh_token: string;
+    user: User;
+};
 
-/**
- * Define las propiedades y funciones que el contexto ofrece a los componentes.
- */
 interface AuthContextType {
     user: User | null;
     login: (token: string, refreshToken: string, userData: User) => void;
@@ -22,42 +25,16 @@ interface AuthContextType {
     loading: boolean;
 }
 
-/**
- * El objeto de Contexto creado por React.
- */
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/**
- * ¿QUÉ ES?: El Proveedor de Autenticación (AuthProvider).
- * ¿PARA QUÉ SE USA?: Envuelve toda la aplicación para que cualquier componente pueda usar `useAuth()`.
- * ¿QUÉ SE ESPERA?: Verificar si ya existe una sesión guardada al cargar la app (useEffect) y proveer
- * las funciones de login y logout.
- */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // Se ejecuta una sola vez cuando el navegador carga la página
-    useEffect(() => {
-        // Intentar "hidratar" (recuperar) la sesión desde el almacenamiento local
-        const token = localStorage.getItem('clarity_token');
-        const savedUser = localStorage.getItem('clarity_user');
-        if (token && savedUser) {
-            setUser(JSON.parse(savedUser));
-        }
-        setLoading(false);
-    }, []);
-
-    /**
-     * ¿QUÉ ES?: Función para iniciar sesión.
-     * ¿PARA QUÉ SE USA?: Se llama desde la página de Login tras una respuesta exitosa del servidor.
-     * ¿QUÉ SE ESPERA?: Guardar los tokens y los datos del usuario en localStorage y actualizar el estado global.
-     */
-    const login = (token: string, refreshToken: string, userData: User) => {
+    const persistSession = (token: string, refreshToken: string, userData: User) => {
         const safeUser = { ...userData };
         const roleData = (userData as any).rol;
 
-        // Si el usuario tiene reglas de permisos en su rol, las extraemos
         if (typeof roleData === 'object' && roleData !== null) {
             (safeUser as any).reglas = roleData.reglas;
         }
@@ -68,10 +45,71 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(safeUser);
     };
 
-    /**
-     * ¿QUÉ ES?: Función para cerrar sesión.
-     * ¿PARA QUÉ SE USA?: Para limpiar los datos del usuario y obligarlo a volver al Login.
-     */
+    useEffect(() => {
+        let cancelled = false;
+
+        const bootstrapAuth = async () => {
+            const token = localStorage.getItem('clarity_token');
+            const savedUser = localStorage.getItem('clarity_user');
+
+            if (token && savedUser) {
+                try {
+                    if (!cancelled) {
+                        setUser(JSON.parse(savedUser));
+                    }
+                    return;
+                } catch {
+                    localStorage.removeItem('clarity_token');
+                    localStorage.removeItem('clarity_refresh_token');
+                    localStorage.removeItem('clarity_user');
+                } finally {
+                    if (!cancelled) {
+                        setLoading(false);
+                    }
+                }
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/portal-session`, {
+                    method: 'POST',
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    const payload = await response.json();
+                    const sessionData: AuthBootstrapResponse | undefined = payload?.data ?? payload;
+
+                    if (sessionData?.access_token && sessionData?.refresh_token && sessionData?.user) {
+                        if (!cancelled) {
+                            persistSession(
+                                sessionData.access_token,
+                                sessionData.refresh_token,
+                                sessionData.user,
+                            );
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('Portal session bootstrap failed:', error);
+            } finally {
+                if (!cancelled) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        void bootstrapAuth();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    const login = (token: string, refreshToken: string, userData: User) => {
+        persistSession(token, refreshToken, userData);
+    };
+
     const logout = () => {
         localStorage.removeItem('clarity_token');
         localStorage.removeItem('clarity_refresh_token');
