@@ -169,7 +169,7 @@ export const Sidebar: React.FC = () => {
 
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        window.location.href = PORTAL_URL;
     };
 
     const renderNavItem = (item: NavItem) => {

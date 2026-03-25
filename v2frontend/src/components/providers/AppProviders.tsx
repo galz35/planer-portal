@@ -50,6 +50,8 @@ export const AppProviders: React.FC<Props> = ({ children }) => {
         })
     );
 
+    const basename = APP_BASE === "/" ? undefined : APP_BASE.replace(/\/$/, "");
+
     return (
         <trpc.Provider client={trpcClient} queryClient={queryClient}>
             <QueryClientProvider client={queryClient}>
@@ -58,7 +60,7 @@ export const AppProviders: React.FC<Props> = ({ children }) => {
                         <CountryProvider>
                             <ToastProvider>
                                 <UIProvider>
-                                    <BrowserRouter basename={APP_BASE}>
+                                    <BrowserRouter basename={basename}>
                                         {children}
                                     </BrowserRouter>
                                 </UIProvider>

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { PORTAL_URL } from '../constants/runtime';
 
 export const SSOHandlerPage = () => {
     const [searchParams] = useSearchParams();
@@ -21,7 +22,7 @@ export const SSOHandlerPage = () => {
         if (!token) {
             console.error('No SSO token provided');
             // Si no hay token, volvemos al origen (Portal Central)
-            window.location.href = 'http://localhost:5173';
+            window.location.href = PORTAL_URL;
             return;
         }
 
@@ -50,7 +51,7 @@ export const SSOHandlerPage = () => {
             } catch (error) {
                 console.error('SSO Global Error:', error);
                 // En caso de error, devolvemos al usuario al Portal Central
-                window.location.href = 'http://localhost:5173?error=sso_failed';
+                window.location.href = `${PORTAL_URL}?error=sso_failed`;
             }
         };
 
