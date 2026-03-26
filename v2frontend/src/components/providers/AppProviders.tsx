@@ -14,7 +14,7 @@ interface Props {
     children: React.ReactNode;
 }
 
-import { APP_BASE } from '../../constants/runtime';
+import { APP_BASE, AUTH_STORAGE_KEYS } from '../../constants/runtime';
 
 export const AppProviders: React.FC<Props> = ({ children }) => {
     const [queryClient] = useState(() => new QueryClient({
@@ -40,7 +40,7 @@ export const AppProviders: React.FC<Props> = ({ children }) => {
                 httpBatchLink({
                     url: import.meta.env.VITE_TRPC_URL ?? '/Planer_api/trpc',
                     headers() {
-                        const token = localStorage.getItem('clarity_token');
+                        const token = localStorage.getItem(AUTH_STORAGE_KEYS.token);
                         return {
                             Authorization: token ? `Bearer ${token}` : undefined,
                         };

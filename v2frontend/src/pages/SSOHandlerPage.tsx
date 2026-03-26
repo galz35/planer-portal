@@ -1,20 +1,11 @@
 import { useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { PORTAL_URL } from '../constants/runtime';
+import { PORTAL_URL, appPath } from '../constants/runtime';
 
 export const SSOHandlerPage = () => {
     const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
-    const { login, isAuthenticated } = useAuth();
-
-    // Monitor para navegar apenas la autenticación sea efectiva
-    useEffect(() => {
-        if (isAuthenticated) {
-            console.log('🚀 Authenticated! Navigating to dashboard...');
-            navigate('/app/hoy', { replace: true });
-        }
-    }, [isAuthenticated, navigate]);
+    const { login } = useAuth();
 
     useEffect(() => {
         const token = searchParams.get('token');
@@ -44,10 +35,12 @@ export const SSOHandlerPage = () => {
                 if (!responseBody) throw new Error('Response body is empty');
 
                 console.log(`👤 New Identity established: ${responseBody.user?.correo}`);
-                
-                // Establecemos la sesión. El useEffect de arriba detectará el cambio y navegará.
                 login(responseBody.access_token, responseBody.refresh_token, responseBody.user);
-                
+
+                setTimeout(() => {
+                    console.log('🚀 Navigating to dashboard...');
+                    window.location.replace(appPath('/app/hoy'));
+                }, 100);
             } catch (error) {
                 console.error('SSO Global Error:', error);
                 // En caso de error, devolvemos al usuario al Portal Central
@@ -55,10 +48,8 @@ export const SSOHandlerPage = () => {
             }
         };
 
-        if (!isAuthenticated) {
-            performSSO();
-        }
-    }, [searchParams, login, isAuthenticated]);
+        performSSO();
+    }, [searchParams, login]);
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-clarity-bg">

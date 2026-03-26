@@ -6,7 +6,7 @@
  */
 
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
-import { API_BASE, appPath } from '../constants/runtime';
+import { API_BASE, AUTH_STORAGE_KEYS, appPath } from '../constants/runtime';
 
 const API_URL = API_BASE;
 
@@ -59,7 +59,7 @@ const processQueue = (error: Error | null, token: string | null = null) => {
  * Se ejecuta ANTES de que la petición salga al servidor.
  */
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('clarity_token');
+    const token = localStorage.getItem(AUTH_STORAGE_KEYS.token);
     const selectedCountry = localStorage.getItem('clarity_selected_country');
 
     if (token) {
@@ -137,7 +137,7 @@ api.interceptors.response.use(
                 config._isRetry = true;
                 isRefreshing = true;
 
-                const refreshToken = localStorage.getItem('clarity_refresh_token');
+                const refreshToken = localStorage.getItem(AUTH_STORAGE_KEYS.refreshToken);
 
                 if (refreshToken) {
                     try {
@@ -150,8 +150,8 @@ api.interceptors.response.use(
                         const newRefreshToken = newTokens.refresh_token;
 
                         // Guardar nuevos tokens
-                        localStorage.setItem('clarity_token', accessToken);
-                        localStorage.setItem('clarity_refresh_token', newRefreshToken);
+                        localStorage.setItem(AUTH_STORAGE_KEYS.token, accessToken);
+                        localStorage.setItem(AUTH_STORAGE_KEYS.refreshToken, newRefreshToken);
 
                         api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                         config.headers.Authorization = `Bearer ${accessToken}`;
@@ -166,9 +166,9 @@ api.interceptors.response.use(
                         isRefreshing = false;
 
                         // Si el refresh falla, hay que cerrar sesión
-                        localStorage.removeItem('clarity_token');
-                        localStorage.removeItem('clarity_refresh_token');
-                        localStorage.removeItem('clarity_user');
+                        localStorage.removeItem(AUTH_STORAGE_KEYS.token);
+                        localStorage.removeItem(AUTH_STORAGE_KEYS.refreshToken);
+                        localStorage.removeItem(AUTH_STORAGE_KEYS.user);
 
                         if (!window.location.pathname.includes('/login')) {
                             window.location.href = appPath('/login');
@@ -178,8 +178,8 @@ api.interceptors.response.use(
                 } else {
                     console.warn('[API] No hay refresh token disponible. Redirigiendo a login.');
                     isRefreshing = false;
-                    localStorage.removeItem('clarity_token');
-                    localStorage.removeItem('clarity_user');
+                    localStorage.removeItem(AUTH_STORAGE_KEYS.token);
+                    localStorage.removeItem(AUTH_STORAGE_KEYS.user);
                     if (!window.location.pathname.includes('/login')) {
                         window.location.href = appPath('/login');
                     }
@@ -199,4 +199,3 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-

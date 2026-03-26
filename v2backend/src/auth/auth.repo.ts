@@ -435,9 +435,11 @@ export async function crearUsuario(data: {
   request.input('activo', Bit, data.activo !== false);
 
   const result = await request.query<{ id: number }>(`
-        INSERT INTO p_Usuarios (nombre, correo, carnet, idRol, activo, pais, fechaCreacion)
-        VALUES (@nombre, @correo, @carnet, @idRolGlobal, @activo, @pais, GETDATE());
-        SELECT SCOPE_IDENTITY() as id;
+        DECLARE @nuevo TABLE (idUsuario INT);
+        INSERT INTO p_Usuarios (nombre, correo, carnet, idRol, activo, pais, fechaCreacion, eliminado)
+        OUTPUT INSERTED.idUsuario INTO @nuevo(idUsuario)
+        VALUES (@nombre, @correo, @carnet, @idRolGlobal, @activo, @pais, GETDATE(), 0);
+        SELECT idUsuario as id FROM @nuevo;
     `);
 
   const idUsuario = result.recordset[0]?.id;
@@ -447,8 +449,9 @@ export async function crearUsuario(data: {
     const credRequest = await crearRequest();
     credRequest.input('idUsuario', Int, idUsuario);
     await credRequest.query(`
-            INSERT INTO p_UsuariosCredenciales (idUsuario, passwordHash, fechaCreacion)
-            VALUES (@idUsuario, '', GETDATE())
+            IF NOT EXISTS (SELECT 1 FROM p_UsuariosCredenciales WHERE idUsuario = @idUsuario)
+              INSERT INTO p_UsuariosCredenciales (idUsuario, passwordHash)
+              VALUES (@idUsuario, '')
         `);
   }
 
@@ -518,7 +521,7 @@ export async function upsertUsuarioLocal(data: {
     IF @idUsuario IS NOT NULL
     BEGIN
       UPDATE p_Usuarios
-      SET nombre = @nombre, correo = @correo, activo = @activo, pais = @pais,
+      SET nombre = @nombre, correo = @correo, activo = @activo, pais = @pais, eliminado = 0,
           cargo = ISNULL(@cargo, cargo),
           departamento = ISNULL(@departamento, departamento),
           gerencia = ISNULL(@gerencia, gerencia),
@@ -537,21 +540,28 @@ export async function upsertUsuarioLocal(data: {
     END
     ELSE
     BEGIN
+      DECLARE @nuevo TABLE (idUsuario INT);
+
       INSERT INTO p_Usuarios (
-        nombre, correo, carnet, idRol, activo, pais, fechaCreacion,
+        nombre, correo, carnet, idRol, activo, pais, fechaCreacion, eliminado,
         cargo, departamento, gerencia, subgerencia, area, jefeCarnet, jefeNombre, jefeCorreo,
         telefono, genero, idOrg, orgDepartamento, orgGerencia, fechaIngreso
       )
+      OUTPUT INSERTED.idUsuario INTO @nuevo(idUsuario)
       VALUES (
-        @nombre, @correo, @carnet, 3, @activo, @pais, GETDATE(),
+        @nombre, @correo, @carnet, 3, @activo, @pais, GETDATE(), 0,
         @cargo, @departamento, @gerencia, @subgerencia, @area, @jefeCarnet, @jefeNombre, @jefeCorreo,
         @telefono, @genero, @idOrg, @orgDepartamento, @orgGerencia, @fechaIngreso
       );
-      
-      SET @idUsuario = SCOPE_IDENTITY();
-      
-      INSERT INTO p_UsuariosCredenciales (idUsuario, passwordHash, fechaCreacion)
-      VALUES (@idUsuario, '', GETDATE());
+
+      SELECT @idUsuario = idUsuario FROM @nuevo;
+    END
+
+    IF @idUsuario IS NOT NULL
+       AND NOT EXISTS (SELECT 1 FROM p_UsuariosCredenciales WHERE idUsuario = @idUsuario)
+    BEGIN
+      INSERT INTO p_UsuariosCredenciales (idUsuario, passwordHash)
+      VALUES (@idUsuario, '');
     END
     
     SELECT @idUsuario as id;

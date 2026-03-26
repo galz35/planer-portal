@@ -309,7 +309,7 @@ export class AuthService {
     if (!sessionId) return null;
 
     const portalUrl =
-      process.env.PORTAL_API_URL?.trim() || 'http://127.0.0.1:3110';
+      process.env.PORTAL_API_URL?.trim() || 'http://127.0.0.1:3120';
     try {
       const response = await axios.post(
         `${portalUrl.replace(/\/+$/, '')}/api/auth/introspect`,
@@ -325,11 +325,12 @@ export class AuthService {
           return null;
         }
 
+        // Usamos nuestro super Upsert para mantener sincronizados los nombres/correos y crear si no existe
         const upsertData = {
            nombre: portalUser.nombre || portalUser.usuario,
            correo: portalUser.correo || `${portalUser.carnet}@claro.com.ni`,
            carnet: portalUser.carnet,
-           activo: true,
+           activo: true, // Si validó la cookie y está authenticated en origin, está activo
            esInterno: portalUser.esInterno
         };
 
@@ -340,6 +341,7 @@ export class AuthService {
         } catch (err) {
           console.error('Error on upsert portal session in Planer:', err.message);
         }
+
       }
     } catch (err) {
       console.error('Error validating portal session in Planer:', err.message);

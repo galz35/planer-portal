@@ -103,17 +103,6 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('sso-sync-user')
-  @ApiOperation({ summary: 'Sincronizar webhook desde Portal Central' })
-  async ssoSyncUser(@Body() data: any) {
-    if (!data.carnet) {
-      throw new UnauthorizedException('Carnet requerido para sincronizar');
-    }
-    const result = await this.authService.syncUserFromPortal(data);
-    return { success: result };
-  }
-
-  @HttpCode(HttpStatus.OK)
   @Post('portal-session')
   @ApiOperation({ summary: 'Hidratar sesión desde cookie del Portal Central' })
   async portalSession(@Req() req: any) {
@@ -128,5 +117,16 @@ export class AuthController {
     }
 
     return this.authService.login(user);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('sso-sync-user')
+  @ApiOperation({ summary: 'Sincronizar webhook desde Portal Central' })
+  async ssoSyncUser(@Body() data: any) {
+    if (!data.carnet) {
+      throw new UnauthorizedException('Carnet requerido para sincronizar');
+    }
+    const result = await this.authService.syncUserFromPortal(data);
+    return { success: result };
   }
 }

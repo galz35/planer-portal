@@ -9,28 +9,28 @@ console.log(`--- SYSTEM_VERSION: ${CURRENT_V} ---`);
 
 const currentUrl = new URL(window.location.href);
 const isSsoCallback =
-    currentUrl.pathname.includes('/auth/sso') &&
-    currentUrl.searchParams.has('token');
+  currentUrl.pathname.includes('/auth/sso') &&
+  currentUrl.searchParams.has('token');
 
-// Extreme cache kill but SSO safe
+// Keep the service worker version under control without destroying active auth flows.
 if (localStorage.getItem('SW_VERSION') !== CURRENT_V) {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-            for (const registration of registrations) {
-                registration.unregister();
-                console.log('SW Unregistered for update');
-            }
-        });
-    }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (const registration of registrations) {
+        registration.unregister();
+        console.log('SW Unregistered for update');
+      }
+    });
+  }
 
-    localStorage.setItem('SW_VERSION', CURRENT_V);
+  localStorage.setItem('SW_VERSION', CURRENT_V);
 
-    if (!isSsoCallback && currentUrl.searchParams.get('v') !== CURRENT_V) {
-        currentUrl.searchParams.set('v', CURRENT_V);
-        window.location.replace(
-            `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`,
-        );
-    }
+  if (!isSsoCallback && currentUrl.searchParams.get('v') !== CURRENT_V) {
+    currentUrl.searchParams.set('v', CURRENT_V);
+    window.location.replace(
+      `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`,
+    );
+  }
 }
 
 registerPWA()
