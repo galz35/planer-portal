@@ -1,0 +1,30 @@
+syntax = "proto3";
+package common;
+
+// Respuesta genérica vacía
+message Empty {}
+
+// Paginación
+message Pagination {
+  int32 page = 1;
+  int32 page_size = 2;
+  int32 total = 3;
+}
+
+// Timestamp wrapper
+message Timestamp {
+  string iso = 1; // ISO 8601 string
+}
+
+// Error detallado
+message ErrorDetail {
+  int32 code = 1;
+  string message = 2;
+  string field = 3;
+}
+
+// Success wrapper genérico
+message SuccessResponse {
+  bool success = 1;
+  string message = 2;
+}

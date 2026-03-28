@@ -1,0 +1,248 @@
+﻿cargo :     Checking 
+backendrust v0.1.0 (D:\planif
+icacion\v2sistema\backendrust
+)
+En línea: 1 Carácter: 1
++ cargo check 2> errors.txt
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (    Che  
+  cking ba...ma\backendrus   
+ t):String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+error[E0631]: type mismatch 
+in function arguments
+    --> src\handlers\planning
+.rs:1265:44
+     |
+1265 |             history = 
+rows.into_iter().map(crate::h
+andlers::equipo::row_to_json)
+.collect();
+     |                       
+                 --- ^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected due to this
+     |                       
+                 |
+     |                       
+                 required by 
+a bound introduced by this 
+call
+     |
+    ::: 
+src\handlers\equipo.rs:477:1
+     |
+ 477 | pub fn 
+row_to_json(row: &Row) -> 
+serde_json::Value {
+     | ----------------------
+---------------------------- 
+found signature defined here
+     |
+     = note: expected 
+function signature 
+`fn(tiberius::Row) -> _`
+                found 
+function signature 
+`fn(&tiberius::Row) -> _`
+note: required by a bound in 
+`std::iter::Iterator::map`
+    --> D:\Users\gustavo.lira
+\.rustup\toolchains\stable-x8
+6_64-pc-windows-msvc\lib/rust
+lib/src/rust\library\core\src
+\iter\traits\iterator.rs:776:
+12
+     |
+ 773 |     fn map<B, 
+F>(self, f: F) -> Map<Self, 
+F>
+     |        --- required 
+by a bound in this 
+associated function
+...
+ 776 |         F: 
+FnMut(Self::Item) -> B,
+     |            
+^^^^^^^^^^^^^^^^^^^^^^ 
+required by this bound in 
+`Iterator::map`
+help: consider wrapping the 
+function in a closure
+     |
+1265 |             history = 
+rows.into_iter().map(|row: 
+tiberius::Row| crate::handler
+s::equipo::row_to_json(&row))
+.collect();
+     |                       
+                     
+++++++++++++++++++++         
+                            
+++++++
+help: consider adjusting the 
+signature so it does not 
+borrow its argument
+    -->  
+src\handlers\equipo.rs:477:25
+     |
+ 477 - pub fn 
+row_to_json(row: &Row) -> 
+serde_json::Value {
+ 477 + pub fn 
+row_to_json(row: Row) -> 
+serde_json::Value {
+     |
+
+error[E0599]: the method 
+`collect` exists for struct 
+`Map<IntoIter<Row>, fn(&Row) 
+-> Value {row_to_json}>`, 
+but its trait bounds were 
+not satisfied
+    --> src\handlers\planning
+.rs:1265:82
+     |
+1265 |             history = 
+rows.into_iter().map(crate::h
+andlers::equipo::row_to_json)
+.collect();
+     |                       
+                             
+                             
+ ^^^^^^^ method cannot be 
+called due to unsatisfied 
+trait bounds
+     |
+    ::: D:\Users\gustavo.lira
+\.rustup\toolchains\stable-x8
+6_64-pc-windows-msvc\lib/rust
+lib/src/rust\library\core\src
+\iter\adapters\map.rs:61:1
+     |
+  61 | pub struct Map<I, F> {
+     | -------------------- 
+doesn't satisfy `_: Iterator`
+     |
+     = note: the following 
+trait bounds were not 
+satisfied:
+             `<for<'a> 
+fn(&'a tiberius::Row) -> 
+serde_json::Value 
+{row_to_json} as FnOnce<(tibe
+rius::Row,)>>::Output = _`
+             which is 
+required by `std::iter::Map<s
+td::vec::IntoIter<tiberius::R
+ow>, for<'a> fn(&'a 
+tiberius::Row) -> 
+serde_json::Value 
+{row_to_json}>: Iterator`
+             `for<'a> fn(&'a 
+tiberius::Row) -> 
+serde_json::Value 
+{row_to_json}: 
+FnMut<(tiberius::Row,)>`
+             which is 
+required by `std::iter::Map<s
+td::vec::IntoIter<tiberius::R
+ow>, for<'a> fn(&'a 
+tiberius::Row) -> 
+serde_json::Value 
+{row_to_json}>: Iterator`
+             `std::iter::Map<
+std::vec::IntoIter<tiberius::
+Row>, for<'a> fn(&'a 
+tiberius::Row) -> 
+serde_json::Value 
+{row_to_json}>: Iterator`
+             which is 
+required by `&mut std::iter::
+Map<std::vec::IntoIter<tiberi
+us::Row>, for<'a> fn(&'a 
+tiberius::Row) -> 
+serde_json::Value 
+{row_to_json}>: Iterator`
+     = note: the full name 
+for the type has been 
+written to 'D:\planificacion\
+v2sistema\backendrust\target\
+debug\deps\backendrust-6c1ce2
+be11755f59.long-type-26429799
+9769928813.txt'
+     = note: consider using 
+`--verbose` to print the 
+full type name to the console
+
+error[E0615]: attempted to 
+take value of method 
+`carnet` on type `AuthUser`
+    --> src\handlers\planning
+.rs:1407:23
+     |
+1407 |     let carnet = user.
+carnet.clone().unwrap_or_defa
+ult();
+     |                       
+^^^^^^ method, not a field
+     |
+help: use parentheses to 
+call the method
+     |
+1407 |     let carnet = user.
+carnet().clone().unwrap_or_de
+fault();
+     |                       
+      ++
+
+error[E0308]: mismatched 
+types
+    --> src\handlers\planning
+.rs:1431:65
+     |
+1431 |                 let 
+json = crate::handlers::equip
+o::row_to_json(r);
+     |                       
+     ------------------------
+------------ ^ expected 
+`&Row`, found `Row`
+     |                       
+     |
+     |                       
+     arguments to this 
+function are incorrect
+     |
+note: function defined here
+    --> 
+src\handlers\equipo.rs:477:8
+     |
+ 477 | pub fn 
+row_to_json(row: &Row) -> 
+serde_json::Value {
+     |        ^^^^^^^^^^^ 
+---------
+help: consider borrowing here
+     |
+1431 |                 let 
+json = crate::handlers::equip
+o::row_to_json(&r);
+     |                       
+                             
+             +
+
+Some errors have detailed 
+explanations: E0308, E0599, 
+E0615, E0631.
+For more information about 
+an error, try `rustc 
+--explain E0308`.
+error: could not compile 
+`backendrust` (bin 
+"backendrust") due to 4 
+previous errors

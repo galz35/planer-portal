@@ -1,0 +1,73 @@
+syntax = "proto3";
+package marcaje;
+
+// ═══════════════════════════════════════
+// MARCAJE SERVICE — Asistencia + GPS Tracking
+// ═══════════════════════════════════════
+
+service MarcajeService {
+  // Registrar marcaje (entrada/salida)
+  rpc Mark(MarkRequest) returns (MarkResponse);
+  
+  // Obtener resumen del día
+  rpc GetSummary(SummaryRequest) returns (SummaryResponse);
+  
+  // 🔥 GPS Tracking en tiempo real (streaming)
+  rpc StreamGpsPoints(stream GpsPoint) returns (GpsAck);
+}
+
+message MarkRequest {
+  string carnet = 1;
+  string accion = 2;         // "ENTRADA" o "SALIDA"
+  string device_type = 3;    // "MOBILE" o "DESKTOP"
+  optional double lat = 4;
+  optional double lon = 5;
+  optional double accuracy = 6;
+  optional string offline_id = 7;
+}
+
+message MarkResponse {
+  bool success = 1;
+  int32 id = 2;
+  string tipo_marcaje = 3;
+  string estado = 4;
+  string message = 5;
+}
+
+message SummaryRequest {
+  string carnet = 1;
+}
+
+message DailyEntry {
+  int32 id = 1;
+  string tipo_marcaje = 2;
+  string tipo_device = 3;
+  string fecha = 4;
+  string estado = 5;
+  string motivo = 6;
+  double lat = 7;
+  double lon = 8;
+  double accuracy = 9;
+}
+
+message SummaryResponse {
+  bool success = 1;
+  repeated DailyEntry daily_history = 2;
+  bool is_clocked_in = 3;
+  bool stale_shift = 4;
+}
+
+// GPS Streaming
+message GpsPoint {
+  string carnet = 1;
+  double lat = 2;
+  double lon = 3;
+  double accuracy = 4;
+  string timestamp = 5;
+  optional string session_id = 6;
+}
+
+message GpsAck {
+  bool success = 1;
+  int32 points_received = 2;
+}

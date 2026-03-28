@@ -1,0 +1,337 @@
+﻿cargo :     Checking 
+backendrust v0.1.0 (D:\planif
+icacion\v2sistema\backendrust
+)
+En línea: 1 Carácter: 1
++ cargo check > errs.txt 
+2>&1 ; Get-Content errs.txt 
+| Out-File -Encodi ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (    Che  
+  cking ba...ma\backendrus   
+ t):String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+error[E0428]: the name 
+`MarcajeCreateSiteRequest` 
+is defined multiple times
+   --> 
+src\handlers\marcaje.rs:804:1
+    |
+797 | pub struct 
+MarcajeCreateSiteRequest {
+    | -----------------------
+------------ previous 
+definition of the type 
+`MarcajeCreateSiteRequest` 
+here
+...
+804 | pub struct 
+MarcajeCreateSiteRequest {
+    | ^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^ 
+`MarcajeCreateSiteRequest` 
+redefined here
+    |
+    = note: 
+`MarcajeCreateSiteRequest` 
+must be defined only once in 
+the type namespace of this 
+module
+
+error[E0119]: conflicting 
+implementations of trait 
+`Deserialize<'_>` for type `h
+andlers::marcaje::MarcajeCrea
+teSiteRequest`
+   --> src\handlers\marcaje.r
+s:803:10
+    |
+796 | #[derive(Deserialize)]
+    |          ----------- 
+first implementation here
+...
+803 | #[derive(Deserialize)]
+    |          ^^^^^^^^^^^ 
+conflicting implementation 
+for `handlers::marcaje::Marca
+jeCreateSiteRequest`
+    |
+    = note: this error 
+originates in the derive 
+macro `Deserialize` (in 
+Nightly builds, run with -Z 
+macro-backtrace for more 
+info)
+
+error[E0716]: temporary 
+value dropped while borrowed
+   --> src\handlers\marcaje.r
+s:390:58
+    |
+389 |     let query_ex = if 
+fecha_str.is_some() {
+    |         -------- 
+borrow later stored here
+390 |         
+client.query("EXEC 
+sp_marcaje_monitor_dia @P1", 
+&[&fecha_str])
+    |                        
+                             
+     ^^^^^^^^^^^^ creates a 
+temporary value which is 
+freed while still in use
+391 |     } else {
+    |     - temporary value 
+is freed at the end of this 
+statement
+    |
+    = note: consider using a 
+`let` binding to create a 
+longer lived value
+
+error[E0716]: temporary 
+value dropped while borrowed
+   --> src\handlers\marcaje.r
+s:413:61
+    |
+412 |     let query_ex = if 
+fecha_str.is_some() {
+    |         -------- 
+borrow later stored here
+413 |         
+client.query("EXEC 
+sp_marcaje_dashboard_kpis 
+@P1", &[&fecha_str])
+    |                        
+                             
+        ^^^^^^^^^^^^ creates 
+a temporary value which is 
+freed while still in use
+414 |     } else {
+    |     - temporary value 
+is freed at the end of this 
+statement
+    |
+    = note: consider using a 
+`let` binding to create a 
+longer lived value
+
+error[E0609]: no field 
+`radio_metros` on type `handl
+ers::marcaje::MarcajeCreateSi
+teRequest`
+   --> src\handlers\marcaje.r
+s:544:22
+    |
+544 |     let radio = body.ra
+dio_metros.unwrap_or(200);
+    |                      
+^^^^^^^^^^^^ unknown field
+    |
+    = note: available fields 
+are: `nombre`, `lat`, `lng`
+
+error[E0609]: no field 
+`accuracy_max` on type `handl
+ers::marcaje::MarcajeCreateSi
+teRequest`
+   --> src\handlers\marcaje.r
+s:545:20
+    |
+545 |     let acc = body.accu
+racy_max.unwrap_or(100);
+    |                    
+^^^^^^^^^^^^ unknown field
+    |
+    = note: available fields 
+are: `nombre`, `lat`, `lng`
+
+error[E0609]: no field 
+`activo` on type `handlers::m
+arcaje::MarcajeCreateSiteRequ
+est`
+   --> src\handlers\marcaje.r
+s:568:30
+    |
+568 |     let activo_i32 = 
+if 
+body.activo.unwrap_or(true) 
+{ 1_i32 } else { 0_i32 };
+    |                        
+      ^^^^^^ unknown field
+    |
+    = note: available fields 
+are: `nombre`, `lat`, `lng`
+
+error[E0609]: no field 
+`radio_metros` on type `handl
+ers::marcaje::MarcajeCreateSi
+teRequest`
+   --> src\handlers\marcaje.r
+s:569:152
+    |
+569 | ...P7", &[&id, 
+&body.nombre, &body.lat, 
+&body.lng, 
+&body.radio_metros, 
+&body.accuracy_max, 
+&activo_i32]).await {
+    |                        
+                             
+     ^^^^^^^^^^^^ unknown 
+field
+    |
+    = note: available fields 
+are: `nombre`, `lat`, `lng`
+
+error[E0609]: no field 
+`accuracy_max` on type `handl
+ers::marcaje::MarcajeCreateSi
+teRequest`
+   --> src\handlers\marcaje.r
+s:569:172
+    |
+569 | ...mbre, &body.lat, 
+&body.lng, 
+&body.radio_metros, 
+&body.accuracy_max, 
+&activo_i32]).await {
+    |                        
+                             
+     ^^^^^^^^^^^^ unknown 
+field
+    |
+    = note: available fields 
+are: `nombre`, `lat`, `lng`
+
+error[E0308]: mismatched 
+types
+   --> src\handlers\marcaje.r
+s:803:10
+    |
+803 | #[derive(Deserialize)]
+    |          ^^^^^^^^^^^ 
+expected `String`, found 
+`Option<String>`
+    |
+    = note: expected struct 
+`std::string::String`
+                 found enum `
+std::option::Option<std::stri
+ng::String>`
+    = note: this error 
+originates in the derive 
+macro `Deserialize` (in 
+Nightly builds, run with -Z 
+macro-backtrace for more 
+info)
+help: consider using 
+`Option::expect` to unwrap 
+the `std::option::Option<std:
+:string::String>` value, 
+panicking if the value is an 
+`Option::None`
+    |
+803 | #[derive(Deserialize.ex
+pect("REASON"))]
+    |                     
++++++++++++++++++
+
+error[E0308]: mismatched 
+types
+   --> src\handlers\marcaje.r
+s:803:10
+    |
+803 | #[derive(Deserialize)]
+    |          ^^^^^^^^^^^ 
+expected `f64`, found 
+`Option<f64>`
+    |
+    = note: expected type 
+`f64`
+               found enum 
+`std::option::Option<f64>`
+    = note: this error 
+originates in the derive 
+macro `Deserialize` (in 
+Nightly builds, run with -Z 
+macro-backtrace for more 
+info)
+help: consider using 
+`Option::expect` to unwrap 
+the 
+`std::option::Option<f64>` 
+value, panicking if the 
+value is an `Option::None`
+    |
+803 | #[derive(Deserialize.ex
+pect("REASON"))]
+    |                     
++++++++++++++++++
+
+error[E0560]: struct `handler
+s::marcaje::MarcajeCreateSite
+Request` has no field named 
+`radio_metros`
+   --> 
+src\handlers\marcaje.rs:809:9
+    |
+809 |     pub radio_metros: 
+Option<i32>,
+    |         ^^^^^^^^^^^^ `h
+andlers::marcaje::MarcajeCrea
+teSiteRequest` does not have 
+this field
+    |
+    = note: all struct 
+fields are already assigned
+
+error[E0560]: struct `handler
+s::marcaje::MarcajeCreateSite
+Request` has no field named 
+`accuracy_max`
+   --> 
+src\handlers\marcaje.rs:810:9
+    |
+810 |     pub accuracy_max: 
+Option<i32>,
+    |         ^^^^^^^^^^^^ `h
+andlers::marcaje::MarcajeCrea
+teSiteRequest` does not have 
+this field
+    |
+    = note: all struct 
+fields are already assigned
+
+error[E0560]: struct `handler
+s::marcaje::MarcajeCreateSite
+Request` has no field named 
+`activo`
+   --> 
+src\handlers\marcaje.rs:811:9
+    |
+811 |     pub activo: 
+Option<bool>,
+    |         ^^^^^^ `handler
+s::marcaje::MarcajeCreateSite
+Request` does not have this 
+field
+    |
+    = note: all struct 
+fields are already assigned
+
+Some errors have detailed 
+explanations: E0119, E0308, 
+E0428, E0560, E0609, E0716.
+For more information about 
+an error, try `rustc 
+--explain E0119`.
+error: could not compile 
+`backendrust` (bin 
+"backendrust") due to 19 
+previous errors

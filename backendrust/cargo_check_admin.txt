@@ -1,0 +1,112 @@
+    Checking backendrust v0.1.0 (D:\planificacion\v2sistema\backendrust)
+error[E0597]: `client` does not live long enough
+   --> src\handlers\admin.rs:306:11
+    |
+300 |       let mut client = match state.pool.get().await {
+    |           ---------- binding `client` declared here
+...
+306 |       match client.query("EXEC sp_Admin_Usuario_Crear @P1, @P2, @P3, @P4, @P5, @P6", 
+    |             -^^^^^
+    |             |
+    |  ___________borrowed value does not live long enough
+    | |
+307 | |         &[&body.nombre, &body.correo, &body.carnet, &body.cargo, &body.telefono, &body.rol_global.unwrap_or_else(|| "Colaborador".to_string())]).await {
+    | |______________________________________________________________________________________________________________________________________________________- a temporary with access to the borrow is created here ...
+...
+318 |   }
+    |   -
+    |   |
+    |   `client` dropped here while still borrowed
+    |   ... and the borrow might be used here, when that temporary is dropped and runs the destructor for type `Result<QueryStream<'_>, tiberius::error::Error>`
+    |
+    = note: the temporary is part of an expression at the end of a block;
+            consider forcing this temporary to be dropped sooner, before the block's local variables are dropped
+help: for example, you could save the expression's value in a new local variable `x` and then make `x` be the expression at the end of the block
+    |
+306 ~     let x = match client.query("EXEC sp_Admin_Usuario_Crear @P1, @P2, @P3, @P4, @P5, @P6", 
+307 |         &[&body.nombre, &body.correo, &body.carnet, &body.cargo, &body.telefono, &body.rol_global.unwrap_or_else(|| "Colaborador".to_string())]).await {
+...
+316 |         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response(),
+317 ~     }; x
+    |
+
+error[E0277]: the trait bound `&std::string::String: ToSql` is not satisfied
+   --> src\handlers\admin.rs:335:21
+    |
+335 |         params.push(Box::new(n));
+    |                     ^^^^^^^^^^^ the trait `ToSql` is not implemented for `&std::string::String`
+    |
+help: the trait `ToSql` is implemented for `std::string::String`
+   --> D:\Users\gustavo.lira\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tiberius-0.12.3\src\to_sql.rs:184:1
+    |
+184 | / to_sql!(self_,
+185 | |         bool: (ColumnData::Bit, *self_);
+186 | |         u8: (ColumnData::U8, *self_);
+187 | |         i16: (ColumnData::I16, *self_);
+...   |
+200 | |         Uuid: (ColumnData::Guid, *self_);
+201 | | );
+    | |_^
+    = note: required for the cast from `Box<&std::string::String>` to `Box<dyn ToSql>`
+    = note: this error originates in the macro `to_sql` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `&std::string::String: ToSql` is not satisfied
+   --> src\handlers\admin.rs:339:21
+    |
+339 |         params.push(Box::new(c));
+    |                     ^^^^^^^^^^^ the trait `ToSql` is not implemented for `&std::string::String`
+    |
+help: the trait `ToSql` is implemented for `std::string::String`
+   --> D:\Users\gustavo.lira\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tiberius-0.12.3\src\to_sql.rs:184:1
+    |
+184 | / to_sql!(self_,
+185 | |         bool: (ColumnData::Bit, *self_);
+186 | |         u8: (ColumnData::U8, *self_);
+187 | |         i16: (ColumnData::I16, *self_);
+...   |
+200 | |         Uuid: (ColumnData::Guid, *self_);
+201 | | );
+    | |_^
+    = note: required for the cast from `Box<&std::string::String>` to `Box<dyn ToSql>`
+    = note: this error originates in the macro `to_sql` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: variable does not need to be mutable
+   --> src\handlers\jornada.rs:328:9
+    |
+328 |     let mut sets = vec!["actualizado_en = GETDATE()".to_string()];
+    |         ----^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `sets`
+   --> src\handlers\jornada.rs:328:9
+    |
+328 |     let mut sets = vec!["actualizado_en = GETDATE()".to_string()];
+    |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_sets`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `user`
+    --> src\handlers\planning.rs:1356:5
+     |
+1356 |     user: crate::auth::AuthUser,
+     |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+
+warning: unused variable: `user`
+    --> src\handlers\planning.rs:1378:5
+     |
+1378 |     user: crate::auth::AuthUser,
+     |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+
+warning: unused variable: `user`
+    --> src\handlers\planning.rs:1410:5
+     |
+1410 |     user: crate::auth::AuthUser,
+     |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+
+Some errors have detailed explanations: E0277, E0597.
+For more information about an error, try `rustc --explain E0277`.
+warning: `backendrust` (bin "backendrust") generated 5 warnings
+error: could not compile `backendrust` (bin "backendrust") due to 3 previous errors; 5 warnings emitted

@@ -1,0 +1,143 @@
+﻿cargo :     Checking 
+backendrust v0.1.0 (D:\planif
+icacion\rustsistema\backendru
+st)
+En línea: 1 Carácter: 1
++ cargo check > 
+cargo_check_result.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (    Che  
+  cking ba...ma\backendrus   
+ t):String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+error[E0433]: failed to 
+resolve: use of unresolved 
+module or unlinked crate 
+`backendrust`
+ --> 
+src\bin\db_inspect.rs:2:5
+  |
+2 | use backendrust::config::
+AppConfig;
+  |     ^^^^^^^^^^^ use of 
+unresolved module or 
+unlinked crate `backendrust`
+  |
+  = help: if you wanted to 
+use a crate named 
+`backendrust`, use `cargo 
+add backendrust` to add it 
+to your `Cargo.toml`
+
+error[E0432]: unresolved 
+import `backendrust`
+ --> 
+src\bin\db_inspect.rs:3:5
+  |
+3 | use backendrust::db;
+  |     ^^^^^^^^^^^ use of 
+unresolved module or 
+unlinked crate `backendrust`
+  |
+  = help: if you wanted to 
+use a crate named 
+`backendrust`, use `cargo 
+add backendrust` to add it 
+to your `Cargo.toml`
+
+error[E0282]: type 
+annotations needed
+  --> 
+src\bin\db_inspect.rs:10:9
+   |
+10 |     let pool = 
+db::create_pool(&cfg).await?;
+   |         ^^^^
+11 |     let mut client = 
+pool.get().await.context("No 
+se pudo obtener conexion")?;
+   |                      
+---- type must be known at 
+this point
+   |
+help: consider giving `pool` 
+an explicit type
+   |
+10 |     let pool: /* Type 
+*/ = 
+db::create_pool(&cfg).await?;
+   |             ++++++++++++
+
+error[E0282]: type 
+annotations needed
+  --> 
+src\bin\db_inspect.rs:11:22
+   |
+11 |     let mut client = 
+pool.get().await.context("No 
+se pudo obtener conexion")?;
+   |                      
+^^^^^^^^^^^^^^^^ cannot 
+infer type
+
+error[E0282]: type 
+annotations needed
+  --> 
+src\bin\db_inspect.rs:14:9
+   |
+14 |     let mut stream = 
+client.query(
+   |         ^^^^^^^^^^
+...
+19 |     while let 
+Some(item) = 
+stream.next().await {
+   |                         
+   ------ type must be known 
+at this point
+   |
+help: consider giving 
+`stream` an explicit type
+   |
+14 |     let mut stream: /* 
+Type */ = client.query(
+   |                   
+++++++++++++
+
+error[E0282]: type 
+annotations needed
+  --> 
+src\bin\db_inspect.rs:20:13
+   |
+20 |         let row = item?;
+   |             ^^^
+21 |         let schema: 
+&str = 
+row.get(0).unwrap_or("");
+   |                         
+   --- type must be known at 
+this point
+   |
+help: consider giving `row` 
+an explicit type
+   |
+20 |         let row: /* 
+Type */ = item?;
+   |                
+++++++++++++
+
+Some errors have detailed 
+explanations: E0282, E0432, 
+E0433.
+For more information about 
+an error, try `rustc 
+--explain E0282`.
+error: could not compile 
+`backendrust` (bin 
+"db_inspect") due to 6 
+previous errors

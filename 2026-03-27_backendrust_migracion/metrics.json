@@ -1,0 +1,12 @@
+{
+  "date": "2026-03-27",
+  "modules": 21,
+  "nestControllers": 29,
+  "nestEndpoints": 269,
+  "rustRoutes": 274,
+  "missingInRust": 0,
+  "extraInRust": 5,
+  "historicalRiskRoutes": 89,
+  "spFiles": 23,
+  "sqlFiles": 32
+}

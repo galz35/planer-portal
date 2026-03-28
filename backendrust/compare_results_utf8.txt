@@ -1,0 +1,53 @@
+﻿­ƒÜÇ Iniciando Auditoria Comparativa Rust vs Nest (Final)
+Email: gustavo.lira@claro.com.ni | Carnet: 500708
+
+--- Probando Backend: Rust (http://localhost:3200/api) ---
+Ô£à Login OK (Token: eyJ0eXAiOiJKV1Q...)
+Ô£à /auth/config [200] (296ms)
+Ô£à /planning/workload?carnet=500708 [200] (1835ms)
+Ô£à /planning/pending?carnet=500708 [200] (196ms)
+Ô£à /planning/approvals?carnet=500708 [200] (197ms)
+Ô£à /planning/team?carnet=500708 [200] (378ms)
+Ô£à /planning/my-projects?carnet=500708 [200] (311ms)
+Ô£à /proyectos?carnet=500708 [200] (590ms)
+Ô£à /visita-campo/agenda?carnet=500708 [200] (195ms)
+Ô£à /visita-admin/dashboard [200] (200ms)
+Ô£à /admin/stats [200] (196ms)
+Ô£à /admin/usuarios [200] (291ms)
+Ô£à /tareas/mias [200] (421ms)
+Ô£à /reports/agenda-compliance [200] (871ms)
+
+--- Probando Backend: Nest (http://localhost:3000/api) ---
+Ô£à Login OK (Token: eyJhbGciOiJIUzI...)
+Ô£à /auth/config [200] (640ms)
+Ô£à /planning/workload?carnet=500708 [200] (1395ms)
+Ô£à /planning/pending?carnet=500708 [200] (399ms)
+Ô£à /planning/approvals?carnet=500708 [200] (391ms)
+Ô£à /planning/team?carnet=500708 [200] (862ms)
+Ô£à /planning/my-projects?carnet=500708 [200] (589ms)
+ÔØî /proyectos?carnet=500708 [400] (3ms) -> property carnet should not exist
+Ô£à /visita-campo/agenda?carnet=500708 [200] (195ms)
+ÔØî /visita-admin/dashboard [500] (5ms) -> Cannot read properties of undefined (reading 'stream')
+Ô£à /admin/stats [200] (196ms)
+Ô£à /admin/usuarios [200] (478ms)
+Ô£à /tareas/mias [200] (228ms)
+ÔØî /reports/agenda-compliance [400] (4ms) -> fecha must be a valid ISO 8601 date string
+
+­ƒôè COMPARATIVA FINAL
+========================================================================================================
+| Endpoint                                  | Rust           | Nest           | Obs                  |
+--------------------------------------------------------------------------------------------------------
+| /auth/config                              | 200 (296ms)    | 200 (640ms)    |                      |
+| /planning/workload?carnet=500708          | 200 (1835ms)   | 200 (1395ms)   | ÔÜá´©Å SIZE              |
+| /planning/pending?carnet=500708           | 200 (196ms)    | 200 (399ms)    |                      |
+| /planning/approvals?carnet=500708         | 200 (197ms)    | 200 (391ms)    |                      |
+| /planning/team?carnet=500708              | 200 (378ms)    | 200 (862ms)    |                      |
+| /planning/my-projects?carnet=500708       | 200 (311ms)    | 200 (589ms)    |                      |
+| /proyectos?carnet=500708                  | 200 (590ms)    | 400 (3ms)      | ÔÜá´©Å STATUS (Nest: property c...) |
+| /visita-campo/agenda?carnet=500708        | 200 (195ms)    | 200 (195ms)    |                      |
+| /visita-admin/dashboard                   | 200 (200ms)    | 500 (5ms)      | ÔÜá´©Å STATUS (Nest: Cannot rea...) |
+| /admin/stats                              | 200 (196ms)    | 200 (196ms)    |                      |
+| /admin/usuarios                           | 200 (291ms)    | 200 (478ms)    | ÔÜá´©Å SIZE              |
+| /tareas/mias                              | 200 (421ms)    | 200 (228ms)    | ÔÜá´©Å SIZE              |
+| /reports/agenda-compliance                | 200 (871ms)    | 400 (4ms)      | ÔÜá´©Å STATUS (Nest: fecha must...) |
+========================================================================================================

@@ -1,0 +1,29 @@
+﻿--- Deep Parity Check: Rust vs Nest ---
+
+>>> Proyectos List (/proyectos)
+  [Count] Rust=131, Nest=131
+  Ô£à Item Schema Match
+
+>>> My Tasks (/tareas/mias)
+  [Count] Rust=115, Nest=115
+  Ô£à Item Schema Match
+
+>>> Team Today (/equipo/hoy?fecha=2026-03-14)
+  [Count] Rust=40, Nest=40
+  Ô£à Item Schema Match
+
+>>> Agenda Compliance (/reports/agenda-compliance?fecha=2026-03-14)
+  [Count] Rust=40, Nest=40
+  Ô£à Item Schema Match
+
+>>> Planning Workload (/planning/workload?startDate=2026-03-14&endDate=2026-03-14)
+  [Count] Rust=40, Nest=40
+  Ô£à Item Schema Match
+
+>>> Proyecto Detail (/:id) - ID: 201
+  [Keys] Rust: 27, Nest: 25
+  ÔØî Missing: progreso
+
+>>> Tarea Detail (/:id) - ID: 1497
+  [Keys] Rust: 42, Nest: 33
+  ÔØî Missing: asignados,avances,creador,creadorCorreo,idResponsable,proyectoRequiereAprobacion,proyectoTipo,subtareas,titulo

@@ -1,0 +1,2 @@
+    Checking backendrust v0.1.0 (D:\planificacion\v2sistema\backendrust)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 8.26s

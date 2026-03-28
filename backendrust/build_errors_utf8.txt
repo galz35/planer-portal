@@ -1,0 +1,34 @@
+﻿cargo :    Compiling backendrust v0.1.0 
+(D:\planificacion\v2sistema\backendrust)
+En línea: 1 Carácter: 1
++ cargo check 2>&1 | Out-File -Encoding utf8 
+build_errors_utf8.txt
++ ~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling ba 
+   ...ma\backendrust):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error: failed to run custom build command for `backendrust 
+v0.1.0 (D:\planificacion\v2sistema\backendrust)`
+
+Caused by:
+  process didn't exit successfully: `D:\planificacion\v2siste
+ma\backendrust\target\debug\build\backendrust-6dd1881d673d0f4
+5\build-script-build` (exit code: 1)
+  --- stdout
+  cargo:rerun-if-changed=proto/common.proto
+  cargo:rerun-if-changed=proto/auth.proto
+  cargo:rerun-if-changed=proto/planning.proto
+  cargo:rerun-if-changed=proto/proyectos.proto
+  cargo:rerun-if-changed=proto/marcaje.proto
+  cargo:rerun-if-changed=proto/
+
+  --- stderr
+  Error: Custom { kind: NotFound, error: "Could not find 
+`protoc`. If `protoc` is installed, try setting the `PROTOC` 
+environment variable to the path of the `protoc` binary. Try 
+installing `protobuf-compiler` or `protobuf` using your 
+package manager. It is also available at 
+https://github.com/protocolbuffers/protobuf/releases  For 
+more information: 
+https://docs.rs/prost-build/#sourcing-protoc" }

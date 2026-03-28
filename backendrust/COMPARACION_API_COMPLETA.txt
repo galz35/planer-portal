@@ -1,0 +1,489 @@
+================================================================================
+ COMPARACIÓN API-POR-API: NestJS (100% funcional) vs Rust (migración)
+ Generado: 2026-03-08
+ Objetivo: Que el frontend React funcione idéntico con Rust
+================================================================================
+
+LEYENDA:
+  ✅  = Rust implementado con DB real (funcional)
+  ⚠️  = Rust existe pero con mock/stub (retorna datos fijos, no de DB)
+  ❌  = Rust NO tiene esta ruta (404 o generic_manifest)
+  🔸  = Rust tiene ruta pero hay diferencia en response shape
+
+================================================================================
+ 1. AUTH (auth.controller.ts → handlers/auth.rs)
+================================================================================
+  ✅ POST /auth/login              → auth_login (DB real)
+  ✅ POST /auth/refresh             → auth_refresh (DB real)
+  ✅ POST /auth/change-password     → auth_change_password (DB real)
+  ✅ GET  /auth/config              → auth_get_config (DB real)
+  ✅ POST /auth/config              → auth_update_config (DB real)
+
+================================================================================
+ 2. TAREAS / CLARITY CORE (clarity.controller.ts → handlers/tareas.rs + clarity_extra.rs)
+================================================================================
+  ✅ POST /checkins                 → checkins_upsert (DB real)
+  ✅ POST /tareas/rapida            → tareas_crear_rapida (DB real)
+  ✅ POST /tasks                    → tareas_crear_rapida (alias, DB real)
+  ✅ POST /tareas/masiva            → tareas_masiva (DB real)
+  ✅ GET  /tareas/mias              → tareas_mias (DB real)
+  ✅ GET  /tasks/me                 → tareas_mias (alias, DB real)
+  ✅ GET  /tareas/:id               → tareas_get (DB real)
+  ✅ PATCH /tareas/:id              → tareas_update (DB real)
+  ✅ PATCH /tasks/:id               → tareas_update (alias, DB real)
+  ✅ DELETE /tareas/:id             → tareas_delete (DB real)
+  ✅ POST /tareas/:id/clonar        → planning_clone_task (DB real)
+  ✅ POST /tareas/:id/revalidar     → tareas_revalidar (DB real)
+  ✅ POST /tareas/:id/participantes → tareas_participantes (DB real)
+  ✅ POST /tareas/:id/recordatorio  → tareas_recordatorio (DB real)
+  ✅ GET  /tareas/:id/bloqueos      → tareas_bloqueos (DB real)
+  ✅ GET  /tareas/historico/:carnet  → tareas_historico (DB real)
+  ✅ POST /tareas/:id/descartar     → tareas_descartar (DB real)
+  ✅ POST /tareas/:id/mover         → tareas_mover (DB real)
+  ✅ POST /tareas/:id/avance        → tareas_avance (DB real)
+  ✅ DELETE /tareas/avance/:id      → tareas_delete_avance (DB real)
+  ✅ POST /tareas/solicitud-cambio  → tareas_solicitud_cambio (DB real)
+  ✅ GET  /tareas/solicitud-cambio/pendientes → tareas_solicitud_cambio_pendientes (DB real)
+  ✅ POST /tareas/solicitud-cambio/:id/resolver → tareas_solicitud_cambio_resolver (DB real)
+  ✅ POST /bloqueos                 → bloqueos_create (DB real)
+  ✅ PATCH /bloqueos/:id/resolver   → bloqueos_resolver (DB real)
+  ✅ POST /asignaciones             → asignaciones_create (DB real)
+  ✅ GET  /audit-logs/task/:idTarea → audit_logs_task (DB real)
+  ✅ GET  /agenda/:targetCarnet     → agenda_target (DB real)
+  ❌ GET  /config                   → generic_manifest_get (STUB - NestJS retorna agendaConfig de DB)
+  ❌ POST /config                   → generic_manifest_post (STUB)
+  ✅ GET  /recordatorios            → recordatorios_list (DB real)
+  ✅ DELETE /recordatorios/:id      → recordatorios_delete (DB real)
+
+================================================================================
+ 3. RECURRENCIA (recurrencia.controller.ts → handlers/tareas.rs)
+================================================================================
+  ✅ POST /tareas/:id/recurrencia   → tareas_set_recurrencia (DB real)
+  ✅ GET  /tareas/:id/recurrencia   → tareas_get_recurrencia (DB real)
+  ✅ POST /tareas/:id/instancia     → tareas_crear_instancia (DB real)
+  ✅ GET  /tareas/:id/instancias    → tareas_list_instancias (DB real)
+  ❌ GET  /agenda-recurrente        → generic_manifest_get (STUB)
+
+================================================================================
+ 4. AVANCE MENSUAL (avance-mensual.controller.ts → handlers/tareas.rs)
+================================================================================
+  ✅ GET  /tareas/:idTarea/avance-mensual  → tareas_avance_mensual (DB real)
+  ✅ POST /tareas/:idTarea/avance-mensual  → tareas_save_avance_mensual (DB real)
+
+================================================================================
+ 5. EQUIPO (equipo.controller.ts → handlers/equipo.rs)
+================================================================================
+  ✅ GET  /equipo/hoy                       → equipo_hoy (DB real)
+  ✅ GET  /equipo/bloqueos                  → equipo_bloqueos (DB real)
+  ✅ GET  /equipo/inform                    → equipo_inform (DB real)
+  ✅ GET  /equipo/backlog                   → equipo_backlog (DB real)
+  ✅ GET  /equipo/miembro/:idUsuario        → equipo_miembro (DB real)
+  ✅ GET  /equipo/miembro/:idUsuario/tareas → equipo_miembro_tareas (DB real)
+  ✅ GET  /equipo/miembro/:idUsuario/bloqueos → equipo_miembro_bloqueos (DB real)
+  ✅ GET  /equipo/actividad                 → equipo_actividad (DB real)
+  ✅ GET  /equipo/actividad/:id             → equipo_actividad_detail (DB real)
+
+================================================================================
+ 6. FOCO DIARIO (foco.controller.ts → handlers/clarity_extra.rs)
+================================================================================
+  ✅ GET  /foco                     → foco_list (DB real)
+  ✅ POST /foco                     → foco_create (DB real)
+  ✅ PATCH /foco/:id                → foco_update (DB real)
+  ✅ DELETE /foco/:id               → foco_delete (DB real)
+  ✅ POST /foco/reordenar           → foco_reordenar (DB real)
+  ✅ GET  /foco/estadisticas        → foco_estadisticas (DB real)
+
+================================================================================
+ 7. NOTAS (notas.controller.ts → handlers/notas.rs)
+================================================================================
+  ✅ GET  /notas                    → notas_list (DB real)
+  ✅ POST /notas                    → notas_create (DB real)
+  ✅ POST /notes                    → notas_create (alias)
+  ✅ PATCH /notas/:id               → notas_update (DB real)
+  ✅ PATCH /notes/:id               → notas_update (alias)
+  ✅ PUT  /notes/:id                → notas_update (alias)
+  ✅ DELETE /notas/:id              → notas_delete (DB real)
+
+================================================================================
+ 8. PLANNING (planning.controller.ts → handlers/planning.rs)
+================================================================================
+  ✅ GET  /planning/workload        → planning_workload (DB real)
+  ✅ GET  /planning/pending         → planning_pending (DB real)
+  ✅ GET  /planning/approvals       → planning_approvals (DB real)
+  ✅ POST /planning/check-permission → planning_check_permission (DB real)
+  ✅ POST /planning/request-change  → planning_request_change (DB real)
+  ✅ POST /planning/resolve         → planning_resolve (DB real)
+  ✅ POST /planning/approvals/:id/resolve → planning_approval_resolve (DB real)
+  ✅ GET  /planning/plans           → planning_plans (DB real)
+  ✅ POST /planning/plans           → planning_create_plan (DB real)
+  ✅ GET  /planning/stats           → planning_stats (DB real)
+  ✅ GET  /planning/stats/compliance → planning_stats_compliance (DB real)
+  ✅ GET  /planning/stats/performance → planning_stats_performance (DB real)
+  ✅ GET  /planning/stats/bottlenecks → planning_stats_bottlenecks (DB real)
+  ✅ GET  /planning/team            → planning_team (DB real)
+  ✅ GET  /planning/my-projects     → planning_my_projects (DB real)
+  ✅ POST /planning/plans/:id/close → planning_close_plan (DB real)
+  ✅ POST /planning/update-operative → planning_update_operative (DB real)
+  ✅ POST /planning/tasks/:id/clone → planning_clone_task (DB real)
+  ✅ GET  /planning/tasks/:id/history → planning_task_history (DB real)
+  ✅ GET  /planning/tasks/:id/avance-mensual → planning_task_avance_mensual (DB real)
+  ✅ POST /planning/tasks/:id/avance-mensual → planning_task_save_avance_mensual (DB real)
+  ✅ POST /planning/tasks/:id/crear-grupo → planning_task_crear_grupo (DB real)
+  ✅ POST /planning/tasks/:id/agregar-fase → planning_task_agregar_fase (DB real)
+  ✅ GET  /planning/grupos/:idGrupo → planning_grupo_detail (DB real)
+  ✅ GET  /planning/dashboard/alerts → planning_dashboard_alerts (DB real)
+  ✅ GET  /planning/mi-asignacion   → planning_mi_asignacion (DB real)
+  ✅ GET  /planning/supervision     → planning_supervision (DB real)
+  ✅ GET  /planning/debug           → planning_debug (DB real)
+  ✅ POST /planning/reassign        → planning_reassign (DB real)
+  ✅ GET  /mi-dia                   → planning_mi_dia (DB real)
+  ✅ POST /mi-dia/checkin           → checkins_upsert (DB real)
+
+================================================================================
+ 9. PROYECTOS (proyectos.controller.ts → handlers/proyectos.rs)
+================================================================================
+  ✅ GET  /proyectos/roles-colaboracion → proyectos_roles_colaboracion (DB real)
+  ✅ GET  /proyectos                → proyectos_list (DB real)
+  ✅ POST /proyectos                → proyectos_create (DB real)
+  ✅ GET  /proyectos/:id            → proyectos_get (DB real)
+  ✅ PATCH /proyectos/:id           → proyectos_update (DB real)
+  ✅ DELETE /proyectos/:id          → proyectos_delete (DB real)
+  ✅ POST /proyectos/:id/clonar     → proyectos_clone (DB real)
+  ✅ GET  /proyectos/:id/tareas     → proyectos_tareas (DB real)
+  ✅ GET  /proyectos/:id/historial  → proyectos_historial (DB real)
+  ✅ GET  /proyectos/:id/colaboradores → proyectos_colaboradores (DB real)
+  ✅ POST /proyectos/:id/colaboradores → proyectos_add_colaborador (DB real)
+  ✅ PATCH /proyectos/:id/colaboradores/:idUsuario → proyectos_update_colaborador (DB real)
+  ✅ DELETE /proyectos/:id/colaboradores/:idUsuario → proyectos_remove_colaborador (DB real)
+  ✅ GET  /proyectos/:id/mis-permisos → proyectos_mis_permisos (DB real)
+
+================================================================================
+ 10. MARCAJE (marcaje.controller.ts → handlers/marcaje.rs)
+================================================================================
+  ✅ POST /marcaje/mark             → marcaje_mark (DB real)
+  ✅ GET  /marcaje/summary          → marcaje_summary (DB real)
+  ✅ POST /marcaje/undo-last-checkout → marcaje_undo_last (DB real)
+  ✅ POST /marcaje/undo-last        → marcaje_undo_last (alias)
+  ✅ POST /marcaje/request-correction → marcaje_request_correction (DB real)
+  ✅ POST /marcaje/correccion       → marcaje_request_correction (alias)
+  ✅ POST /marcaje/gps-track        → marcaje_gps_track (DB real)
+  ✅ POST /marcaje/gps-track-batch  → marcaje_gps_track_batch (DB real)
+  ✅ GET  /marcaje/admin/solicitudes → marcaje_admin_solicitudes (DB real)
+  ✅ GET  /marcaje/admin/sites      → marcaje_admin_sites (DB real)
+  ✅ POST /marcaje/admin/sites      → marcaje_admin_create_site (DB real)
+  ✅ PUT  /marcaje/admin/sites/:id  → marcaje_admin_update_site (DB real)
+  ✅ DELETE /marcaje/admin/sites/:id → marcaje_admin_delete_site (DB real)
+  ✅ GET  /marcaje/admin/ips        → marcaje_admin_ips (DB real)
+  ✅ POST /marcaje/admin/ips        → marcaje_admin_create_ip (DB real)
+  ✅ DELETE /marcaje/admin/ips/:id  → marcaje_admin_delete_ip (DB real)
+  ✅ GET  /marcaje/admin/devices    → marcaje_admin_devices (DB real)
+  ✅ PUT  /marcaje/admin/devices/:uuid → marcaje_admin_update_device (DB real)
+  ✅ GET  /marcaje/admin/config     → marcaje_admin_config (DB real)
+  ✅ GET  /marcaje/admin/monitor    → marcaje_admin_monitor (DB real)
+  ✅ GET  /marcaje/admin/dashboard  → marcaje_admin_dashboard (DB real)
+  ✅ PUT  /marcaje/admin/solicitudes/:id/resolver → marcaje_admin_resolver_solicitud (DB real)
+  ✅ DELETE /marcaje/admin/asistencia/:id → marcaje_admin_delete_asistencia (DB real)
+  ✅ POST /marcaje/admin/reiniciar/:carnet → marcaje_admin_reiniciar (DB real)
+  ✅ GET  /marcaje/admin/reportes   → marcaje_admin_reportes (DB real)
+  ✅ POST /marcaje/geocerca/validar → marcaje_geocerca_validar (DB real)
+  ✅ GET  /marcaje/admin/geocercas/:carnet → marcaje_admin_geocercas (DB real)
+  ✅ POST /marcaje/admin/geocercas  → marcaje_admin_create_geocerca (DB real)
+  ✅ DELETE /marcaje/admin/geocercas/:id → marcaje_admin_delete_geocerca (DB real)
+
+================================================================================
+ 11. JORNADA (jornada.controller.ts → handlers/jornada.rs)
+================================================================================
+  ✅ GET  /jornada/resolver/:carnet → jornada_resolver (DB real)
+  ✅ GET  /jornada/semana/:carnet   → jornada_semana (DB real)
+  ✅ GET  /jornada/horarios         → jornada_horarios (DB real)
+  ✅ POST /jornada/horarios         → jornada_crear_horario (DB real)
+  ✅ PUT  /jornada/horarios/:id     → jornada_actualizar_horario (DB real)
+  ✅ DELETE /jornada/horarios/:id   → jornada_eliminar_horario (DB real)
+  ✅ GET  /jornada/patrones         → jornada_patrones (DB real)
+  ✅ POST /jornada/patrones         → jornada_crear_patron (DB real)
+  ✅ GET  /jornada/asignaciones     → jornada_asignaciones (DB real)
+  ✅ POST /jornada/asignaciones     → jornada_crear_asignacion (DB real)
+  ✅ DELETE /jornada/asignaciones/:id → jornada_eliminar_asignacion (DB real)
+
+================================================================================
+ 12. VISITA CAMPO (visita-campo.controller.ts → handlers/visita.rs)
+================================================================================
+  ✅ GET  /visita-campo/agenda       → visita_campo_agenda (DB real)
+  ✅ GET  /visita-campo/clientes     → visita_campo_clientes (DB real)
+  ✅ POST /visita-campo/checkin      → visita_campo_checkin (DB real)
+  ✅ POST /visita-campo/checkout     → visita_campo_checkout (DB real)
+  ✅ GET  /visita-campo/resumen      → visita_campo_resumen (DB real)
+  ✅ POST /visita-campo/tracking-batch → visita_campo_tracking_batch (DB real)
+  ✅ GET  /visita-campo/stats/km     → visita_campo_stats_km (DB real)
+  ✅ GET  /visita-campo/tracking-raw → visita_campo_tracking_raw (DB real)
+  ✅ GET  /visita-campo/usuarios-tracking → visita_campo_usuarios_tracking (DB real)
+
+================================================================================
+ 13. VISITA ADMIN (visita-admin.controller.ts → handlers/visita.rs)
+================================================================================
+  ✅ GET  /visita-admin/dashboard    → visita_admin_dashboard (DB real)
+  ✅ GET  /visita-admin/visitas      → visita_admin_visitas (DB real)
+  ✅ POST /visita-admin/importar-clientes → visita_admin_importar_clientes (DB real)
+  ✅ POST /visita-admin/clientes     → visita_admin_crear_cliente (DB real)
+  ✅ PUT  /visita-admin/clientes/:id → visita_admin_actualizar_cliente (DB real)
+  ✅ DELETE /visita-admin/clientes/:id → visita_admin_eliminar_cliente (DB real)
+  ✅ GET  /visita-admin/tracking/:carnet → visita_admin_tracking_usuario (DB real)
+  ✅ POST /visita-admin/agenda       → visita_admin_crear_agenda (DB real)
+  ✅ GET  /visita-admin/agenda/:carnet → visita_admin_listar_agenda (DB real)
+  ✅ PUT  /visita-admin/agenda/:id/reordenar → visita_admin_reordenar_agenda (DB real)
+  ✅ DELETE /visita-admin/agenda/:id → visita_admin_eliminar_agenda (DB real)
+  ✅ GET  /visita-admin/metas        → visita_admin_listar_metas (DB real)
+  ✅ POST /visita-admin/metas        → visita_admin_set_meta (DB real)
+
+================================================================================
+ 14. ACCESO (acceso.controller.ts → handlers/acceso.rs + clarity_extra.rs)
+================================================================================
+  ✅ GET  /acceso/empleado/:carnet   → acceso_empleado_get (DB real)
+  ✅ GET  /acceso/empleado/email/:correo → acceso_empleado_email (DB real)
+  ✅ GET  /acceso/empleados          → acceso_empleados_list (DB real)
+  ✅ GET  /acceso/empleados/buscar   → acceso_empleados_buscar (DB real)
+  ✅ GET  /acceso/empleados/gerencia/:nombre → acceso_empleados_gerencia (DB real)
+  ✅ GET  /acceso/organizacion/tree  → acceso_organizacion_tree (DB real)
+  ✅ GET  /acceso/organizacion/buscar → acceso_organizacion_buscar (DB real)
+  ✅ GET  /acceso/organizacion/nodo/:idOrg → acceso_organizacion_nodo (DB real)
+  ✅ GET  /acceso/organizacion/nodo/:idOrg/preview → acceso_organizacion_nodo_preview (DB real)
+  ✅ GET  /acceso/permiso-area       → acceso_permiso_area_list (DB real)
+  ✅ POST /acceso/permiso-area       → acceso_permiso_area_create (DB real)
+  ✅ DELETE /acceso/permiso-area/:id → acceso_permiso_delete (DB real)
+  ✅ GET  /acceso/permiso-empleado   → acceso_permiso_empleado_list (DB real)
+  ✅ POST /acceso/permiso-empleado   → acceso_permiso_empleado_create (DB real)
+  ✅ DELETE /acceso/permiso-empleado/:id → acceso_permiso_delete (DB real)
+  ✅ GET  /acceso/delegacion         → acceso_delegacion_list (DB real)
+  ✅ POST /acceso/delegacion         → acceso_delegacion_create (DB real)
+  ✅ DELETE /acceso/delegacion/:id   → acceso_delegacion_delete (DB real)
+  ✅ GET  /acceso/delegacion/delegado/:carnetDelegado → acceso_delegacion_delegado (DB real)
+  ✅ GET  /acceso/delegacion/delegante/:carnetDelegante → acceso_delegacion_delegante (DB real)
+  ❌ GET  /acceso/debug-raw-data     → generic_manifest_get (STUB)
+
+================================================================================
+ 15. VISIBILIDAD (visibilidad.controller.ts → handlers/clarity_extra.rs)
+================================================================================
+  ✅ GET  /visibilidad/:carnet           → visibilidad_carnets (DB real)
+  ✅ GET  /visibilidad/:carnet/empleados → visibilidad_empleados (DB real)
+  ✅ GET  /visibilidad/:carnet/puede-ver/:carnetObjetivo → visibilidad_puede_ver (DB real)
+  ✅ GET  /visibilidad/:carnet/actores   → visibilidad_actores (DB real)
+  ✅ GET  /visibilidad/:carnet/quien-puede-verme → visibilidad_quien_puede_verme (DB real)
+  ✅ GET  /visibilidad/organizacion/:idorg/subarbol → visibilidad_subarbol (DB real)
+
+================================================================================
+ 16. ADMIN (admin.controller.ts → handlers/admin.rs)
+================================================================================
+  ✅ GET  /admin/stats               → admin_stats (DB real)
+  ✅ GET  /admin/usuarios            → admin_usuarios (DB real)
+  ✅ POST /admin/usuarios            → admin_create_usuario (DB real)
+  ✅ PATCH /admin/usuarios/:id       → admin_patch_usuario (DB real)
+  ✅ DELETE /admin/usuarios/:id      → admin_delete_usuario (DB real)
+  ✅ PATCH /admin/usuarios/:id/rol   → admin_patch_usuario_rol (DB real)
+  ⚠️  POST /admin/usuarios/:id/menu  → admin_usuario_menu (MOCK - no guarda en DB)
+  ⚠️  GET  /admin/usuarios/:id/visibilidad-efectiva → admin_visibilidad_efectiva (MOCK)
+  ⚠️  GET  /admin/usuarios-inactivos → admin_usuarios_inactivos (MOCK)
+  ✅ GET  /admin/roles               → admin_roles (DB real)
+  ✅ POST /admin/roles               → admin_create_role (DB real)
+  ✅ PATCH /admin/roles/:id          → admin_patch_role (DB real)
+  ✅ DELETE /admin/roles/:id         → admin_delete_role (DB real)
+  ✅ GET  /admin/logs                → admin_logs (DB real)
+  ✅ GET  /admin/audit-logs          → admin_audit_logs (DB real)
+  ✅ GET  /admin/organigrama         → admin_organigrama (DB real)
+  ⚠️  POST /admin/nodos              → admin_create_nodo (MOCK - no inserta en DB)
+  ⚠️  POST /admin/usuarios-organizacion → admin_usuarios_organizacion (MOCK)
+  ⚠️  DELETE /admin/usuarios-organizacion/:idUsuario/:idNodo → admin_delete_usuario_organizacion (MOCK)
+  ✅ GET  /admin/recycle-bin         → admin_recycle_bin (DB real)
+  ✅ POST /admin/recycle-bin/restore → admin_recycle_restore (DB real)
+  ⚠️  GET  /admin/backup/export      → admin_backup_export (MOCK)
+  ⚠️  GET  /admin/import/template/empleados → admin_import_template_empleados (MOCK)
+  ⚠️  GET  /admin/import/template/organizacion → admin_import_template_organizacion (MOCK)
+  ⚠️  POST /admin/import/empleados   → admin_import_empleados (MOCK)
+  ⚠️  POST /admin/import/organizacion → admin_import_organizacion (MOCK)
+  ⚠️  POST /admin/import/asignaciones → admin_import_asignaciones (MOCK)
+  ⚠️  GET  /admin/import/stats       → admin_import_stats (MOCK)
+
+================================================================================
+ 17. ADMIN SECURITY (admin-security.controller.ts → handlers/admin.rs)
+================================================================================
+  ✅ GET  /admin/security/users-access → admin_security_users_access (DB real)
+  ✅ POST /admin/security/assign-menu → admin_security_assign_menu (DB real)
+  ✅ DELETE /admin/security/assign-menu/:id → admin_security_delete_assign_menu (DB real)
+  ✅ GET  /admin/security/profiles   → admin_security_profiles (DB real)
+
+================================================================================
+ 18. REPORTES / KPIs (reportes.controller.ts + kpis.controller.ts → clarity_extra.rs)
+================================================================================
+  ✅ GET  /reportes/productividad    → reportes_productividad (DB real)
+  ✅ GET  /reportes/bloqueos-trend   → reportes_bloqueos_trend (DB real)
+  ✅ GET  /reportes/equipo-performance → reportes_equipo_performance (DB real)
+  ✅ GET  /reportes/exportar         → reportes_exportar (DB real)
+  ✅ GET  /gerencia/resumen          → gerencia_resumen (DB real)
+  ✅ GET  /reports/agenda-compliance → reports_agenda_compliance (DB real)
+  ✅ GET  /kpis/dashboard            → kpis_dashboard (DB real)
+
+================================================================================
+ 19. ORGANIZACIÓN (organizacion.controller.ts → clarity_extra.rs)
+================================================================================
+  ✅ GET  /organizacion/catalogo         → organizacion_catalogo (DB real)
+  ✅ GET  /organizacion/estructura-usuarios → organizacion_estructura_usuarios (DB real)
+
+================================================================================
+ 20. CAMPO / RECORRIDO (recorrido.controller.ts → router.rs)
+================================================================================
+  ❌ POST /campo/recorrido/iniciar      → generic_manifest_post (STUB)
+  ❌ POST /campo/recorrido/finalizar    → generic_manifest_post (STUB)
+  ❌ POST /campo/recorrido/punto        → generic_manifest_post (STUB)
+  ❌ POST /campo/recorrido/puntos-batch → generic_manifest_post (STUB)
+  ❌ GET  /campo/recorrido/activo       → generic_manifest_get (STUB)
+  ❌ GET  /campo/recorrido/puntos/:id   → generic_manifest_get (STUB)
+  ❌ GET  /campo/recorrido/historial    → generic_manifest_get (STUB)
+  ❌ GET  /campo/recorrido/admin        → generic_manifest_get (STUB)
+
+================================================================================
+ 21. SOFTWARE (software.controller.ts → clarity_extra.rs)
+================================================================================
+  ✅ GET  /software/dashboard-stats  → software_dashboard_stats (DB real)
+
+================================================================================
+ 22. DIAGNÓSTICO (diagnostico.controller.ts → handlers/diagnostico.rs)
+================================================================================
+  ✅ GET  /diagnostico/contexto      → diagnostico_contexto (DB real)
+  ✅ GET  /diagnostico/ping          → diagnostico_ping (funcional)
+  ✅ GET  /diagnostico/stats         → diagnostico_stats (funcional)
+  ✅ GET  /diagnostico/test-idcreador → diagnostico_test_id_creador (DB real)
+  ✅ GET  /diagnostico/test-tarea    → diagnostico_test_tarea (DB real)
+
+================================================================================
+ 23. NOTIFICACIONES (notification.controller.ts → router.rs)
+================================================================================
+  ❌ POST /notifications/device-token      → generic_manifest_post (STUB)
+  ❌ GET  /notifications/status            → generic_manifest_get (STUB)
+  ❌ GET  /notifications/test-email        → generic_manifest_get (STUB)
+  ❌ GET  /notifications/test-email-public → generic_manifest_get (STUB)
+  ❌ GET  /notifications/test-overdue-redesign → generic_manifest_get (STUB)
+  ❌ GET  /notifications/test-push         → generic_manifest_get (STUB)
+
+================================================================================
+ 24. SEED (seed.controller.ts → router.rs)
+================================================================================
+  ❌ POST /seed                      → generic_manifest_post (STUB - solo dev)
+
+================================================================================
+================================================================================
+ RESUMEN CUANTITATIVO FINAL
+================================================================================
+
+ CATEGORÍA               | ✅ DB Real | ⚠️ Mock | ❌ Stub | TOTAL
+ ----------------------- | --------- | ------- | ------ | -----
+ Auth                    |     5     |    0    |    0   |    5
+ Tareas/Clarity Core     |    27     |    0    |    2   |   29
+ Recurrencia             |     4     |    0    |    1   |    5
+ Avance Mensual          |     2     |    0    |    0   |    2
+ Equipo                  |     9     |    0    |    0   |    9
+ Foco Diario             |     6     |    0    |    0   |    6
+ Notas                   |     7     |    0    |    0   |    7
+ Planning                |    31     |    0    |    0   |   31
+ Proyectos               |    14     |    0    |    0   |   14
+ Marcaje                 |    28     |    0    |    0   |   28
+ Jornada                 |    11     |    0    |    0   |   11
+ Visita Campo            |     9     |    0    |    0   |    9
+ Visita Admin            |    13     |    0    |    0   |   13
+ Acceso                  |    20     |    0    |    1   |   21
+ Visibilidad             |     6     |    0    |    0   |    6
+ Admin General           |    14     |   12    |    0   |   26
+ Admin Security          |     4     |    0    |    0   |    4
+ Reportes/KPIs           |     7     |    0    |    0   |    7
+ Organización            |     2     |    0    |    0   |    2
+ Campo/Recorrido         |     0     |    0    |    8   |    8
+ Software                |     1     |    0    |    0   |    1
+ Diagnóstico             |     5     |    0    |    0   |    5
+ Notificaciones          |     0     |    0    |    6   |    6
+ Seed                    |     0     |    0    |    1   |    1
+ ----------------------- | --------- | ------- | ------ | -----
+ TOTAL                   |   225     |   12    |   19   |  256
+
+================================================================================
+ PORCENTAJE DE PARIDAD
+================================================================================
+
+ ✅ Funcional con DB real:  225 / 256 = 87.9%
+ ⚠️ Mock (retorna datos fijos): 12 / 256 = 4.7%
+ ❌ Stub (no implementado):  19 / 256 = 7.4%
+
+ FUNCIONALIDAD PARA EL FRONTEND REACT = 92.6% (✅ + ⚠️)
+ (Los mocks retornan datos, el frontend no se rompe)
+
+================================================================================
+ ITEMS PENDIENTES POR PRIORIDAD (para alcanzar 100%)
+================================================================================
+
+ ── PRIORIDAD ALTA (Afecta Frontend React directamente) ──
+
+ 1. GET/POST /config → Implementar con DB real (agendaConfig del usuario)
+    NestJS: clarityRepo.getAgendaConfig / setAgendaConfig
+    Impacto: La app usa esto para preferencias del usuario
+
+ 2. GET /agenda-recurrente → Implementar con DB real
+    NestJS: recurrenciaService.obtenerAgendaRecurrente
+    Impacto: Vista de tareas recurrentes en agenda
+
+ ── PRIORIDAD MEDIA (Admin backend, no bloquea UX principal) ──
+
+ 3. POST /admin/usuarios/:id/menu → Implementar DB real
+    NestJS: ya tiene admin_security_assign_menu que funciona, 
+    pero la ruta /admin/usuarios/:id/menu es diferente interfaz
+
+ 4. GET /admin/usuarios/:id/visibilidad-efectiva → DB real
+    NestJS: adminService.getEfectiveVisibility
+    Impacto: Panel admin, consulta informativa
+
+ 5. GET /admin/usuarios-inactivos → DB real
+    NestJS: sp_Admin_ReporteInactividad
+    Impacto: Reporte admin
+
+ 6. POST /admin/nodos → DB real
+    NestJS: crearNodoOrganigrama
+
+ 7. POST /admin/usuarios-organizacion → DB real
+    NestJS: asignarUsuarioNodo
+
+ 8. DELETE /admin/usuarios-organizacion/:idUsuario/:idNodo → DB real
+    NestJS: removerUsuarioNodo
+
+ ── PRIORIDAD BAJA (No afecta operación diaria) ──
+
+ 9-16. Admin Import/Backup (7 endpoints)
+    Funcionalidad de importación masiva Excel - raramente usada
+
+ 17. GET /acceso/debug-raw-data → Solo debug, no producción
+
+ 18-25. Campo/Recorrido (8 endpoints)
+    Módulo de recorridos de campo - pendiente de implementación completa
+
+ 26-31. Notificaciones (6 endpoints)
+    Push notifications / email - requiere infraestructura externa
+
+ 32. POST /seed → Solo desarrollo
+
+================================================================================
+ CONCLUSIÓN
+================================================================================
+
+ El backend Rust cubre el 92.6% de las APIs que el frontend React utiliza.
+ 
+ Los 12 endpoints ⚠️ (mock) son mayormente del panel de Admin que retornan
+ datos estáticos pero no rompen la UI.
+ 
+ Los 19 endpoints ❌ (stub) son:
+   - 8 de Campo/Recorrido (módulo secundario)
+   - 6 de Notificaciones (requiere infra externa)
+   - 3 de Config/Recurrencia/Debug (fáciles de implementar)
+   - 1 de Seed (solo dev)
+   - 1 de Debug (solo dev)
+ 
+ PARA QUE EL FRONTEND FUNCIONE 100%:
+   → Implementar items 1-2 de Prioridad Alta (2 endpoints)
+   → Implementar items 3-8 de Prioridad Media (6 endpoints)
+   → Total: 8 endpoints para alcanzar paridad operativa completa
+
+================================================================================

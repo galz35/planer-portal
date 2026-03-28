@@ -1,0 +1,1 @@
+fn main() { let s = std::env::var(" JWT_SECRET\).unwrap_or_else(|_| \fnS8JHYuYjgyKZzHDXvfzwmK0LVcE0S3jq6HFB14wu/rG+In7Lmv24K4KndjDoyRPZLKhPn7j9PAkk/rcWZq7w==\.to_string()); let k = jsonwebtoken::EncodingKey::from_secret(s.as_bytes()); let c = serde_json::json!({ \sub\: 1 }); let _ = jsonwebtoken::encode(&jsonwebtoken::Header::default(), &c, &k).unwrap(); println!(\OK\); }

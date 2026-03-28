@@ -1,0 +1,79 @@
+﻿
+­ƒÜÇ Iniciando pruebas profundas de la API Rust (http://localhost:3200/api)
+===========================================================
+
+­ƒöÉ [AUTH] Iniciando sesi├│n...
+Ô£à Login Exitoso! Token obtenido (Largo: 307)
+
+ÔÜÖ´©Å  [AUTH] Obteniendo configuraci├│n de usuario...
+Ô£à OK 200 {
+  success: true,
+  data: {
+    agendaShowGestion: false,
+    agendaShowRapida: false,
+    customMenu: null
+  },
+  message: null,
+  statusCode: 200,
+  timestamp: '2026-03-15T05:36:48.634997800+00:00',
+  path: ''
+}
+
+­ƒôè [PLANNING] Probando endpoints de carga laboral y pendientes...
+   Ô×í´©Å Probando Workload... Ô£à OK
+   Ô×í´©Å Probando Pending... Ô£à OK
+   Ô×í´©Å Probando Approvals... Ô£à OK
+   Ô×í´©Å Probando Team... Ô£à OK
+   Ô×í´©Å Probando My Projects... Ô£à OK
+
+­ƒÅù´©Å  [PROYECTOS] Probando gesti├│n de proyectos...
+   Ô×í´©Å Lista Proyectos: Ô£à 131 items (Usando ID 201 para tests detalle)
+   Ô×í´©Å Probando Detalle Proyecto (201)... Ô£à OK
+   Ô×í´©Å Probando Tareas Proyecto (201)... Ô£à OK
+   Ô×í´©Å Probando Colaboradores (201)... Ô£à OK
+   Ô×í´©Å Probando Historial (201)... Ô£à 145 events
+
+­ƒÜÂÔÇìÔÖé´©Å [VISITAS] Probando endpoints de georeferencia y visitas...
+   Ô×í´©Å Probando Agenda Hoy... Ô£à OK
+   Ô×í´©Å Probando Dashboard Admin... Ô£à OK
+   Ô×í´©Å Probando Todas las Visitas... Ô£à OK
+   Ô×í´©Å Probando Resumen D├¡a... Ô£à OK
+
+­ƒÅó [ADMIN / ACCESO] Probando organizaci├│n y estad├¡sticas...
+   Ô×í´©Å Probando Organigrama... Ô£à OK
+   Ô×í´©Å Probando Admin Stats... Ô£à OK
+   Ô×í´©Å Probando Lista Usuarios... Ô£à OK
+
+­ƒôØ [TAREAS] Probando endpoints de Clarity...
+   Ô×í´©Å Probando Solicitud Cambio Pendientes... Ô£à OK
+   Ô×í´©Å Probando Instancias Tarea (101)... Ô£à OK
+   Ô×í´©Å Probando Recurrencia Config (101)... Ô£à OK
+
+­ƒôà [EXTRA] Probando Agenda Compliance...
+Ô£à OK {
+  success: true,
+  data: {
+    miembros: [
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object]
+    ],
+    resumenAnimo: { feliz: 0, neutral: 0, promedio: 0, triste: 0 }
+  },
+  message: null,
+  statusCode: 200,
+  timestamp: '2026-03-15T05:36:58.623067700+00:00',
+  path: ''
+}
+
+­ƒÄë ===========================================================
+Ô£à Finalizado el ciclo de pruebas.
+==============================================================
+

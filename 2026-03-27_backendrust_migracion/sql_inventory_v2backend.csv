@@ -1,0 +1,33 @@
+module,file,operations,tables
+admin,admin/admin.repo.ts,DELETE FROM|INSERT INTO|SELECT|UPDATE,p_Logs|p_OrganizacionNodos|p_Proyectos|p_Roles|p_SeguridadPerfiles|p_Tareas|p_Usuarios|p_UsuariosConfig|p_UsuariosOrganizacion|para
+admin,admin/import.service.ts,INSERT INTO|SELECT|UPDATE,p_OrganizacionNodos|p_Usuarios|p_UsuariosCredenciales
+campo,campo/recorrido.service.ts,SELECT,campo_recorrido_puntos|campo_recorridos|rrhh.Colaboradores
+clarity,clarity/bloqueos.service.ts,SELECT,p_Bloqueos|p_Tareas|p_Usuarios
+clarity,clarity/clarity.repo.ts,DELETE FROM|SELECT|UPDATE,STRING_SPLIT|p_Bloqueos|p_CheckinTareas|p_Checkins|p_Notas|p_Proyectos|p_TareaAsignados|p_Tareas|p_Usuarios|p_UsuariosConfig|sys.columns
+clarity,clarity/equipo.service.ts,SELECT,STRING_SPLIT|p_Bloqueos|p_Proyectos|p_TareaAsignados|p_Tareas|p_Usuarios
+clarity,clarity/foco.service.ts,DELETE FROM|INSERT INTO|SELECT|UPDATE,p_FocoDiario_v2|p_Tareas
+clarity,clarity/recurrencia.repo.ts,SELECT|UPDATE,Inst|RecAplica|p_TareaInstancia|p_TareaRecurrencia|p_Tareas
+clarity,clarity/reports.service.ts,SELECT,STRING_SPLIT|p_Bloqueos|p_Proyectos|p_TareaAsignados|p_Tareas|p_Usuarios
+clarity,clarity/tasks.repo.ts,DELETE FROM|INSERT INTO|SELECT|UPDATE,Base|p_Proyectos|p_TareaAsignados|p_TareaAvances|p_TareaRecordatorios|p_Tareas|sys.tables
+colaboradores,colaboradores/colaboradores.repo.ts,SELECT,p_ProyectoColaboradores|p_RolesColaboracion
+common,common/audit.repo.ts,INSERT INTO|SELECT,Scope|p_Auditoria|p_Logs|p_Tareas|p_Usuarios
+common,common/notification.controller.ts,SELECT,p_Proyectos|p_TareaAsignados|p_Tareas|p_Usuarios
+common,common/notification.service.ts,INSERT INTO,p_Notificaciones_Enviadas
+db,db/base.repo.ts,INSERT INTO,dbo.p_SlowQueries|object
+diagnostico,diagnostico/diagnostico.controller.ts,SELECT,p_Tareas
+jornada,jornada/jornada.service.ts,INSERT INTO|SELECT|UPDATE,marcaje_asignacion|marcaje_horarios|marcaje_patrones|marcaje_patrones_detalle|rrhh.Colaboradores
+marcaje,marcaje/marcaje.service.ts,INSERT INTO|SELECT|UPDATE,marcaje_asistencias|marcaje_devices|marcaje_ip_whitelist|marcaje_sites|marcaje_solicitudes|marcaje_usuario_geocercas|rrhh.Colaboradores
+planning,planning/analytics.service.ts,SELECT,p_Bloqueos|p_PlanesTrabajo|p_Proyectos|p_TareaAsignados|p_Tareas|p_Usuarios
+planning,planning/avance-mensual.repo.ts,SELECT,p_TareaAvanceMensual
+planning,planning/grupo.repo.ts,SELECT,p_Tareas
+planning,planning/planning.repo.ts,INSERT INTO|SELECT|UPDATE,TareasEquipo|con|dbo.p_CheckinTareas|dbo.p_Checkins|dbo.p_Proyectos|dbo.p_TareaAsignados|dbo.p_Tareas|dbo.p_Usuarios|din|p_OrganizacionNodos|p_PlanesTrabajo|p_Proyectos|p_Roles|p_SolicitudesCambio|p_TareaAsignados|p_TareaAvances|p_Tareas|p_Usuarios|p_UsuariosOrganizacion|para|sys.columns
+scripts,scripts/check_add_activo.ts,SELECT,sys.columns
+scripts,scripts/check_add_audit_subtasks.ts,SELECT,sys.columns
+scripts,scripts/check_carnet_missing.ts,SELECT,INFORMATION_SCHEMA.COLUMNS
+scripts,scripts/check_columns.ts,SELECT,INFORMATION_SCHEMA.COLUMNS
+scripts,scripts/generate_id_mapping.ts,MERGE INTO|SELECT,p_Tareas|p_Usuarios
+scripts,scripts/validate_carnets.ts,SELECT,p_Usuarios
+scripts,scripts/verify_soft_delete.ts,INSERT INTO|SELECT,p_Tareas
+software,software/software.service.ts,SELECT,p_Bloqueos|p_Proyectos|p_TareaAsignados|p_Tareas|p_Usuarios
+visita-cliente,visita-cliente/repos/cliente.repo.ts,SELECT,vc_clientes
+visita-cliente,visita-cliente/repos/visita.repo.ts,SELECT,vc_clientes|vc_visitas

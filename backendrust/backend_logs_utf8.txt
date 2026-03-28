@@ -1,0 +1,8 @@
+﻿cargo :    Compiling backendrust v0.1.0 (D:\planificacion\rustsistema\backendrust)
+En línea: 1 Carácter: 1
++ cargo run > backend_logs.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling ba...ma\backendrust):String) [], Remo 
+   teException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

@@ -1,0 +1,77 @@
+﻿node : (node:51900) [MODULE_T
+YPELESS_PACKAGE_JSON] 
+Warning: Module type of file:
+///D:/planificacion/rustsiste
+ma/backendrust/test_api.js 
+is not specified and it 
+doesn't parse as CommonJS.
+En línea: 1 Carácter: 1
++ node test_api.js > 
+test_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: ((node:5  
+  1900) [M...se as CommonJ   
+ S.:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+Reparsing as ES module 
+because module syntax was 
+detected. This incurs a 
+performance overhead.
+To eliminate this warning, 
+add "type": "module" to D:\pl
+anificacion\rustsistema\backe
+ndrust\package.json.
+(Use `node --trace-warnings 
+...` to show where the 
+warning was created)
+
+­ƒÜÇ Iniciando pruebas profundas de la API Rust (http://localhost:3200/api)
+===========================================================
+
+­ƒöÉ [AUTH] Iniciando sesi├│n...
+Testing GET /api/reports/agenda-compliance
+Agenda list error: 
+ReferenceError: token is not 
+defined
+    at file:///D:/planificaci
+on/rustsistema/backendrust/te
+st_api.js:179:147
+    at ModuleJob.run (node:in
+ternal/modules/esm/module_job
+:413:25)
+    at process.processTicksAn
+dRejections (node:internal/pr
+ocess/task_queues:103:5)
+    at async onImport.tracePr
+omise.__proto__ (node:interna
+l/modules/esm/loader:660:26)
+    at async asyncRunEntryPoi
+ntWithESMLoader (node:interna
+l/modules/run_main:101:5)
+file:///D:/planificacion/rust
+sistema/backendrust/test_api.
+js:56
+    console.log(`Ô£à Login 
+Exitoso! Token obtenido 
+(Largo: 
+${authToken.length})`);
+                             
+                             
+           ^
+
+TypeError: Cannot read 
+properties of undefined 
+(reading 'length')
+    at runTests (file:///D:/p
+lanificacion/rustsistema/back
+endrust/test_api.js:56:70)
+    at process.processTicksAn
+dRejections (node:internal/pr
+ocess/task_queues:103:5)
+
+Node.js v24.12.0

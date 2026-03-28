@@ -1,0 +1,94 @@
+syntax = "proto3";
+package planning;
+
+// ═══════════════════════════════════════
+// PLANNING SERVICE — Workload, Team, Projects, Stats
+// ═══════════════════════════════════════
+
+service PlanningService {
+  rpc GetWorkload(CarnetRequest) returns (WorkloadResponse);
+  rpc GetPending(CarnetRequest) returns (PendingResponse);
+  rpc GetApprovals(CarnetRequest) returns (ApprovalsResponse);
+  rpc GetTeam(CarnetRequest) returns (TeamResponse);
+  rpc GetMyProjects(CarnetRequest) returns (MyProjectsResponse);
+  rpc GetStats(CarnetRequest) returns (StatsResponse);
+}
+
+message CarnetRequest {
+  string carnet = 1;
+}
+
+message WorkloadItem {
+  string carnet = 1;
+  string colaborador = 2;
+  int32 tareas_activas = 3;
+}
+
+message WorkloadResponse {
+  bool success = 1;
+  repeated WorkloadItem items = 2;
+}
+
+message PendingItem {
+  int32 id_solicitud = 1;
+  int32 id_tarea = 2;
+  string estado = 3;
+  string motivo = 4;
+  string campo = 5;
+  string valor_nuevo = 6;
+  string solicitante = 7;
+}
+
+message PendingResponse {
+  bool success = 1;
+  repeated PendingItem items = 2;
+}
+
+message ApprovalItem {
+  int32 id_solicitud = 1;
+  int32 id_tarea = 2;
+  string solicitante = 3;
+  string tarea = 4;
+  string motivo = 5;
+  string estado = 6;
+}
+
+message ApprovalsResponse {
+  bool success = 1;
+  repeated ApprovalItem items = 2;
+}
+
+message TeamMember {
+  int32 id_usuario = 1;
+  string nombre = 2;
+  string carnet = 3;
+  string cargo = 4;
+  string correo = 5;
+}
+
+message TeamResponse {
+  bool success = 1;
+  repeated TeamMember items = 2;
+}
+
+message ProjectSummary {
+  int32 id_proyecto = 1;
+  string nombre = 2;
+  string estado = 3;
+  int32 total_tareas = 4;
+  int32 tareas_completadas = 5;
+  double progreso = 6;
+}
+
+message MyProjectsResponse {
+  bool success = 1;
+  repeated ProjectSummary items = 2;
+}
+
+message StatsResponse {
+  bool success = 1;
+  int32 usuarios = 2;
+  int32 proyectos = 3;
+  int32 tareas = 4;
+  int32 roles = 5;
+}

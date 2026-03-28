@@ -1,0 +1,19 @@
+﻿--- Deep Parity Check: Rust vs Nest ---
+
+Checking: Proyectos List (/proyectos?carnet=500708)
+  Status: Rust=200, Nest=400
+  ÔÜá´©Å Extra in Rust: items, lastPage, page, total
+  ÔÜá´©Å Missing in Rust: errorCode, message, path, statusCode, success, timestamp
+
+Checking: Planning Workload (/planning/workload?carnet=500708)
+  Status: Rust=200, Nest=200
+  Ô£à Schema match (Root keys)
+
+Checking: My Tasks (/tareas/mias)
+  Status: Rust=200, Nest=200
+  Ô£à Schema match (Root keys)
+  Ô£à Item Schema match
+
+Checking: Team Today (/equipo/hoy?carnet=500708)
+  Status: Rust=200, Nest=200
+  Ô£à Schema match (Root keys)

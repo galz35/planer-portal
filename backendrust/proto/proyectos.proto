@@ -1,0 +1,148 @@
+syntax = "proto3";
+package proyectos;
+
+// ═══════════════════════════════════════
+// PROYECTO SERVICE — CRUD completo
+// ═══════════════════════════════════════
+
+service ProyectoService {
+  rpc ListProyectos(ProyectoFilter) returns (ProyectoListResponse);
+  rpc GetProyecto(ProyectoId) returns (Proyecto);
+  rpc CreateProyecto(ProyectoCreate) returns (Proyecto);
+  rpc UpdateProyecto(ProyectoUpdate) returns (ProyectoUpdateResponse);
+  rpc DeleteProyecto(ProyectoId) returns (ProyectoDeleteResponse);
+  rpc CloneProyecto(CloneRequest) returns (Proyecto);
+  rpc GetTareas(ProyectoId) returns (TareaListResponse);
+  rpc GetHistorial(ProyectoId) returns (HistorialResponse);
+  rpc ListColaboradores(ProyectoId) returns (ColaboradorListResponse);
+  rpc InvitarColaborador(InvitarRequest) returns (InvitarResponse);
+  rpc UpdateColaborador(UpdateColaboradorRequest) returns (UpdateColaboradorResponse);
+  rpc RevocarColaborador(RevocarRequest) returns (RevocarResponse);
+}
+
+message ProyectoId {
+  int32 id = 1;
+}
+
+message ProyectoFilter {
+  string carnet = 1;
+  optional string nombre = 2;
+  optional string estado = 3;
+  optional string gerencia = 4;
+}
+
+message Proyecto {
+  int32 id_proyecto = 1;
+  string nombre = 2;
+  string descripcion = 3;
+  string estado = 4;
+  string tipo = 5;
+  double progreso = 6;
+  int32 total_tareas = 7;
+  int32 tareas_completadas = 8;
+  string responsable_nombre = 9;
+  string creador_nombre = 10;
+  string responsable_carnet = 11;
+  string gerencia = 12;
+  string subgerencia = 13;
+  string area = 14;
+}
+
+message ProyectoListResponse {
+  bool success = 1;
+  repeated Proyecto items = 2;
+  int32 total = 3;
+}
+
+message ProyectoCreate {
+  string nombre = 1;
+  optional string descripcion = 2;
+  optional string tipo = 3;
+  optional string responsable_carnet = 4;
+}
+
+message ProyectoUpdate {
+  int32 id_proyecto = 1;
+  optional string nombre = 2;
+  optional string descripcion = 3;
+  optional string estado = 4;
+}
+
+message ProyectoUpdateResponse {
+  bool success = 1;
+}
+
+message ProyectoDeleteResponse {
+  bool success = 1;
+}
+
+message CloneRequest {
+  int32 id_proyecto = 1;
+  string nombre = 2;
+}
+
+message TareaItem {
+  int32 id_tarea = 1;
+  string nombre = 2;
+  string estado = 3;
+  int32 progreso = 4;
+}
+
+message TareaListResponse {
+  bool success = 1;
+  repeated TareaItem items = 2;
+}
+
+message HistorialItem {
+  int32 id = 1;
+  string accion = 2;
+  string entidad = 3;
+  string fecha = 4;
+  string usuario = 5;
+}
+
+message HistorialResponse {
+  bool success = 1;
+  repeated HistorialItem timeline = 2;
+}
+
+message Colaborador {
+  int32 id_usuario = 1;
+  string nombre = 2;
+  string rol = 3;
+}
+
+message ColaboradorListResponse {
+  bool success = 1;
+  repeated Colaborador colaboradores = 2;
+}
+
+message InvitarRequest {
+  int32 id_proyecto = 1;
+  int32 id_usuario = 2;
+  optional string rol = 3;
+}
+
+message InvitarResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message UpdateColaboradorRequest {
+  int32 id_proyecto = 1;
+  int32 id_usuario = 2;
+  string rol = 3;
+}
+
+message UpdateColaboradorResponse {
+  bool success = 1;
+}
+
+message RevocarRequest {
+  int32 id_proyecto = 1;
+  int32 id_usuario = 2;
+}
+
+message RevocarResponse {
+  bool success = 1;
+}

@@ -1,0 +1,142 @@
+cargo :     Checking 
+backendrust v0.1.0 (D:\plan
+ificacion\v2sistema\backend
+rust)
+En l?nea: 1 Car?cter: 8
++ $err = cargo check 2>&1 
+; $err | Out-File 
+-FilePath check_final.txt 
+- ...
++        ~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (     
+   Checking ba...ma\back   
+ endrust):String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+warning: unused import: 
+`std::sync::Arc`
+ --> src\services\notificat
+ion.rs:4:5
+  |
+4 | use std::sync::Arc;
+  |     ^^^^^^^^^^^^^^
+  |
+  = note: 
+`#[warn(unused_imports)]` 
+(part of 
+`#[warn(unused)]`) on by 
+default
+
+warning: variable does not 
+need to be mutable
+   --> src\handlers\jornada
+.rs:328:9
+    |
+328 |     let mut sets = 
+vec!["actualizado_en = 
+GETDATE()".to_string()];
+    |         ----^^^^
+    |         |
+    |         help: remove 
+this `mut`
+    |
+    = note: 
+`#[warn(unused_mut)]` 
+(part of 
+`#[warn(unused)]`) on by 
+default
+
+error[E0308]: mismatched 
+types
+  --> src\services\notifica
+tion.rs:50:21
+   |
+50 |         let _: () = 
+token;
+   |                --   
+^^^^^ expected `()`, found 
+`AccessToken`
+   |                |
+   |                
+expected due to this
+
+warning: unused variable: 
+`jwt_secret`
+  --> src\app.rs:26:9
+   |
+26 |     let jwt_secret = 
+cfg
+   |         ^^^^^^^^^^ 
+help: if this is 
+intentional, prefix it 
+with an underscore: 
+`_jwt_secret`
+   |
+   = note: `#[warn(unused_v
+ariables)]` (part of 
+`#[warn(unused)]`) on by 
+default
+
+warning: unused variable: 
+`sets`
+   --> src\handlers\jornada
+.rs:328:9
+    |
+328 |     let mut sets = 
+vec!["actualizado_en = 
+GETDATE()".to_string()];
+    |         ^^^^^^^^ 
+help: if this is 
+intentional, prefix it 
+with an underscore: `_sets`
+
+warning: unused variable: 
+`user`
+    --> src\handlers\planni
+ng.rs:1356:5
+     |
+1356 |     user: 
+crate::auth::AuthUser,
+     |     ^^^^ help: if 
+this is intentional, 
+prefix it with an 
+underscore: `_user`
+
+warning: unused variable: 
+`user`
+    --> src\handlers\planni
+ng.rs:1378:5
+     |
+1378 |     user: 
+crate::auth::AuthUser,
+     |     ^^^^ help: if 
+this is intentional, 
+prefix it with an 
+underscore: `_user`
+
+warning: unused variable: 
+`user`
+    --> src\handlers\planni
+ng.rs:1410:5
+     |
+1410 |     user: 
+crate::auth::AuthUser,
+     |     ^^^^ help: if 
+this is intentional, 
+prefix it with an 
+underscore: `_user`
+
+For more information about 
+this error, try `rustc 
+--explain E0308`.
+warning: `backendrust` 
+(bin "backendrust") 
+generated 7 warnings
+error: could not compile 
+`backendrust` (bin 
+"backendrust") due to 1 
+previous error; 7 warnings 
+emitted

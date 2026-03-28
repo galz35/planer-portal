@@ -1,0 +1,58 @@
+LOGIN: 200
+TOKEN OK: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz...
+
+/api/proyectos?page=1&limit=10
+  STATUS: 200 | ITEMS: 6
+  PREVIEW: {"success":true,"data":{"items":[{"creadorNombre":"GUSTAVO ADOLFO LIRA SALAZAR","descripcion":"Diseñar un sistema que permita gestionar la planificación de las áreas de la Gerencia de Recursos Humanos
+
+/api/proyectos/119/tareas
+  STATUS: 200 | ITEMS: 33
+  PREVIEW: {"items":[{"estado":"Pendiente","idTarea":1496,"nombre":"","progreso":0},{"estado":"EnCurso","idTarea":1497,"nombre":"","progreso":0},{"estado":"Hecha","idTarea":294,"nombre":"","progreso":0},{"estado
+
+/api/equipo/hoy?fecha=2026-03-09
+  STATUS: 200 | ITEMS: ?
+  PREVIEW: {"success":true,"data":{"miembros":[{"checkin":null,"estadisticas":{"bloqueadas":0,"descartadas":0,"enCurso":4,"hechas":0,"hoy":2,"retrasadas":3},"usuario":{"area":"NI SUBGERENCIA DE RECURSOS HUMANOS"
+
+/api/planning/workload
+  STATUS: 200 | ITEMS: ?
+  PREVIEW: {"success":true,"data":{"agenda":[],"tasks":[],"users":[]},"message":null,"statusCode":200,"timestamp":"2026-03-09T01:11:25.234596700+00:00"}
+
+/api/planning/stats?mes=3&anio=2026
+  STATUS: 200 | ITEMS: ?
+  PREVIEW: {"data":{"blockersDetail":[],"bottlenecks":[{"asignado":"YESENIA DE JESUS MANZANAREZ ALVARADO","diasRetraso":48,"fechaObjetivo":"2026-01-20 00:00:00","idTarea":62,"titulo":"Preparación de Workbook par
+
+/api/planning/my-projects
+  STATUS: 200 | ITEMS: 0
+  PREVIEW: {"items":[],"success":true}
+
+/api/mi-dia?fecha=2026-03-09
+  STATUS: 200 | ITEMS: ?
+  PREVIEW: {"success":true,"data":{"backlog":[{"estado":"EnCurso","fechaObjetivo":"2026-02-23T10:30:24.066666666","idTarea":1347,"prioridad":"Alta","proyectoNombre":"General","titulo":"revisar siaf"},{"estado":"
+
+/api/tareas/mias
+  STATUS: 200 | ITEMS: 109
+  PREVIEW: {"success":true,"data":[{"activo":true,"asignadoCarnet":"772","comportamiento":null,"creadorCarnet":"500708","descripcion":null,"deshabilitadoPor":null,"esHito":null,"esfuerzo":"S","estado":"EnCurso",
+
+/api/planning/team
+  STATUS: 200 | ITEMS: 0
+  PREVIEW: {"items":[],"success":true}
+
+/api/organizacion/estructura-usuarios
+  STATUS: 200 | ITEMS: 40
+  PREVIEW: [{"carnet":"402178","idOrg":"3.00E+14","idUsuario":20,"nodoNombre":null,"nombre":"ALI ADOLFO RODRIGUEZ URIARTE"},{"carnet":"402105","idOrg":"3.00E+14","idUsuario":26,"nodoNombre":null,"nombre":"ALLAN 
+
+/api/planning/dashboard/alerts
+  STATUS: 200 | ITEMS: ?
+  PREVIEW: {"overdue":[],"today":[]}
+
+/api/kpis/dashboard
+  STATUS: 200 | ITEMS: ?
+  PREVIEW: {"success":true,"data":{"avanceMensual":[],"proyectos":[],"resumen":{"bloqueadas":0,"hechas":92,"pendientes":27,"promedioAvance":74.60330578512396,"total":121}},"message":null,"statusCode":200,"timest
+
+/api/planning/supervision
+  STATUS: 200 | ITEMS: ?
+  PREVIEW: {"success":true,"data":{"equipos":0,"tareasObservadas":0},"message":null,"statusCode":200,"timestamp":"2026-03-09T01:11:29.115403900+00:00"}
+
+/api/planning/mi-asignacion
+  STATUS: 200 | ITEMS: ?
+  PREVIEW: {"success":true,"data":{"proyectos":[{"idProyecto":119,"misTareas":[{"estado":"EnCurso","fechaObjetivo":null,"idProyecto":119,"idTarea":1497,"prioridad":"Media","proyectoNombre":"Planificador de Tarea

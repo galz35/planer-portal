@@ -1,0 +1,25 @@
+default_job = "check-sp"
+env.CC = "gcc-10"
+env.CXX = "g++-10"
+env.CARGO_TERM_COLOR = "always"
+
+[jobs.check-sp]
+command = ["cargo", "check", "--color", "always"]
+need_stdout = false
+watch = ["src", "src/db/scripts", "Cargo.toml", "Cargo.lock", "bacon.toml"]
+on_change_strategy = "kill_then_restart"
+
+[jobs.test-db]
+command = ["cargo", "test", "--", "--nocapture"]
+need_stdout = true
+watch = ["src", "src/db/scripts", "tests", "Cargo.toml", "Cargo.lock", "bacon.toml"]
+on_change_strategy = "kill_then_restart"
+
+[keybindings]
+r = "rerun"
+shift-t = "job:test-db"
+
+[exports.locations]
+auto = true
+path = ".bacon-locations"
+line_format = "{kind} {path}:{line}:{column} {message}"

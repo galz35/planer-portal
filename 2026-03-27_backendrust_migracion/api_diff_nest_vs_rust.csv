@@ -1,0 +1,6 @@
+type,method,path,normalized_path,source
+extra_in_rust,GET,/_migration/breakdown,/_migration/breakdown,src/router.rs
+extra_in_rust,GET,/_migration/progress,/_migration/progress,src/router.rs
+extra_in_rust,GET,/_migration/status,/_migration/status,src/router.rs
+extra_in_rust,ANY,/*tail,/*tail,src/router.rs
+extra_in_rust,GET,/visibilidad/organizacion/:idorg/subarbol,/visibilidad/organizacion/:param/subarbol,src/router.rs

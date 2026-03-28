@@ -1,0 +1,31 @@
+﻿--- Deep Parity Check: Rust vs Nest ---
+User: gustavo.lira@claro.com.ni, Carnet: 500708, Target Date: 2026-03-14
+
+>>> Testing: Proyectos List (/proyectos)
+  [Status] Rust=200, Nest=200
+  Ô£à Root Schema Match
+  [Count] Rust=131, Nest=131
+  Ô£à Item Schema Match
+
+>>> Testing: Planning Workload (/planning/workload?startDate=2026-03-14&endDate=2026-03-14)
+  [Status] Rust=200, Nest=200
+  Ô£à Root Schema Match
+
+>>> Testing: My Tasks (/tareas/mias)
+  [Status] Rust=200, Nest=200
+  Ô£à Root Schema Match
+  [Count] Rust=115, Nest=115
+  Ô£à Item Schema Match
+
+>>> Testing: Team Today (/equipo/hoy?fecha=2026-03-14)
+  [Status] Rust=200, Nest=200
+  Ô£à Root Schema Match
+
+>>> Testing: Agenda Compliance (/reports/agenda-compliance?fecha=2026-03-14)
+  [Status] Rust=200, Nest=200
+  Ô£à Root Schema Match
+
+>>> Testing: User Config (/auth/config)
+  [Status] Rust=200, Nest=200
+  ÔÜá´©Å Extra keys in Rust: customMenu
+  [Config] RustKeys: 0, NestKeys: 0

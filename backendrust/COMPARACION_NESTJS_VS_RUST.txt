@@ -1,0 +1,561 @@
+================================================================================
+  COMPARACIÓN COMPLETA API POR API: NestJS vs Rust
+  Incluye: Response Shape, Query/SP, Estado, y Plan de Corrección
+  Fecha: 2026-03-08
+================================================================================
+
+LEYENDA DE ESTADO:
+  ✅  = OK — Query/SP real, response shape idéntico a NestJS
+  ⚠️  = PARCIAL — Query real pero response shape incompleto vs NestJS
+  🔶  = MOCK — Handler existe pero devuelve JSON hardcoded sin BD
+  🔴  = STUB — generic_manifest, devuelve 501 Not Implemented
+  ❌  = MISS — No existe ruta en router, handler puede existir o no
+  🟢  = CORREGIDO — Fue roto, ya arreglado en esta sesión
+
+================================================================================
+ MÓDULO 1: AUTH
+ NestJS: auth.controller.ts → AuthService
+ Rust:   handlers/auth.rs
+================================================================================
+
+1.1 POST /auth/login ✅
+    NestJS: SP sp_Auth_Login @correo, @contrasenia
+    Rust:   SP sp_Auth_Login @P1, @P2
+    Response NestJS: { access_token, refresh_token, user: { idUsuario, nombre, correo, carnet, rolGlobal, ... } }
+    Response Rust:   { success:true, data: { access_token, refresh_token, user: { ... } } }
+    Diferencia: Rust envuelve en ApiResponse (success+data). Frontend espera .data.data ✅
+
+1.2 POST /auth/refresh ✅
+    NestJS: validación JWT → re-sign
+    Rust:   validación JWT → re-sign
+    Response: { access_token } ✅
+
+1.3 POST /auth/change-password 🔶
+    NestJS: SP sp_Auth_CambiarPassword @idUsuario, @passwordActual, @passwordNuevo
+    Rust:   Mock → { success: true, message: "..." }
+    FALTA:  Ejecutar SP real
+
+1.4 GET /auth/config ✅
+    NestJS: SELECT valor FROM p_ConfiguracionUsuario WHERE idUsuario=@id AND clave='agendaConfig'
+    Rust:   misma query
+    Response: { vistaPreferida, rutinas, agendaConfig } ✅
+
+1.5 POST /auth/config ✅
+    NestJS: MERGE INTO p_ConfiguracionUsuario
+    Rust:   misma lógica
+    Response: { success: true } ✅
+
+================================================================================
+ MÓDULO 2: TAREAS CORE
+ NestJS: clarity.controller.ts → TasksService → clarity.repo + tasks.repo
+ Rust:   handlers/tareas.rs
+================================================================================
+
+2.1 POST /checkins ✅
+    NestJS: SP sp_Tarea_CheckinUpsert con 13+ parámetros
+    Rust:   SP sp_Tarea_CheckinUpsert con mismos parámetros
+    Response NestJS: { idCheckin, fecha, tareas: [...] }
+    Response Rust:   { success:true, data: { idCheckin, tareas: [...] } } ✅
+
+2.2 POST /tareas/rapida 🟢⚠️ (era 405, corregido)
+    NestJS: SP sp_Tarea_CrearCompleta_v2 (18 params)
+            + canManageUser() permisos
+            + syncParticipantes (co-asignados loop)
+            + notificaciones push + email
+            → planningRepo.obtenerTareaPorId(idTarea) → devuelve tarea completa
+    Rust:   SP sp_Tarea_CrearCompleta_v2 (18 params) ✅
+            Sin permisos canManageUser ❌
+            Sin co-asignados loop ❌
+            Sin notificaciones ❌
+            → devuelve solo { idTarea, titulo, estado } ⚠️ (NestJS devuelve tarea completa)
+    Response NestJS: { idTarea, titulo, estado, prioridad, fechaObjetivo, proyectoNombre, ... } (tarea completa)
+    Response Rust:   { success:true, data: { idTarea, titulo, estado, message } } ← INCOMPLETO
+
+2.3 POST /tareas/masiva ✅
+    NestJS: loop SP sp_Tarea_CrearCompleta_v2 por cada idUsuario
+    Rust:   loop SP sp_Tarea_CrearCompleta_v2 ✅
+    Response: { created: [ids] } ✅
+
+2.4 GET /tareas/mias (alias /tasks/me) 🔴
+    NestJS: SP sp_Tareas_ObtenerPorUsuario @carnet, @estado, @idProyecto, @query, @startDate, @endDate
+            + mapeo: agrega "(Asig: nombre)" al título si el responsable es otro
+    Rust:   generic_manifest_get → 501
+    Response NestJS: [ { idTarea, titulo, estado, prioridad, fechaObjetivo, proyectoNombre, responsableCarnet, ... } ]
+    FALTA:  Handler real con el SP
+
+2.5 GET /tareas/:id ⚠️
+    NestJS: planningRepo.obtenerTareaPorId(id)
+            SQL: SELECT t.*, subtareas, asignaciones, bloqueos, proyecto, historial
+            Devuelve: tarea con 30+ campos + arrays anidados
+    Rust:   tareas_get() → SELECT t.*, p.nombre
+            + subtareas (query separada)
+            + asignaciones (query separada)
+            Falta: bloqueos, historial, responsableNombre
+    Response NestJS: { idTarea, titulo, ..., subtareas: [...], asignaciones: [...], bloqueos: [...], proyecto: {...} }
+    Response Rust:   { success:true, data: { idTarea, titulo, ..., subtareas, asignaciones } }
+    Diferencia: Falta bloqueos[] y algunos campos de proyecto
+
+2.6 PATCH /tareas/:id (alias /tasks/:id) 🔴
+    NestJS: TasksService.tareaActualizar()
+            → tasks.repo.actualizarTarea() → UPDATE dinámico
+            → recalcularJerarquia (roll-up padre)
+            → reasignar si cambia idResponsable
+    Rust:   generic_manifest_patch → 501
+    FALTA:  Handler completo con UPDATE dinámico + recalcular jerarquía
+
+2.7 DELETE /tareas/:id ✅
+    NestJS: SP sp_Tarea_Eliminar
+    Rust:   SP sp_Tarea_Eliminar ✅
+
+2.8 POST /tareas/:id/revalidar 🔶
+    NestJS: TasksService.tareaRevalidar()
+            → UPDATE p_Tareas SET estado=@nuevoEstado
+            + recalcularJerarquia
+    Rust:   Mock → { success: true, idTarea, nuevoEstado }
+    FALTA:  Query UPDATE real + recalcular
+
+2.9 POST /tareas/:id/participantes 🔶
+    NestJS: DELETE FROM p_TareaAsignados WHERE tipo='Colaborador'
+            + INSERT loop por cada coasignado
+    Rust:   Mock → { success: true }
+    FALTA:  Query DELETE + INSERT loop
+
+2.10 POST /tareas/:id/recordatorio 🔶
+    NestJS: tasks.repo.crearOActualizarRecordatorio()
+            → MERGE logic: si existe UPDATE, si no INSERT
+    Rust:   Mock → { success: true }
+    FALTA:  Query MERGE real
+
+2.11 GET /recordatorios ✅
+    NestJS: SELECT FROM p_TareaRecordatorios
+    Rust:   query real ✅
+
+2.12 DELETE /recordatorios/:id ✅
+    NestJS: DELETE FROM p_TareaRecordatorios
+    Rust:   query real ✅
+
+2.13 GET /agenda/:targetCarnet ✅
+    NestJS: miDiaGet() → SP + checkin + backlog + agendaRecurrente
+    Rust:   SP + clasificación → response shape idéntico
+    Response: { checkinHoy, tareasSugeridas, backlog, bloqueosActivos, ... } ✅
+
+2.14 GET /tareas/historico/:carnet ✅
+    NestJS: clarityRepo.obtenerTareasHistorico()
+    Rust:   misma query ✅
+
+2.15 POST /tareas/:id/descartar ✅
+    NestJS: SP sp_Tarea_DescartarRecursivo
+    Rust:   SP sp_Tarea_DescartarRecursivo ✅
+
+2.16 POST /tareas/:id/mover ✅
+    NestJS: SP sp_Tarea_MoverAProyecto
+    Rust:   SP sp_Tarea_MoverAProyecto ✅
+
+2.17 POST /tareas/:id/avance ✅
+    NestJS: INSERT p_TareaAvances + UPDATE p_Tareas SET porcentaje
+    Rust:   mismas queries ✅
+
+2.18 DELETE /tareas/avance/:id ✅
+    Ambos: DELETE FROM p_TareaAvances ✅
+
+2.19 POST /tareas/:id/clonar ❌
+    NestJS: planningService.cloneTask() → SP sp_Tarea_Clonar
+    Rust:   Ruta NO existe (tiene /planning/tasks/:id/clone separado)
+    FALTA:  Agregar ruta /tareas/:id/clonar → planning_clone_task
+
+2.20 GET /tareas/:id/bloqueos ❌
+    NestJS: bloqueosService.getBloqueosByTarea()
+    Rust:   Ruta NO existe
+    FALTA:  Crear handler + agregar ruta
+
+2.21 POST /bloqueos ✅
+    NestJS: INSERT INTO p_Bloqueos
+    Rust:   query real ✅
+
+2.22 PATCH /bloqueos/:id/resolver ✅
+    NestJS: UPDATE p_Bloqueos
+    Rust:   query real ✅
+
+2.23 POST /tareas/solicitud-cambio ✅
+    Ambos: INSERT INTO p_SolicitudesCambio ✅
+
+2.24 GET /tareas/solicitud-cambio/pendientes ✅
+    NestJS: SELECT FROM p_SolicitudesCambio WHERE estado='Pendiente'
+    Rust:   misma query ✅
+
+2.25 POST /tareas/solicitud-cambio/:id/resolver ✅
+    NestJS: UPDATE p_SolicitudesCambio
+    Rust:   misma query ✅
+
+2.26 POST /asignaciones 🔴
+    NestJS: clarityRepo.asignarUsuarioTarea()
+    Rust:   generic_manifest_post → 501
+    FALTA:  Handler con INSERT p_TareasAsignaciones
+
+2.27 GET /audit-logs/task/:idTarea ✅
+    Ambos: query real ✅
+
+================================================================================
+ MÓDULO 3: PLANNING
+ NestJS: planning.controller.ts → PlanningService → planning.repo
+ Rust:   handlers/planning.rs
+================================================================================
+
+3.1 GET /planning/workload 🟢⚠️ (era 500, corregido)
+    NestJS: visibilidadService.obtenerEmpleadosVisibles(carnet) → todos carnets
+            clarityRepo.obtenerTareasMultiplesUsuarios(allCarnets) → todas tareas
+            clarityRepo.obtenerAgendaEquipo(allCarnets, start, end)
+            Response: { users: [...con tareasActivas/Completadas...], tasks: [...], agenda: [...] }
+    Rust:   Query directa SELECT FROM p_Usuarios WHERE jefeCarnet=@P1
+            + subquery conteo desde p_TareasAsignaciones
+            Response: { users: [...], tasks: [], agenda: [] }
+    Diferencia: tasks y agenda están vacíos en Rust. NestJS los llena.
+
+3.2 POST /planning/check-permission 🟢🔶 (era 422, contrato corregido)
+    NestJS: planningService.checkEditPermission(idTarea, userId)
+            → obtenerTareaPorId → verificarAccesoTarea → lógica compleja:
+              Personal → libre
+              Estratégico + admin/creador/dueño/asignado → libre
+              Estratégico + otro → requiereAprobacion=true
+    Rust:   Mock → { puedeEditar: true, requiereAprobacion: false, tipoProyecto: "Operativo" }
+    Response NestJS: { puedeEditar, requiereAprobacion, tipoProyecto }
+    Response Rust:   { success:true, data: { puedeEditar:true, ... } }
+    FALTA:  Lógica real de permisos
+
+3.3 GET /planning/pending ✅
+    Ambos: SELECT FROM p_SolicitudesCambio WHERE estado='Pendiente' ✅
+
+3.4 GET /planning/approvals ✅
+    Ambos: SELECT FROM p_SolicitudesCambio ✅
+
+3.5 POST /planning/resolve ✅
+    Ambos: UPDATE p_SolicitudesCambio ✅
+
+3.6 POST /planning/approvals/:id/resolve ✅
+    Ambos: UPDATE p_SolicitudesCambio ✅
+
+3.7 POST /planning/update-operative ✅
+    Ambos: UPDATE dinámico p_Tareas ✅
+
+3.8 GET /planning/plans ✅
+    NestJS: SP sp_Planning_ObtenerPlanes + query tareas por idPlan + agrupar por semana
+    Rust:   Misma lógica ✅
+
+3.9 POST /planning/plans ✅
+    Ambos: INSERT/UPDATE p_PlanesTrabajo ✅
+
+3.10 GET /planning/stats ✅
+    Ambos: múltiples queries (total, completadas, pending, etc.) ✅
+
+3.11 GET /planning/stats/compliance ✅
+3.12 GET /planning/stats/performance ✅
+3.13 GET /planning/stats/bottlenecks ✅
+3.14 GET /planning/team ✅
+3.15 GET /planning/my-projects ✅
+3.16 POST /planning/tasks/:id/clone ✅
+3.17 POST /planning/reassign ✅
+
+3.18 GET /planning/tasks/:id/history 🔶
+    NestJS: query audit log por tarea
+    Rust:   Mock → { changes: [] }
+    FALTA:  Query SELECT FROM audit log
+
+3.19 POST /planning/plans/:id/close ✅
+3.20 GET /planning/tasks/:id/avance-mensual ✅
+3.21 POST /planning/tasks/:id/avance-mensual ✅
+
+3.22 POST /planning/tasks/:id/crear-grupo 🔶
+    NestJS: SP o INSERT p_GruposTareas
+    Rust:   Mock
+3.23 POST /planning/tasks/:id/agregar-fase 🔶
+    NestJS: INSERT p_GrupoTareasFases
+    Rust:   Mock
+3.24 GET /planning/grupos/:idGrupo 🔶
+    NestJS: SELECT grupo + fases
+    Rust:   Mock
+
+3.25 GET /planning/dashboard/alerts 🔶
+    NestJS: query alertas
+    Rust:   Mock → { alerts: [] }
+
+3.26 GET /planning/mi-asignacion ✅
+    Ambos: SP sp_Planning_ObtenerProyectosAsignados + sp_Tareas_ObtenerPorUsuario
+    Response NestJS: { proyectos: [{..., misTareas: [...]}], resumen: {totalProyectos, totalTareas, tareasAtrasadas, tareasHoy, tareasCompletadas} }
+    Response Rust:   { success:true, data: { proyectos: [...], resumen: {totalProyectos, totalTareas, tareasAtrasadas} } }
+    Diferencia: Rust no calcula tareasHoy ni tareasCompletadas en resumen ⚠️
+
+3.27 GET /planning/supervision ✅
+3.28 GET /planning/debug ✅
+
+================================================================================
+ MÓDULO 4: EQUIPO ✅ (MEJOR MÓDULO — casi 100% paridad)
+ NestJS: equipo.controller.ts → EquipoService
+ Rust:   handlers/equipo.rs
+================================================================================
+
+4.1 GET /equipo/hoy ✅
+    Ambos usan mismos SPs: sp_Usuarios_ObtenerDetallesPorCarnets, sp_Checkins_ObtenerPorEquipoFecha, sp_Equipo_ObtenerHoy
+    Response shape IDÉNTICO: { miembros: [{ usuario, checkin, estadisticas }], resumenAnimo }
+
+4.2 GET /equipo/inform ✅
+4.3 GET /equipo/bloqueos ✅
+4.4 GET /equipo/backlog ✅
+4.5 GET /equipo/miembro/:idUsuario ✅
+4.6 GET /equipo/miembro/:idUsuario/tareas ✅
+4.7 GET /equipo/miembro/:idUsuario/bloqueos ✅
+4.8 GET /equipo/actividad ✅
+4.9 GET /equipo/actividad/:id ✅
+
+================================================================================
+ MÓDULO 5: MARCAJE
+================================================================================
+
+5.1 POST /marcaje/mark ✅
+    Ambos: SP sp_marcaje_registrar ✅
+5.2 GET /marcaje/summary ✅
+5.3 POST /marcaje/undo-last 🔶 (ruta ya corregida)
+5.4 POST /marcaje/correccion 🔶 (ruta ya corregida)
+5.5 POST /marcaje/gps-track 🔶
+5.6 POST /marcaje/gps-track-batch 🔶
+5.7-5.21 Todos admin/* 🔶 (15 endpoints mock)
+
+================================================================================
+ MÓDULO 6: PROYECTOS ✅ (MUY BUENA PARIDAD)
+================================================================================
+
+6.1-6.14 Todos ✅ (query/SP real, response correcto)
+
+================================================================================
+ MÓDULO 7-9: NOTAS, FOCO, REPORTES ✅
+================================================================================
+
+Todos funcionales con queries reales ✅
+
+================================================================================
+ MÓDULO 10: ACCESO / VISIBILIDAD ✅ (excepto 1 stub)
+================================================================================
+
+Casi todos OK. Solo /acceso/debug-raw-data es stub.
+
+================================================================================
+ MÓDULO 11: JORNADA (lectura OK, escritura MISS)
+================================================================================
+
+11.1-11.5 GET endpoints ✅
+11.6-11.11 POST/PUT/DELETE ❌ (6 endpoints sin ruta)
+
+================================================================================
+ MÓDULO 12: VISITA (core OK, admin/tracking STUB)
+================================================================================
+
+12.1-12.5 Campo core ✅
+12.6-12.9 Campo tracking 🔴 (4 stubs)
+12.10-12.11 Admin dashboard/visitas ✅
+12.12-12.20 Admin CRUD 🔴 (9 stubs)
+
+================================================================================
+ MÓDULO 13: ADMIN (lectura OK, escritura MOCK)
+================================================================================
+
+13.1 GET /admin/stats ✅
+13.2 GET /admin/usuarios ✅
+13.3 POST /admin/usuarios 🔶
+13.4-13.9 CRUD usuarios 🔶 (todos mock)
+13.10 GET /admin/roles ✅
+13.11-13.13 CRUD roles 🔶
+13.14 GET /admin/logs ✅
+13.15 GET /admin/audit-logs ✅
+13.16 GET /admin/organigrama ✅
+13.17-13.19 Nodos/org 🔶
+13.20 GET /admin/recycle-bin ✅
+13.21 POST /admin/recycle-bin/restore 🔶
+
+################################################################################
+################################################################################
+
+                    PLAN DE CORRECCIÓN (CHECKLIST DETALLADO)
+
+################################################################################
+################################################################################
+
+PRIORIDAD 1 — CRÍTICO (Afecta pantallas principales del frontend)
+==================================================================
+
+[ ] P1.1 — GET /tareas/mias (+ alias /tasks/me)
+    Archivo: src/handlers/tareas.rs (crear handler tareas_mias)
+    Router:  src/router.rs línea ~146 (agregar .route("/tareas/mias", get(tareas_mias)))
+    Query:   EXEC sp_Tareas_ObtenerPorUsuario @P1, @P2, @P3, @P4, @P5, @P6
+             Params: carnet, estado, idProyecto, query, startDate, endDate
+    Response shape:
+      [
+        { idTarea, titulo, nombre, estado, prioridad, fechaObjetivo, fechaInicioPlanificada,
+          proyectoNombre, idProyecto, responsableCarnet, responsableNombre, porcentaje,
+          tipo, esfuerzo, comportamiento, idTareaPadre }
+      ]
+    Lógica extra: Si responsableCarnet != carnet actual, append "(Asig: NombreCorto)" al titulo
+    Nota: Usar el SP que ya usa NestJS: sp_Tareas_ObtenerPorUsuario
+
+[ ] P1.2 — PATCH /tareas/:id (+ alias /tasks/:id)
+    Archivo: src/handlers/tareas.rs (crear handler tareas_update)
+    Router:  src/router.rs agregar .route("/tareas/:id", get(tareas_get).patch(tareas_update).delete(tareas_delete))
+    Query:   UPDATE dinámico p_Tareas SET [campos que vinieron en body] WHERE idTarea=@P1
+             Campos posibles: titulo/nombre, descripcion, estado, prioridad, porcentaje,
+             fechaObjetivo, fechaInicioPlanificada, fechaInicioReal, linkEvidencia, idTareaPadre
+    Lógica extra:
+      1. Si viene idResponsable → DELETE FROM p_TareaAsignados WHERE tipo='Responsable'
+         + INSERT INTO p_TareaAsignados
+      2. Si cambia estado o progreso → EXEC sp_Tarea_RecalcularJerarquia_v2 @idTareaInicio, @idPadreDirecto
+    Response: Tarea actualizada completa (re-obtener con obtenerTareaPorId)
+
+[ ] P1.3 — POST /tareas/rapida: completar response shape
+    Archivo: src/handlers/tareas.rs (ya existe tareas_crear_rapida)
+    Cambio:  Después de crear, hacer SELECT de la tarea completa para devolver el shape completo
+    Query extra: EXEC sp_Tareas_ObtenerPorId @P1 (el idTarea recién creado)
+    Response shape esperado: tarea completa como en NestJS
+
+[ ] P1.4 — GET /planning/workload: llenar tasks[] y agenda[]
+    Archivo: src/handlers/planning.rs (ya corregido el SQL de users)
+    Cambio:  Agregar 2 queries adicionales:
+      a) EXEC sp_Tareas_ObtenerMultiplesUsuarios @P1 (carnets CSV) → tasks[]
+      b) SELECT FROM p_Checkins WHERE carnet IN (...) AND fecha BETWEEN @start AND @end → agenda[]
+    Response shape NestJS: { users: [...], tasks: [...], agenda: [...] }
+
+[ ] P1.5 — POST /planning/check-permission: implementar lógica real
+    Archivo: src/handlers/planning.rs (ya acepta {idTarea})
+    Cambio:  En vez de mock, hacer:
+      1. SELECT t.*, p.tipo as proyectoTipo FROM p_Tareas t LEFT JOIN p_Proyectos p ON t.idProyecto=p.idProyecto WHERE t.idTarea=@P1
+      2. Si no tiene proyecto → {puedeEditar:true, requiereAprobacion:false, tipoProyecto:"Personal"}
+      3. Si proyectoTipo='Estrategico' y no es creador/dueño → requiereAprobacion=true
+      4. Default: {puedeEditar:true, requiereAprobacion:false}
+
+[ ] P1.6 — GET /mi-dia: agregar checkinHoy real
+    Archivo: src/handlers/planning.rs (planning_mi_dia)
+    Cambio:  Antes de devolver, consultar checkin del día:
+      SELECT TOP 1 * FROM p_Checkins WHERE usuarioCarnet=@P1 AND CAST(fecha AS DATE)=CAST(@P2 AS DATE)
+    Actualmente: checkinHoy siempre null
+    NestJS: devuelve el checkin real del día
+
+[ ] P1.7 — GET /planning/mi-asignacion: agregar campos faltantes al resumen
+    Archivo: src/handlers/planning.rs (planning_mi_asignacion)
+    Cambio:  Calcular tareasHoy y tareasCompletadas en resumen
+    Query:   Contar tareas con fechaObjetivo=HOY, y tareas con estado='Hecha'
+
+PRIORIDAD 2 — IMPORTANTE (Funcionalidad necesaria pero no bloquea login flow)
+==============================================================================
+
+[X] P2.1 — POST /tareas/:id/revalidar: implementar query real
+    Archivo: src/handlers/tareas.rs (tareas_revalidar)
+    Query:   UPDATE p_Tareas SET estado=@P2 WHERE idTarea=@P1
+             + EXEC sp_Tarea_RecalcularJerarquia_v2
+    Response: { success, idTarea, nuevoEstado }
+
+[X] P2.2 — POST /tareas/:id/participantes: implementar query real
+    Archivo: src/handlers/tareas.rs (tareas_participantes)
+    Query:   DELETE FROM p_TareaAsignados WHERE idTarea=@P1 AND tipo='Colaborador'
+             + INSERT INTO p_TareaAsignados (idTarea, idUsuario, tipo) VALUES... por cada id
+    Response: { success }
+
+[X] P2.3 — POST /tareas/:id/recordatorio: implementar query real
+    Archivo: src/handlers/tareas.rs (tareas_recordatorio)
+    Query:   SELECT existente → si existe UPDATE, si no INSERT en p_TareaRecordatorios
+    Response: { idRecordatorio }
+
+[X] P2.4 — POST /asignaciones: crear handler
+    Archivo: src/handlers/tareas.rs o clarity_extra.rs
+    Router:  cambiar generic_manifest_post → asignaciones_create
+    Query:   INSERT INTO p_TareasAsignaciones (idTarea, carnet, tipo) VALUES (@P1, @P2, @P3)
+    Response: { success, message: "Usuario asignado" }
+
+[X] P2.5 — POST /tareas/:id/clonar: agregar ruta
+    Router:  agregar .route("/tareas/:id/clonar", post(planning_clone_task))
+    Handler: Ya existe planning_clone_task
+    Cambio:  Solo agregar la ruta al router
+
+[X] P2.6 — GET /tareas/:id/bloqueos: crear handler
+    Archivo: src/handlers/tareas.rs
+    Query:   SELECT * FROM p_Bloqueos WHERE idTareaAfectada=@P1 ORDER BY fechaCreacion DESC
+    Response: [ { idBloqueo, descripcion, tipo, estado, fechaCreacion, ... } ]
+
+[X] P2.7 — POST /auth/change-password: implementar SP real
+    Archivo: src/handlers/auth.rs
+    Query:   EXEC sp_Auth_CambiarPassword @P1, @P2, @P3
+    Response: { success, message }
+
+[X] P2.8 — GET /planning/tasks/:id/history: implementar query
+    Archivo: src/handlers/planning.rs (planning_task_history)
+    Query:   SELECT * FROM p_AuditLog WHERE idTarea=@P1 ORDER BY fecha DESC
+    Response: { changes: [ { campo, valorAnterior, valorNuevo, fecha, usuario } ] }
+
+[X] P2.9 — GET /planning/dashboard/alerts: implementar query
+    Archivo: src/handlers/planning.rs (planning_dashboard_alerts)
+    Query:   SELECT tareas vencidas, bloqueadas, sin actualizar en 7 días
+    Response: { alerts: [ { tipo, mensaje, count, ... } ] }
+
+PRIORIDAD 3 — DESEABLE (Módulos secundarios, no impactan funcionalidad core)
+=============================================================================
+
+[X] P3.1 — POST /marcaje/undo-last: implementar query
+    Archivo: src/handlers/marcaje.rs (marcaje_undo_last)
+    Query:   DELETE TOP 1 FROM p_Asistencia WHERE carnet=@P1 AND tipo='salida' ORDER BY fecha DESC
+
+[X] P3.2 — POST /marcaje/correccion: implementar query
+    Archivo: src/handlers/marcaje.rs (marcaje_request_correction)
+    Query:   INSERT INTO p_MarcajeSolicitudes (carnet, tipo, motivo, ...)
+
+[X] P3.3 — POST /marcaje/gps-track: implementar query
+    Query:   INSERT INTO p_MarcajeGpsTrack (carnet, lat, lon, timestamp)
+
+[X] P3.4 — POST /marcaje/gps-track-batch: implementar query
+    Query:   INSERT multiple INTO p_MarcajeGpsTrack
+
+[X] P3.5-3.19 — Marcaje admin endpoints (15 endpoints mock)
+    Estos requieren queries reales para cada CRUD de sites, ips, devices, geocercas, etc.
+    Referencia: v2backend/src/marcaje/marcaje.service.ts
+
+[X] P3.20-3.25 — Jornada escritura (6 endpoints missing)
+    Router: agregar rutas POST/PUT/DELETE para horarios, patrones, asignaciones
+    Handlers: crear en jornada.rs
+    Queries: INSERT/UPDATE/DELETE en tablas p_Jornada*
+
+[X] P3.26-3.34 — Visita admin CRUD (9 endpoints stub)
+    Router: cambiar generic_manifest → handlers reales
+    Handlers: crear en visita.rs
+    Queries: CRUD en tablas p_Visita*
+
+[X] P3.35-3.38 — Visita campo tracking (4 endpoints stub)
+    Handlers: implementar tracking-batch, stats/km, tracking-raw, usuarios-tracking
+
+[X] P3.39 — POST /planning/tasks/:id/crear-grupo: implementar
+    Query:   INSERT INTO p_GruposTareas (idTareaPadre, nombre)
+[X] P3.40 — POST /planning/tasks/:id/agregar-fase: implementar
+    Query:   INSERT INTO p_GrupoTareasFases (idGrupo, idTarea, orden)
+[X] P3.41 — GET /planning/grupos/:idGrupo: implementar
+    Query:   SELECT grupo + JOIN fases
+
+[X] P3.42-3.55 — Admin CRUD (14 endpoints mock → real)
+    Referencia: v2backend/src/admin/admin.controller.ts + admin.service.ts
+    Cada uno necesita su query CRUD real contra p_Usuarios, p_Roles, p_Organigrama, etc.
+
+================================================================================
+ RESUMEN CUANTITATIVO DEL CHECKLIST
+================================================================================
+
+ PRIORIDAD 1 (CRÍTICO):   7 items  ← hacer AHORA
+ PRIORIDAD 2 (IMPORTANTE): 9 items  ← hacer esta semana
+ PRIORIDAD 3 (DESEABLE):  ~40 items ← hacer gradualmente
+
+ Al completar P1 (7 items): El frontend debería funcionar al ~85%
+ Al completar P1+P2 (16 items): Funcionalidad ~95%
+ Al completar todo (65 items): Paridad 100% con NestJS
+
+================================================================================
+ ORDEN DE EJECUCIÓN RECOMENDADO
+================================================================================
+
+ Día 1: P1.1 + P1.2 (tareas/mias y PATCH tareas/:id) — desbloquea "Mi Asignación"
+ Día 1: P1.3 (completar response de tareas/rapida)
+ Día 2: P1.4 + P1.5 (workload completo + check-permission real)
+ Día 2: P1.6 + P1.7 (mi-dia checkin + resumen completo)
+ Día 3: P2.1-P2.6 (funcionalidad de edición de tareas)
+ Día 3: P2.7-P2.9 (misc pendientes importantes)
+ Semana 2: P3.* (módulos secundarios gradualmente)

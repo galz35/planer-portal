@@ -1,0 +1,65 @@
+﻿cargo :     Checking backendrust v0.1.0 
+(D:\planificacion\rustsistema\backendrust)
+En línea: 1 Carácter: 1
++ cargo check > cargo_check_result_2.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Checking ba...ma\backendrust 
+   ):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: unused import: `backendrust::config`
+ --> src\main.rs:2:5
+  |
+2 | use backendrust::config;
+  |     ^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `backendrust::state`
+ --> src\main.rs:5:5
+  |
+5 | use backendrust::state;
+  |     ^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `get` found for enum 
+`tiberius::tds::stream::query::QueryItem` in the current scope
+   --> src\bin\db_inspect.rs:21:32
+    |
+ 21 |         let schema: &str = row.get(0).unwrap_or("");
+    |                                ^^^ method not found in 
+`tiberius::tds::stream::query::QueryItem`
+    |
+note: the method `get` exists on the type `tiberius::row::Row`
+   --> D:\Users\gustavo.lira\.cargo\registry\src\index.crates.io-1949cf8c6b5b5
+57f\tiberius-0.12.3\src\row.rs:393:5
+    |
+393 | /     pub fn get<'a, R, I>(&'a self, idx: I) -> Option<R>
+394 | |     where
+395 | |         R: FromSql<'a>,
+396 | |         I: QueryIdx,
+    | |____________________^
+
+error[E0599]: no method named `get` found for enum 
+`tiberius::tds::stream::query::QueryItem` in the current scope
+   --> src\bin\db_inspect.rs:22:30
+    |
+ 22 |         let name: &str = row.get(1).unwrap_or("");
+    |                              ^^^ method not found in 
+`tiberius::tds::stream::query::QueryItem`
+    |
+note: the method `get` exists on the type `tiberius::row::Row`
+   --> D:\Users\gustavo.lira\.cargo\registry\src\index.crates.io-1949cf8c6b5b5
+57f\tiberius-0.12.3\src\row.rs:393:5
+    |
+393 | /     pub fn get<'a, R, I>(&'a self, idx: I) -> Option<R>
+394 | |     where
+395 | |         R: FromSql<'a>,
+396 | |         I: QueryIdx,
+    | |____________________^
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `backendrust` (bin "db_inspect") due to 2 previous 
+errors
+warning: build failed, waiting for other jobs to finish...
+warning: `backendrust` (bin "backendrust") generated 2 warnings (run `cargo 
+fix --bin "backendrust" -p backendrust` to apply 2 suggestions)

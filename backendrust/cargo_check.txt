@@ -1,0 +1,78 @@
+    Checking backendrust v0.1.0 (D:\planificacion\v2sistema\backendrust)
+warning: variable does not need to be mutable
+   --> src\handlers\jornada.rs:328:9
+    |
+328 |     let mut sets = vec!["actualizado_en = GETDATE()".to_string()];
+    |         ----^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+error[E0597]: `client` does not live long enough
+   --> src\handlers\visita.rs:436:11
+    |
+431 |     let mut client = match state.pool.get().await {
+    |         ---------- binding `client` declared here
+...
+436 |     match client.query("EXEC sp_vc_agenda_reordenar @P1, @P2", &[&id, &nuevo_orden]).await {
+    |           ^^^^^^--------------------------------------------------------------------------
+    |           |
+    |           borrowed value does not live long enough
+    |           a temporary with access to the borrow is created here ...
+...
+440 | }
+    | -
+    | |
+    | `client` dropped here while still borrowed
+    | ... and the borrow might be used here, when that temporary is dropped and runs the destructor for type `Result<QueryStream<'_>, tiberius::error::Error>`
+    |
+    = note: the temporary is part of an expression at the end of a block;
+            consider forcing this temporary to be dropped sooner, before the block's local variables are dropped
+help: for example, you could save the expression's value in a new local variable `x` and then make `x` be the expression at the end of the block
+    |
+436 ~     let x = match client.query("EXEC sp_vc_agenda_reordenar @P1, @P2", &[&id, &nuevo_orden]).await {
+437 |         Ok(_) => (axum::http::StatusCode::OK, Json(serde_json::json!({"ok": true}))).into_response(),
+438 |         Err(e) => (axum::http::StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response(),
+439 ~     }; x
+    |
+
+error[E0597]: `client` does not live long enough
+   --> src\handlers\visita.rs:450:11
+    |
+446 |     let mut client = match state.pool.get().await {
+    |         ---------- binding `client` declared here
+...
+450 |     match client.query("EXEC sp_vc_agenda_eliminar @P1", &[&id]).await {
+    |           ^^^^^^------------------------------------------------------
+    |           |
+    |           borrowed value does not live long enough
+    |           a temporary with access to the borrow is created here ...
+...
+454 | }
+    | -
+    | |
+    | `client` dropped here while still borrowed
+    | ... and the borrow might be used here, when that temporary is dropped and runs the destructor for type `Result<QueryStream<'_>, tiberius::error::Error>`
+    |
+    = note: the temporary is part of an expression at the end of a block;
+            consider forcing this temporary to be dropped sooner, before the block's local variables are dropped
+help: for example, you could save the expression's value in a new local variable `x` and then make `x` be the expression at the end of the block
+    |
+450 ~     let x = match client.query("EXEC sp_vc_agenda_eliminar @P1", &[&id]).await {
+451 |         Ok(_) => (axum::http::StatusCode::OK, Json(serde_json::json!({"ok": true}))).into_response(),
+452 |         Err(e) => (axum::http::StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response(),
+453 ~     }; x
+    |
+
+warning: unused variable: `sets`
+   --> src\handlers\jornada.rs:328:9
+    |
+328 |     let mut sets = vec!["actualizado_en = GETDATE()".to_string()];
+    |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_sets`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+For more information about this error, try `rustc --explain E0597`.
+warning: `backendrust` (bin "backendrust") generated 2 warnings
+error: could not compile `backendrust` (bin "backendrust") due to 2 previous errors; 2 warnings emitted

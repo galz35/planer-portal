@@ -1,0 +1,954 @@
+warning: unused imports: `Method`, `Router`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\acceso.rs:4:12
+  |
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\acceso.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\acceso.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Deserialize` and `Serialize`
+  --> src\handlers\acceso.rs:11:13
+   |
+11 | ...::{Deserialize, Serialize};
+   |       ^^^^^^^^^^^  ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\acceso.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\acceso.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\acceso.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\acceso.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Router`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\admin.rs:4:12
+  |
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\admin.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\admin.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `Serialize`
+  --> src\handlers\admin.rs:11:26
+   |
+11 | ...ze, Serialize};
+   |        ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\admin.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\admin.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\admin.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\admin.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Path`, `Router`, `State`, `StatusCode`, `any`, `delete`, `get`, `patch`, `post`, `put`, and `response::IntoResponse`
+ --> src\handlers\api.rs:3:15
+  |
+3 |     extract::{Path, State},
+  |               ^^^^  ^^^^^
+4 |     http::{Method, StatusCode},
+  |            ^^^^^^  ^^^^^^^^^^
+5 |     response::IntoResponse,
+  |     ^^^^^^^^^^^^^^^^^^^^^^
+6 |     routing::{any, delete, get, patch, post, put},
+  |               ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 |     Json, Router,
+  |           ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\api.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\api.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Deserialize` and `Serialize`
+  --> src\handlers\api.rs:11:13
+   |
+11 | ...::{Deserialize, Serialize};
+   |       ^^^^^^^^^^^  ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\api.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\api.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\api.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::state::ApiState`
+  --> src\handlers\api.rs:17:5
+   |
+17 | use crate::state::ApiState;
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Path`, `Router`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\auth.rs:3:15
+  |
+3 | ...ract::{Path, State},
+  |           ^^^^
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\auth.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\auth.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\auth.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\auth.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\auth.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Path`, `Router`, `StatusCode`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\diagnostico.rs:3:15
+  |
+3 | ...ract::{Path, State},
+  |           ^^^^
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^  ^^^^^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\diagnostico.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `Deserialize`
+  --> src\handlers\diagnostico.rs:11:13
+   |
+11 | ...::{Deserialize, Se...
+   |       ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\diagnostico.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\diagnostico.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\diagnostico.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\diagnostico.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Router`, `StatusCode`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\endpoint.rs:4:20
+  |
+4 | ...p::{Method, StatusCode},
+  |                ^^^^^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\endpoint.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\endpoint.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Deserialize` and `Serialize`
+  --> src\handlers\endpoint.rs:11:13
+   |
+11 | ...::{Deserialize, Serialize};
+   |       ^^^^^^^^^^^  ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\endpoint.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\endpoint.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\endpoint.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Deserialize` and `Serialize`
+ --> src\handlers\equipo.rs:8:13
+  |
+8 | ...::{Deserialize, Serialize};
+  |       ^^^^^^^^^^^  ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Path`, `Router`, `State`, `any`, `delete`, `get`, `patch`, `post`, `put`, and `response::IntoResponse`
+ --> src\handlers\generic.rs:3:15
+  |
+3 |     extract::{Path, State},
+  |               ^^^^  ^^^^^
+4 |     http::{Method, StatusCode},
+  |            ^^^^^^
+5 |     response::IntoResponse,
+  |     ^^^^^^^^^^^^^^^^^^^^^^
+6 |     routing::{any, delete, get, patch, post, put},
+  |               ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 |     Json, Router,
+  |           ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\generic.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\generic.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Deserialize` and `Serialize`
+  --> src\handlers\generic.rs:11:13
+   |
+11 | ...::{Deserialize, Serialize};
+   |       ^^^^^^^^^^^  ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\generic.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\generic.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\generic.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\generic.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::state::ApiState`
+  --> src\handlers\generic.rs:17:5
+   |
+17 | use crate::state::ApiState;
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Router`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\jornada.rs:4:12
+  |
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\jornada.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\jornada.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `Serialize`
+  --> src\handlers\jornada.rs:11:26
+   |
+11 | ...ze, Serialize};
+   |        ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\jornada.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\jornada.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\jornada.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\jornada.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Router`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\marcaje.rs:4:12
+  |
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\marcaje.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\marcaje.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `Serialize`
+  --> src\handlers\marcaje.rs:11:26
+   |
+11 | ...ze, Serialize};
+   |        ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `sync::Arc` and `time::Instant`
+  --> src\handlers\marcaje.rs:12:33
+   |
+12 | ...p, sync::Arc, time::Instant};
+   |       ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\marcaje.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\marcaje.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\marcaje.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Path`, `Router`, `StatusCode`, `any`, `delete`, `get`, `patch`, `post`, `put`, and `response::IntoResponse`
+ --> src\handlers\migration.rs:3:15
+  |
+3 |     extract::{Path, State},
+  |               ^^^^
+4 |     http::{Method, StatusCode},
+  |            ^^^^^^  ^^^^^^^^^^
+5 |     response::IntoResponse,
+  |     ^^^^^^^^^^^^^^^^^^^^^^
+6 |     routing::{any, delete, get, patch, post, put},
+  |               ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 |     Json, Router,
+  |           ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\migration.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\migration.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Deserialize` and `Serialize`
+  --> src\handlers\migration.rs:11:13
+   |
+11 | ...::{Deserialize, Serialize};
+   |       ^^^^^^^^^^^  ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\migration.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\migration.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\migration.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Router`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\notas.rs:4:12
+  |
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\notas.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\notas.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Deserialize` and `Serialize`
+  --> src\handlers\notas.rs:11:13
+   |
+11 | ...::{Deserialize, Serialize};
+   |       ^^^^^^^^^^^  ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `sync::Arc` and `time::Instant`
+  --> src\handlers\notas.rs:12:33
+   |
+12 | ...p, sync::Arc, time::Instant};
+   |       ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\notas.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\notas.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\notas.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Router`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\planning.rs:4:12
+  |
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\planning.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `Serialize`
+  --> src\handlers\planning.rs:11:26
+   |
+11 | ...ze, Serialize};
+   |        ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `sync::Arc` and `time::Instant`
+  --> src\handlers\planning.rs:12:33
+   |
+12 | ...p, sync::Arc, time::Instant};
+   |       ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\planning.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\planning.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\planning.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Router`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\proyectos.rs:4:12
+  |
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\proyectos.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\proyectos.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `Serialize`
+  --> src\handlers\proyectos.rs:11:26
+   |
+11 | ...ze, Serialize};
+   |        ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `collections::HashMap`, `sync::Arc`, and `time::Instant`
+  --> src\handlers\proyectos.rs:12:11
+   |
+12 | ...::{collections::HashMap, sync::Arc, time::Instant};
+   |       ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\proyectos.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\proyectos.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\proyectos.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Router`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\tareas.rs:4:12
+  |
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\tareas.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\tareas.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `Serialize`
+  --> src\handlers\tareas.rs:11:26
+   |
+11 | ...ze, Serialize};
+   |        ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `sync::Arc` and `time::Instant`
+  --> src\handlers\tareas.rs:12:33
+   |
+12 | ...p, sync::Arc, time::Instant};
+   |       ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\tareas.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\tareas.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\tareas.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Method`, `Path`, `Router`, `StatusCode`, `any`, `delete`, `get`, `patch`, `post`, and `put`
+ --> src\handlers\visita.rs:3:15
+  |
+3 | ...ract::{Path, State},
+  |           ^^^^
+4 | ...p::{Method, StatusCode},
+  |        ^^^^^^  ^^^^^^^^^^
+5 | ...ponse::IntoResponse,
+6 | ...ting::{any, delete, get, patch, post, put},
+  |           ^^^  ^^^^^^  ^^^  ^^^^^  ^^^^  ^^^
+7 | ...n, Router,
+  |       ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\handlers\visita.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\handlers\visita.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `Serialize`
+  --> src\handlers\visita.rs:11:26
+   |
+11 | ...ze, Serialize};
+   |        ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `sync::Arc` and `time::Instant`
+  --> src\handlers\visita.rs:12:33
+   |
+12 | ...p, sync::Arc, time::Instant};
+   |       ^^^^^^^^^  ^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `tokio::sync::RwLock`
+  --> src\handlers\visita.rs:13:5
+   |
+13 | use tokio::sync::RwLock;
+   |     ^^^^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::db::Pool`
+  --> src\handlers\visita.rs:15:5
+   |
+15 | use crate::db::Pool;
+   |     ^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\handlers\visita.rs:16:5
+   |
+16 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `Deserialize`
+ --> src\models.rs:2:13
+  |
+2 | ...e::{Deserialize, Se...
+  |        ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\models.rs:3:5
+  |
+3 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Json`, `Method`, `Path`, `State`, and `StatusCode`
+ --> src\router.rs:3:15
+  |
+3 |     extract::{Path, State},
+  |               ^^^^  ^^^^^
+4 |     http::{Method, StatusCode},
+  |            ^^^^^^  ^^^^^^^^^^
+...
+7 |     Json, Router,
+  |     ^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `chrono::Utc`
+ --> src\router.rs:9:5
+  |
+9 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `EncodingKey`, `Header`, and `encode`
+  --> src\router.rs:10:20
+   |
+10 | ...::{encode, EncodingKey, Header};
+   |       ^^^^^^  ^^^^^^^^^^^  ^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `Deserialize` and `Serialize`
+  --> src\router.rs:11:13
+   |
+11 | ...::{Deserialize, Serialize};
+   |       ^^^^^^^^^^^  ^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused imports: `ControllerProgress`, `ModuleProgress`, `RouteMatcher`, `by_controller`, `by_module`, and `progress`
+  --> src\router.rs:17:5
+   |
+17 |     by_controller, by_module, progress, ControllerProgress, EndpointManifest, ModuleProgress,
+   |     ^^^^^^^^^^^^^  ^^^^^^^^^  ^^^^^^^^  ^^^^^^^^^^^^^^^^^^                    ^^^^^^^^^^^^^^
+18 |     RouteMatcher,
+   |     ^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused import: `crate::models::*`
+  --> src\router.rs:20:5
+   |
+20 | use crate::models::*;
+   |     ^^^^^^^^^^^^^^^^
+System.Management.Automation.RemoteException
+warning: unused variable: `carnet`
+  --> src\grpc\planning_grpc.rs:62:13
+   |
+62 | ... let carnet = requ...
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_carnet`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+System.Management.Automation.RemoteException
+warning: unused variable: `user`
+   --> src\handlers\clarity_extra.rs:227:5
+    |
+227 |     user: AuthUser,
+    |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+System.Management.Automation.RemoteException
+warning: unused variable: `state`
+   --> src\handlers\clarity_extra.rs:429:11
+    |
+429 | ...tate(state): Stat...
+    |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_state`
+System.Management.Automation.RemoteException
+warning: unused variable: `carnet`
+   --> src\handlers\clarity_extra.rs:430:10
+    |
+430 | ...Path(carnet): Pat...
+    |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_carnet`
+System.Management.Automation.RemoteException
+warning: unused variable: `user`
+   --> src\handlers\clarity_extra.rs:601:5
+    |
+601 |     user: AuthUser,
+    |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+System.Management.Automation.RemoteException
+warning: unused variable: `user`
+   --> src\handlers\clarity_extra.rs:752:5
+    |
+752 |     user: AuthUser,
+    |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+System.Management.Automation.RemoteException
+warning: unused variable: `fecha`
+   --> src\handlers\clarity_extra.rs:757:9
+    |
+757 |     let fecha = quer...
+    |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_fecha`
+System.Management.Automation.RemoteException
+warning: unused variable: `user`
+   --> src\handlers\clarity_extra.rs:871:5
+    |
+871 |     user: AuthUser,
+    |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+System.Management.Automation.RemoteException
+warning: unused variable: `user`
+   --> src\handlers\clarity_extra.rs:984:5
+    |
+984 |     user: AuthUser, ...
+    |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+System.Management.Automation.RemoteException
+warning: unused variable: `query_params`
+   --> src\handlers\equipo.rs:183:5
+    |
+183 |     query_params: ax...
+    |     ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_query_params`
+System.Management.Automation.RemoteException
+warning: unused variable: `user`
+   --> src\handlers\equipo.rs:258:5
+    |
+258 |     user: AuthUser,
+    |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+System.Management.Automation.RemoteException
+warning: unused variable: `user`
+   --> src\handlers\equipo.rs:281:5
+    |
+281 |     user: AuthUser,
+    |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+System.Management.Automation.RemoteException
+warning: unused variable: `user`
+   --> src\handlers\equipo.rs:301:5
+    |
+301 |     user: AuthUser,
+    |     ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+System.Management.Automation.RemoteException
+warning: variable `bloqueadas_all` is assigned to, but never used
+   --> src\handlers\planning.rs:608:83
+    |
+608 | ...et mut bloqueadas_all = 0;
+    |       ^^^^^^^^^^^^^^^^^^
+    |
+    = note: consider using `_bloqueadas_all` instead
+System.Management.Automation.RemoteException
+warning: value assigned to `bloqueadas_all` is never read
+   --> src\handlers\planning.rs:638:9
+    |
+638 | ...   blo...r(0) as i32;
+    |       ^^^...^^^^^^^^^^^
+    |
+    = help: maybe it is overwritten before being read?
+    = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+System.Management.Automation.RemoteException
+warning: unused variable: `query`
+   --> src\handlers\visita.rs:235:5
+    |
+235 |     query: axum::ext...
+    |     ^^^^^ help: if this is intentional, prefix it with an underscore: `_query`
+System.Management.Automation.RemoteException
+warning: `backendrust` (bin "backendrust") generated 140 warnings (run `cargo fix --bin "backendrust" -p backendrust` to apply 138 suggestions)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 1.48s
+     Running `target\debug\backendrust.exe`
+System.Management.Automation.RemoteException
+thread 'main' (31584) panicked at D:\Users\gustavo.lira\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tower-http-0.5.2\src\cors\mod.rs:712:9:
+Invalid CORS configuration: Cannot combine `Access-Control-Allow-Credentials: true` with `Access-Control-Allow-Headers: *`
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\debug\backendrust.exe` (exit code: 101)

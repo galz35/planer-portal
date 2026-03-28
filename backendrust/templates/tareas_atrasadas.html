@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0; }
+        .header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 32px; text-align: center; color: #ffffff; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-danger { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .card { border: 1px solid #f1f5f9; background-color: #ffffff; border-radius: 12px; padding: 18px; margin-bottom: 12px; border-left: 4px solid #dc2626; }
+        .task-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 10px; line-height: 1.4; }
+        .task-meta { font-size: 13px; color: #64748b; margin-top: 6px; }
+        .label { font-weight: 600; color: #94a3b8; width: 90px; display: inline-block; font-size: 11px; text-transform: uppercase; }
+        .val { color: #334155; font-weight: 500; }
+        .footer { padding: 24px; text-align: center; font-size: 12px; color: #94a3b8; background-color: #f8fafc; border-top: 1px solid #f1f5f9; }
+        .btn { display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff !important; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; margin-top: 24px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px;">Notificación de Sistema</div>
+            <h1 style="margin:0; font-size:26px; font-weight: 800;">⚠️ Planner-EF</h1>
+            <p style="margin:8px 0 0; font-size: 14px; opacity: 0.9;">Control de Tareas y Agenda</p>
+        </div>
+        
+        <div style="padding: 32px;">
+            <p style="font-size: 18px; color: #0f172a; margin-top: 0;">Hola, <strong>{{ nombre }}</strong></p>
+            <p style="color: #64748b; line-height: 1.6; font-size: 15px;">Hemos detectado <strong>{{ totalAtrasadas }}</strong> tareas que han superado su fecha límite de cumplimiento. Tu acción inmediata es necesaria para mantener la visibilidad del equipo.</p>
+
+            <div style="margin-top: 24px;">
+                {% for tarea in tareas %}
+                <div class="card">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td style="vertical-align: top;">
+                                <div class="task-title">{{ tarea.titulo }}</div>
+                                <div class="task-meta">
+                                    <span class="label">📂 Proyecto</span>
+                                    <span class="val">{{ tarea.proyecto }}</span>
+                                </div>
+                                <div class="task-meta">
+                                    <span class="label">👤 Creado por</span>
+                                    <span class="val">{{ tarea.creador }}</span>
+                                </div>
+                                <div class="task-meta">
+                                    <span class="label">🎯 Asignado</span>
+                                    <span class="val" style="color:#2563eb; font-weight: 600;">{{ tarea.asignado }}</span>
+                                </div>
+                            </td>
+                            <td align="right" valign="top" style="width: 110px;">
+                                <div class="badge badge-danger">{{ tarea.diasAtraso }}d atraso</div>
+                                <div style="font-size:11px; color:#94a3b8; margin-top:10px; font-weight: 500;">Límite: {{ tarea.fechaLimite }}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div style="text-align:center; padding-top: 8px;">
+                <a class="btn" href="{{ enlace }}">Ir a mi Agenda Personal</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p style="margin: 0;">📩 Este es un aviso automático generado por el motor de notificaciones de Planner-EF.</p>
+            <p style="margin: 6px 0 0;">Para soporte técnico, contacte con el administrador del sistema.</p>
+        </div>
+    </div>
+</body>
+</html>

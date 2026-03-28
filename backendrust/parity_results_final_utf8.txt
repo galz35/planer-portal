@@ -1,0 +1,19 @@
+﻿--- Deep Parity Check: Rust vs Nest ---
+node : Error connecting to 
+Rust: fetch failed
+En línea: 1 Carácter: 20
++ ... leep -s 10; node 
+parity_check_deep.js > 
+parity_results_final.txt 
+2>&1 ...
++                 ~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Error c  
+  onnecting to Rust: fetch   
+  failed:String) [], Remo    
+teException
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 

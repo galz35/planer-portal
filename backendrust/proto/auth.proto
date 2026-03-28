@@ -1,0 +1,77 @@
+syntax = "proto3";
+package auth;
+
+// ═══════════════════════════════════════
+// AUTH SERVICE — Login, Refresh, Config
+// ═══════════════════════════════════════
+
+service AuthService {
+  // Login con correo y contraseña
+  rpc Login(LoginRequest) returns (LoginResponse);
+  
+  // Refrescar tokens
+  rpc Refresh(RefreshRequest) returns (TokenPair);
+  
+  // Cambiar contraseña
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+  
+  // Obtener config del usuario autenticado
+  rpc GetConfig(GetConfigRequest) returns (UserConfig);
+  
+  // Actualizar config del usuario
+  rpc UpdateConfig(UserConfig) returns (UserConfig);
+}
+
+// ── Mensajes ──
+
+message LoginRequest {
+  string correo = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  bool success = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+  UserInfo usuario = 4;
+}
+
+message UserInfo {
+  int32 id_usuario = 1;
+  string nombre = 2;
+  string correo = 3;
+  string carnet = 4;
+  string cargo = 5;
+  int32 id_rol = 6;
+  string rol_nombre = 7;
+  string gerencia = 8;
+  string pais = 9;
+}
+
+message RefreshRequest {
+  string refresh_token = 1;
+}
+
+message TokenPair {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message ChangePasswordRequest {
+  string current_password = 1;
+  string new_password = 2;
+}
+
+message ChangePasswordResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetConfigRequest {
+  // vacío, el usuario se saca del token en metadata
+}
+
+message UserConfig {
+  bool agenda_show_gestion = 1;
+  bool agenda_show_rapida = 2;
+}
